@@ -4,7 +4,7 @@ function Header() {
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="container">
           <div className="navbar-brand">
-            <a className="navbar-item" href="index.html">
+            <a className="navbar-item" href="/">
               <img src="images/logo.png" />
             </a>
             <a
@@ -22,7 +22,7 @@ function Header() {
           <div id="navbarBasicExample" className="navbar-menu">
             <div className="navbar-start">
               <div>
-                <a className="navbar-item active">
+                <a className="navbar-item active" href="/flights">
                   <i className="fas fa-plane-up" /> Flights
                 </a>
                 <a className="navbar-item">

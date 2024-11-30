@@ -39,7 +39,7 @@ a:hover {
   min-height: 4.25rem;
 }
 .navbar-start {
-  margin-top: 15px;
+  margin-top: 4px;
 }
 .search-wrap {
   background: #f7f7f7;
@@ -1992,7 +1992,7 @@ http://flickity.metafizzy.co
   }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (max-width: 1024px) {
   .brand-footer li {
     width: 25%;
   }
