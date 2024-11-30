@@ -578,8 +578,8 @@ function Page() {
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Baggage</h3>
               <p>
-                In this section you'll find information on baggage allowances, special equipment and
-                sports items as well as restricted items. We've also included some tips to make your
+                In this section you ll find information on baggage allowances, special equipment and
+                sports items as well as restricted items. We ve also included some tips to make your
                 trip more enjoyable.
               </p>
             </div>

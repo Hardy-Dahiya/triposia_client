@@ -498,88 +498,12 @@ function Page() {
               </div>
             </div>
           </div>
-          {/* <div id="container">
-  <button class="menu">TITLE</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-  <button class="menu">TITLE 2</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-  <button class="menu">TITLE 3</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-</div> */}
-          {/* <div id="seatselection" class="columns is-multiline single-content-space">
-
-  <div class="column is-12">
-    <h3 class="title is-5 mt-3 mb-3">Select your Seats</h3>
-<p class="py-2">Maecenas vitae turpis condimentum metus tincidunt semper bibendum ut orci. Donec eget accumsan est. Duis laoreet sagittis elit et vehicula.</p>
-  </div> 
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>  
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-</div> */}
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Baggage</h3>
               <p>
-                In this section you'll find information on baggage allowances, special equipment and
-                sports items as well as restricted items. We've also included some tips to make your
+                In this section you ll find information on baggage allowances, special equipment and
+                sports items as well as restricted items. We ve also included some tips to make your
                 trip more enjoyable.
               </p>
             </div>
