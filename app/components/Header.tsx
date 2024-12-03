@@ -22,7 +22,7 @@ function Header() {
           <div id="navbarBasicExample" className="navbar-menu">
             <div className="navbar-start">
               <div>
-                <a className="navbar-item active" href="/flights">
+                <a className="navbar-item active">
                   <i className="fas fa-plane-up" /> Flights
                 </a>
                 <a className="navbar-item">

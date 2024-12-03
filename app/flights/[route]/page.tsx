@@ -4,6 +4,7 @@ import Header from '../../components/Header';
 
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
+import { Airline, Flight } from '@/src/types/types';
 
 // Define the params interface
 interface FlightRouteParams {
@@ -22,7 +23,7 @@ export default async function FlightRoutePage({ params }: FlightRouteParams) {
 
   // Validate route format
   if (!departure || !arrival) {
-    return <div>Invalid route format. Use format like 'del-to-bom'</div>;
+    return <div>Invalid route format. Use format like del-to-bom</div>;
   }
 
   return (
@@ -69,7 +70,7 @@ async function FlightDetails({
         <div className="message-body">
           <strong className="font-bold">No Flights Found: </strong>
           <span className="block sm:inline">
-            Unfortunately, we couldn't find any flights for the specified route. Please ensure that
+            Unfortunately, we could not find any flights for the specified route. Please ensure that
             the departure and arrival cities are correct and try again.
           </span>
           <span className="block sm:inline mt-2">
@@ -281,7 +282,7 @@ async function FlightDetails({
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Flights from - {flightData.departure_city}</h3>
             </div>
-            {flightData.flights.map((item: any, index: any) => {
+            {flightData.flights.map((item: Flight, index: number) => {
               return (
                 <div key={index} className="column is-12 pt-0">
                   <div className="departing-flights">
@@ -411,7 +412,7 @@ async function FlightDetails({
                       </tr>
                     </thead>
                     <tbody>
-                      {flightData.airlines.map((item: any, index: any) => {
+                      {flightData.airlines.map((item: Airline, index: number) => {
                         return (
                           <tr key={index}>
                             <td data-label="Airline">
@@ -513,7 +514,6 @@ async function searchFlights(dep: string, arr: string) {
   // Simulate an API call or database lookup
   const response = await getFlightsData(dep, arr);
   if (response?.data.status) {
-    // console.log(response.data);
     return response.data.data;
   }
   return null;
