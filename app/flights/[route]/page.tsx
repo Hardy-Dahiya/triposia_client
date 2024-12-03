@@ -1,29 +1,35 @@
 import { getFlightsData } from '@/services/flights/FlightServices';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
+import Footer from '../../../src/components/Footer/Footer';
+import Header from '../../../src/components/Header/Header';
 
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
 import { Airline, Flight } from '@/src/types/types';
+import Error from '@/src/components/Message/Error';
 
 // Define the params interface
-interface FlightRouteParams {
-  params: {
-    route: string;
-  };
-}
+type FlightRouteParams = {
+  params: Promise<{
+    route: string; // Matches the dynamic route segment `[route]`
+  }>;
+};
 
 export default async function FlightRoutePage({ params }: FlightRouteParams) {
-  // Safely resolve and parse the route parameter
-  const { route } = await params;
+  // Await `params` since it's treated as a Promise in the build environment
+  const resolvedParams = await params;
+  const { route } = resolvedParams;
 
-  const routeParts = route.split('-to-');
-  const departure = routeParts[0];
-  const arrival = routeParts[1];
+  // Parse the route parameter
+  const [departure, arrival] = route.split('-to-');
 
-  // Validate route format
   if (!departure || !arrival) {
-    return <div>Invalid route format. Use format like del-to-bom</div>;
+    return (
+      <Error
+        title="Invalid route format"
+        subTitle="No Flights Found"
+        msg="Unfortunately, we could not find any flights for the specified route. Please use format like del-to-bom and try again."
+      />
+    );
   }
 
   return (
@@ -63,21 +69,12 @@ async function FlightDetails({
   const flightData = await searchFlights(departureCity, arrivalCity);
   if (!flightData) {
     return (
-      <article className="message is-danger">
-        <div className="message-header">
-          <p>Invalid route format</p>
-        </div>
-        <div className="message-body">
-          <strong className="font-bold">No Flights Found: </strong>
-          <span className="block sm:inline">
-            Unfortunately, we could not find any flights for the specified route. Please ensure that
-            the departure and arrival cities are correct and try again.
-          </span>
-          <span className="block sm:inline mt-2">
-            If the problem persists, feel free to contact our support team for assistance.
-          </span>
-        </div>
-      </article>
+      <Error
+        title="Invalid route format"
+        subTitle="No Flights Found"
+        msg="Unfortunately, we could not find any flights for the specified route. Please ensure that
+            the departure and arrival cities are correct and try again."
+      />
     );
   }
   return (

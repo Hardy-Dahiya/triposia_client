@@ -1,5 +1,5 @@
-import Footer from '../components/Footer';
-import Header from '../components/Header';
+import Footer from '../../src/components/Footer/Footer';
+import Header from '../../src/components/Header/Header';
 
 function Page() {
   return (
