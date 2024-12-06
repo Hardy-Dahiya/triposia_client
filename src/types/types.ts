@@ -59,3 +59,10 @@ export interface Flight {
   day6: string;
   day7: string;
 }
+
+export interface AirlineDestination {
+  city: string;
+  country: string;
+  iata_code: string;
+  name: string;
+}

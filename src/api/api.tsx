@@ -1,2 +1,2 @@
-const url = 'https://api.triposia.com/v1';
+const url = process.env.API_URL;
 export default url;

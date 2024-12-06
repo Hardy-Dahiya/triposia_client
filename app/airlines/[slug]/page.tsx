@@ -1,10 +1,74 @@
-import Footer from '../../src/components/Footer/Footer';
-import Header from '../../src/components/Header/Header';
+import { getAirlineData } from '@/services/airlines/AirlineServices';
+import Footer from '../../../src/components/Footer/Footer';
+import Header from '../../../src/components/Header/Header';
 
-function Page() {
+// app/flights/[route]/page.tsx
+import { Suspense } from 'react';
+import { AirlineDestination } from '@/src/types/types';
+import Error from '@/src/components/Message/Error';
+
+// Define the params interface
+type AirlineRouteParams = {
+  params: Promise<{
+    slug: string; // Matches the dynamic route segment `[route]`
+  }>;
+};
+
+export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
+  // Await `params` since it's treated as a Promise in the build environment
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+
+  if (!slug) {
+    return (
+      <Error
+        title="Invalid slug format"
+        subTitle="No Airline Found"
+        msg="Unfortunately, we could not find any airlines for the specified iata_code. Please use format like ai and try again."
+      />
+    );
+  }
+
   return (
     <div>
       <Header />
+      <Suspense
+        fallback={
+          <progress
+            className="progress is-primary"
+            style={{
+              height: '4px', // Extremely thin
+              animationDuration: '0.6s',
+              transitionTimingFunction: 'ease-out',
+            }}
+            max="100"
+          >
+            15%
+          </progress>
+        }
+      >
+        <AirlineDetails iata_code={slug} />
+      </Suspense>
+      <Footer />
+    </div>
+  );
+}
+
+async function AirlineDetails({ iata_code }: { iata_code: string }) {
+  // Simulated async flight search (replace with actual API call)
+  const airlineData = await searchAirlines(iata_code);
+  if (!airlineData) {
+    return (
+      <Error
+        title="Invalid iata_code format"
+        subTitle="No Airline Found"
+        msg="Unfortunately, we could not find any airlines for the specified iata_code. Please ensure that
+            the iata_code are correct and try again."
+      />
+    );
+  }
+  return (
+    <div>
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -13,7 +77,7 @@ function Page() {
                 <div id="menubar" className="navbar-menu1">
                   <div>
                     <a className="navbar-item is-active" href="#overview" data-target="overview">
-                      Flight Details
+                      Airline Details
                     </a>
                     <a
                       className="navbar-item"
@@ -44,13 +108,15 @@ function Page() {
             <div className="column is-6 order2">
               <div className="columns is-multiline">
                 <div className="column is-12">
-                  <h2 className="title is-4 mt-3 mb-3">New York to Paris</h2>
+                  <h2 className="title is-4 mt-3 mb-3">
+                    {airlineData.name} ({airlineData.iata_code})
+                  </h2>
                   <p className="mr-2">
-                    One way flight <span className="badge">1 Stop</span>
+                    <span className="badge">{airlineData.check_in}</span>
                   </p>
                 </div>
                 <hr className="seprator my-2" />
-                <div className="column is-4 mob-view has-text-centered">
+                {/* <div className="column is-4 mob-view has-text-centered">
                   <p className="title-custom">Flight Take off</p>
                   <span className="subtitle-custom">12 Jun 2020, 7:50 am</span>
                 </div>
@@ -63,10 +129,11 @@ function Page() {
                 <div className="column is-4 mob-view has-text-centered">
                   <p className="title-custom">Flight Landing</p>
                   <span className="subtitle-custom">13 Jun 2020, 5:50 am</span>
-                </div>
+                </div> */}
                 <div className="column is-12 mob-view has-text-centered bor-top bor-bottom mt-2 mb-3">
                   <p className="title-custom">
-                    Total flight time: <span className="subtitle-custom">13 Hours 40 min</span>
+                    Total flights:
+                    <span className="subtitle-custom"> {airlineData.total_flights}</span>
                   </p>
                 </div>
                 <div className="column is-4">
@@ -75,8 +142,8 @@ function Page() {
                       <i className="fa fa-plane-up" />
                     </div>
                     <div className="single-feature-titles">
-                      <p className="title-custom">Airline</p>
-                      <span className="subtitle-custom">Delta</span>
+                      <p className="title-custom">Aircrafts</p>
+                      <span className="subtitle-custom">{airlineData.total_aircrafts}</span>
                     </div>
                   </div>
                 </div>
@@ -105,11 +172,11 @@ function Page() {
                 <div className="column is-4">
                   <div className="single-tour-feature">
                     <div className="single-feature-icon">
-                      <i className="fa fa-times" />
+                      <i className="fa fa-globe" />
                     </div>
                     <div className="single-feature-titles">
-                      <p className="title-custom">Cancellation</p>
-                      <span className="subtitle-custom">$78 / Person</span>
+                      <p className="title-custom">International</p>
+                      <span className="subtitle-custom">{airlineData.international}</span>
                     </div>
                   </div>
                 </div>
@@ -119,8 +186,8 @@ function Page() {
                       <i className="fa fa-exchange" />
                     </div>
                     <div className="single-feature-titles">
-                      <p className="title-custom">Flight Change</p>
-                      <span className="subtitle-custom">$53 / Person</span>
+                      <p className="title-custom">Destinations</p>
+                      <span className="subtitle-custom">{airlineData.total_destinations}</span>
                     </div>
                   </div>
                 </div>
@@ -138,30 +205,13 @@ function Page() {
               </div>
             </div>
             <div className="column is-6 order1">
-              <img src="images/flight1.jpg" alt="" className="overview-img" />
+              <img src="../images/flight1.jpg" alt="overview" className="overview-img" />
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
-              <h3 className="title is-5 mb-3">About Delta Airlines</h3>
+              <h3 className="title is-5 mb-3">About {airlineData.name}</h3>
               <p className="py-2">
-                Per consequat adolescens ex, cu nibh commune temporibus vim, ad sumo viris
-                eloquentiam sed. Mea appareat omittantur eloquentiam ad, nam ei quas oportere
-                democritum. Prima causae admodum id est, ei timeam inimicus sed. Sit an meis
-                aliquam, cetero inermis vel ut. An sit illum euismod facilisis, tamquam vulputate
-                pertinacia eum at.
-              </p>
-              <p className="py-2">
-                Cum et probo menandri. Officiis consulatu pro et, ne sea sale invidunt, sed ut sint
-                blandit efficiendi. Atomorum explicari eu qui, est enim quaerendum te. Quo harum
-                viris id. Per ne quando dolore evertitur, pro ad cibo commune.
-              </p>
-              <p className="py-2">
-                Sed scelerisque lectus sit amet faucibus sodales. Proin ut risus tortor. Etiam
-                fermentum tellus auctor, fringilla sapien et, congue quam. In a luctus tortor.
-                Suspendisse eget tempor libero, ut sollicitudin ligula. Nulla vulputate tincidunt
-                est non congue. Class aptent taciti sociosqu ad litora torquent per conubia nostra,
-                per inceptos himenaeos. Phasellus at est imperdiet, dapibus ipsum vel, lacinia
-                nulla.
+                {airlineData.overview} {airlineData.routes}
               </p>
             </div>
           </div>
@@ -169,9 +219,9 @@ function Page() {
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Inflight Features</h3>
               <p className="py-2">
-                Maecenas vitae turpis condimentum metus tincidunt semper bibendum ut orci. Donec
-                eget accumsan est. Duis laoreet sagittis elit et vehicula. Cras viverra posuere
-                condimentum. Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc.
+                Experience unparalleled comfort and convenience on every flight. Enjoy a wide range
+                of inflight entertainment, including movies, TV shows, and music, to keep you
+                entertained throughout your journey.
               </p>
             </div>
             <div className="column is-4">
@@ -297,206 +347,75 @@ function Page() {
           </div>
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Select your Flights</h3>
+              <h3 className="title is-5 mt-3 mb-3">Destinations</h3>
             </div>
-            <div className="column is-12 pt-0">
-              <div className="departing-flights">
-                <div className="flights-booking-item">
-                  <div className="flight-logo">
-                    <img src="images/AI.png" alt="" />
-                  </div>
-                  <div className="flight-time">
-                    <h4 className="title is-6 mb-0">8:00 AM-10:20 AM</h4>
-                    <p className="detailtxt">Separate tickets booked together</p>
-                  </div>
-                  <div className="duration">
-                    <h4 className="title is-6 mb-0">2 hr 20 min</h4>
-                    <p className="detailtxt">BOM-DEL</p>
-                  </div>
-                  <div className="nonstop">
-                    <h4 className="title is-6 mb-0">Nonstop</h4>
-                  </div>
-                  <div className="weightkg">
-                    <h4 className="title is-6 mb-0">
-                      109 kg CO2<sub>2</sub>
-                    </h4>
-                    <p className="detailtxt">+36% emissions</p>
-                  </div>
-                  <div className="flight-price">
-                    <h4 className="title is-6 mb-0">₹9,195</h4>
-                    <p className="detailtxt">round trip</p>
-                  </div>
-                </div>
-                <button className="toggle_menu" />
-                <div className="toggle_text">
-                  <div className="columns is-multiline is-justify-content-space-around">
-                    <div className="column is-6">
-                      <div className="time-travel-wrap is-clearfix">
-                        <div className="time-travel">
-                          <div className="time-travel-circle" />
-                          <div className="time-travel-dot" />
-                          <div className="time-travel-circle" />
+            {airlineData.destinations.map((item: AirlineDestination, index: number) => {
+              return (
+                <div key={index} className="column is-12 pt-0">
+                  <div className="departing-flights">
+                    <div className="flights-booking-item">
+                      <div className="flight-time">
+                        <h4 className="title is-6 mb-0">{item.city}</h4>
+                        <p className="detailtxt">{item.name}</p>
+                      </div>
+                      <div className="duration">
+                        <h4 className="title is-6 mb-0">{item.iata_code}</h4>
+                        {/* <p className="detailtxt">BOM-DEL</p> */}
+                      </div>
+                      <div className="nonstop">
+                        <h4 className="title is-6 mb-0">{item.country}</h4>
+                      </div>
+                      <div className="weightkg">
+                        <h4 className="title is-6 mb-0">
+                          109 kg CO2<sub>2</sub>
+                        </h4>
+                        <p className="detailtxt">+36% emissions</p>
+                      </div>
+                      <div className="flight-price">
+                        <h4 className="title is-6 mb-0">₹9,195</h4>
+                        <p className="detailtxt">round trip</p>
+                      </div>
+                    </div>
+                    <button className="toggle_menu" />
+                    <div className="toggle_text">
+                      <div className="columns is-multiline is-justify-content-space-around">
+                        <div className="column is-6">
+                          <div className="time-travel-wrap is-clearfix">
+                            <div className="time-travel">
+                              <div className="time-travel-circle" />
+                              <div className="time-travel-dot" />
+                              <div className="time-travel-circle" />
+                            </div>
+                            <p className="time-start-end">
+                              11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira
+                              Gandhi International Airport (DEL)
+                            </p>
+                            <p className="total-time">Travel time: 2 hr 10 min</p>
+                            <p className="time-start-end">
+                              1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
+                              Shivaji Maharaj International Airport (BOM)
+                            </p>
+                          </div>
+                          <div className="flightlist-bottom">
+                            Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
+                            <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
+                            <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
+                          </div>
                         </div>
-                        <p className="time-start-end">
-                          11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira Gandhi
-                          International Airport (DEL)
-                        </p>
-                        <p className="total-time">Travel time: 2 hr 10 min</p>
-                        <p className="time-start-end">
-                          1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
-                          Shivaji Maharaj International Airport (BOM)
-                        </p>
-                      </div>
-                      <div className="flightlist-bottom">
-                        Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
-                      </div>
-                    </div>
-                    <div className="column is-3">
-                      <ul className="check-list">
-                        <li>Below average legroom (29 in)</li>
-                        <li>In-seat USB outlet</li>
-                        <li>Stream media to your device</li>
-                        <li>Carbon emissions estimate: 97 kg</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="column is-12 pt-0">
-              <div className="departing-flights">
-                <div className="flights-booking-item">
-                  <div className="flight-logo">
-                    <img src="images/AI.png" alt="" />
-                  </div>
-                  <div className="flight-time">
-                    <h4 className="title is-6 mb-0">8:00 AM-10:20 AM</h4>
-                    <p className="detailtxt">Separate tickets booked together</p>
-                  </div>
-                  <div className="duration">
-                    <h4 className="title is-6 mb-0">2 hr 20 min</h4>
-                    <p className="detailtxt">BOM-DEL</p>
-                  </div>
-                  <div className="nonstop">
-                    <h4 className="title is-6 mb-0">Nonstop</h4>
-                  </div>
-                  <div className="weightkg">
-                    <h4 className="title is-6 mb-0">
-                      109 kg CO2<sub>2</sub>
-                    </h4>
-                    <p className="detailtxt">+36% emissions</p>
-                  </div>
-                  <div className="flight-price">
-                    <h4 className="title is-6 mb-0">₹9,195</h4>
-                    <p className="detailtxt">round trip</p>
-                  </div>
-                </div>
-                <button className="toggle_menu" />
-                <div className="toggle_text">
-                  <div className="columns is-multiline is-justify-content-space-around">
-                    <div className="column is-6">
-                      <div className="time-travel-wrap is-clearfix">
-                        <div className="time-travel">
-                          <div className="time-travel-circle" />
-                          <div className="time-travel-dot" />
-                          <div className="time-travel-circle" />
+                        <div className="column is-3">
+                          <ul className="check-list">
+                            <li>Below average legroom (29 in)</li>
+                            <li>In-seat USB outlet</li>
+                            <li>Stream media to your device</li>
+                            <li>Carbon emissions estimate: 97 kg</li>
+                          </ul>
                         </div>
-                        <p className="time-start-end">
-                          11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira Gandhi
-                          International Airport (DEL)
-                        </p>
-                        <p className="total-time">Travel time: 2 hr 10 min</p>
-                        <p className="time-start-end">
-                          1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
-                          Shivaji Maharaj International Airport (BOM)
-                        </p>
                       </div>
-                      <div className="flightlist-bottom">
-                        Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
-                      </div>
-                    </div>
-                    <div className="column is-3">
-                      <ul className="check-list">
-                        <li>Below average legroom (29 in)</li>
-                        <li>In-seat USB outlet</li>
-                        <li>Stream media to your device</li>
-                        <li>Carbon emissions estimate: 97 kg</li>
-                      </ul>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="column is-12 pt-0">
-              <div className="departing-flights">
-                <div className="flights-booking-item">
-                  <div className="flight-logo">
-                    <img src="images/AI.png" alt="" />
-                  </div>
-                  <div className="flight-time">
-                    <h4 className="title is-6 mb-0">8:00 AM-10:20 AM</h4>
-                    <p className="detailtxt">Separate tickets booked together</p>
-                  </div>
-                  <div className="duration">
-                    <h4 className="title is-6 mb-0">2 hr 20 min</h4>
-                    <p className="detailtxt">BOM-DEL</p>
-                  </div>
-                  <div className="nonstop">
-                    <h4 className="title is-6 mb-0">Nonstop</h4>
-                  </div>
-                  <div className="weightkg">
-                    <h4 className="title is-6 mb-0">
-                      109 kg CO2<sub>2</sub>
-                    </h4>
-                    <p className="detailtxt">+36% emissions</p>
-                  </div>
-                  <div className="flight-price">
-                    <h4 className="title is-6 mb-0">₹9,195</h4>
-                    <p className="detailtxt">round trip</p>
-                  </div>
-                </div>
-                <button className="toggle_menu" />
-                <div className="toggle_text">
-                  <div className="columns is-multiline is-justify-content-space-around">
-                    <div className="column is-6">
-                      <div className="time-travel-wrap is-clearfix">
-                        <div className="time-travel">
-                          <div className="time-travel-circle" />
-                          <div className="time-travel-dot" />
-                          <div className="time-travel-circle" />
-                        </div>
-                        <p className="time-start-end">
-                          11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira Gandhi
-                          International Airport (DEL)
-                        </p>
-                        <p className="total-time">Travel time: 2 hr 10 min</p>
-                        <p className="time-start-end">
-                          1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
-                          Shivaji Maharaj International Airport (BOM)
-                        </p>
-                      </div>
-                      <div className="flightlist-bottom">
-                        Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
-                        <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
-                      </div>
-                    </div>
-                    <div className="column is-3">
-                      <ul className="check-list">
-                        <li>Below average legroom (29 in)</li>
-                        <li>In-seat USB outlet</li>
-                        <li>Stream media to your device</li>
-                        <li>Carbon emissions estimate: 97 kg</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -609,12 +528,7 @@ function Page() {
             </div>
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Basic Information</h3>
-              <p>
-                Vestibulum ut iaculis justo, auctor sodales lectus. Donec et tellus tempus,
-                dignissim maurornare, consequat lacus. Integer dui neque, scelerisque nec
-                sollicitudin sit amet, sodales a erat. Duis vitae condimentum ligula. Integer eu mi
-                nisl. Donec massa dui, commodo id arcu quis, venenatis scelerisque velit.
-              </p>
+              <p>{airlineData.baggage}</p>
             </div>
           </div>
           <div id="faq" className="columns is-multiline single-content-space">
@@ -683,10 +597,11 @@ function Page() {
             </div>
             <div className="column is-12">
               <p>
-                Vestibulum ut iaculis justo, auctor sodales lectus. Donec et tellus tempus,
-                dignissim maurornare, consequat lacus. Integer dui neque, scelerisque nec
-                sollicitudin sit amet, sodales a erat. Duis vitae condimentum ligula. Integer eu mi
-                nisl. Donec massa dui, commodo id arcu quis, venenatis scelerisque velit.
+                Understanding our fare rules ensures a seamless travel experience. Ticket changes,
+                including date or time modifications, may incur fees based on your fare type.
+                Refunds depend on the fare category, with non-refundable tickets not eligible.
+                Baggage allowances vary by class, and excess fees apply for additional or oversized
+                luggage.
               </p>
             </div>
             <div className="column is-12">
@@ -757,9 +672,17 @@ function Page() {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 }
 
-export default Page;
+// Simulated flight search function
+async function searchAirlines(iata_code: string) {
+  // Simulate an API call or database lookup
+  const response = await getAirlineData(iata_code);
+  console.log(response?.data);
+  if (response?.data.status) {
+    return response.data.data[0];
+  }
+  return null;
+}

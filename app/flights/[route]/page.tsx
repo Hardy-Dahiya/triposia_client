@@ -215,7 +215,7 @@ async function FlightDetails({
               </div>
             </div>
             <div className="column is-6 order1">
-              <img src="../images/flight1.jpg" alt="" className="overview-img" />
+              <img src="../images/flight1.jpg" alt="overview" className="overview-img" />
             </div>
           </div>
           <div id="cheapestflight" className="columns is-multiline single-content-space">
@@ -287,7 +287,7 @@ async function FlightDetails({
                       <div className="flight-logo">
                         <img
                           src={`https://aerocloud.s3.amazonaws.com/airweb/${item.airline_iata}.webp`}
-                          alt=""
+                          alt="flight-logo"
                         />
                       </div>
                       <div className="flight-time">
