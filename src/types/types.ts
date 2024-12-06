@@ -66,3 +66,8 @@ export interface AirlineDestination {
   iata_code: string;
   name: string;
 }
+
+export interface AirportAirlines {
+  name: string;
+  iata_code: string;
+}

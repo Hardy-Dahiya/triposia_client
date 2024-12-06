@@ -2,7 +2,7 @@ import { getAirlineData } from '@/services/airlines/AirlineServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 
-// app/flights/[route]/page.tsx
+// app/airlines/[route]/page.tsx
 import { Suspense } from 'react';
 import { AirlineDestination } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
@@ -676,11 +676,10 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
   );
 }
 
-// Simulated flight search function
+// Simulated airline search function
 async function searchAirlines(iata_code: string) {
   // Simulate an API call or database lookup
   const response = await getAirlineData(iata_code);
-  console.log(response?.data);
   if (response?.data.status) {
     return response.data.data[0];
   }
