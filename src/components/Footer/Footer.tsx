@@ -6,7 +6,7 @@ function Footer() {
           <div className="columns is-multiline">
             <div className="column is-6 is-offset-3">
               <a href="#">
-                <img src="../images/logo.png" />
+                <img src="../../images/logo.png" />
               </a>
               <p className="my-5">
                 Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit

@@ -5,7 +5,7 @@ function Header() {
         <div className="container">
           <div className="navbar-brand">
             <a className="navbar-item">
-              <img src="../images/logo.png" />
+              <img src="../../images/logo.png" />
             </a>
             <a
               role="button"
@@ -50,7 +50,7 @@ function Header() {
                     className="js-modal-trigger"
                     data-target="modal-js-example2"
                   >
-                    <img src="../images/indian-flag.png" alt="" />
+                    <img src="../../images/indian-flag.png" alt="" />
                   </a>
                 </li>
                 <li>

@@ -4,9 +4,11 @@ import Header from '../../../src/components/Header/Header';
 
 // app/airlines/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirlineDestination } from '@/src/types/types';
+import { AirlineDestination, FlightData } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
-
+import { getFlightsToData } from '@/services/flights/FlightServices';
+// @Components
+import ToggleFlightDetails from '@/src/components/Flight/ToggleFlightDetails';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
@@ -18,7 +20,6 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
   const resolvedParams = await params;
   const { slug } = resolvedParams;
-
   if (!slug) {
     return (
       <Error
@@ -47,7 +48,17 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
           </progress>
         }
       >
-        <AirlineDetails iata_code={slug} />
+        {slug.length === 1 ? (
+          <AirlineDetails iata_code={slug} />
+        ) : slug.length === 2 ? (
+          <FlightDetails iata_code={slug[1].toUpperCase()} airline_iata={slug[0].toUpperCase()} />
+        ) : (
+          <Error
+            title="Invalid Route Format"
+            subTitle="Too Many Segments"
+            msg="Please use a valid route format like /ai or /ai/del."
+          />
+        )}
       </Suspense>
       <Footer />
     </div>
@@ -676,12 +687,488 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
   );
 }
 
+async function FlightDetails({
+  iata_code,
+  airline_iata,
+}: {
+  iata_code: string;
+  airline_iata: string;
+}) {
+  const airlineData = await searchAirlines(airline_iata);
+  const flightData = await getFlightsFromAirline(iata_code, airline_iata);
+  if (!airlineData || !flightData.length) {
+    return (
+      <Error
+        title="Invalid Route Format"
+        subTitle="Too Many Segments"
+        msg="Please use a valid route format like /ai or /ai/del."
+      />
+    );
+  }
+  return (
+    <div>
+      <div className="single-content-nav sticky ">
+        <div className="container">
+          <div className="columns">
+            <div className="column is-12 p-0">
+              <div className="navbarSub is-link">
+                <div id="menubar" className="navbar-menu1">
+                  <div>
+                    <a className="navbar-item is-active" href="#overview" data-target="overview">
+                      Airline Details
+                    </a>
+                    <a
+                      className="navbar-item"
+                      href="#inflightfeatures"
+                      data-target="inflightfeatures"
+                    >
+                      Inflight Features
+                    </a>
+                    <a className="navbar-item" href="#seatselection" data-target="seatselection">
+                      Seat Selection
+                    </a>
+                    <a className="navbar-item" href="#baggage" data-target="baggage">
+                      Baggage
+                    </a>
+                    <a className="navbar-item" href="#faq" data-target="faq">
+                      Faqs
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section className="single-content-wrap section p-0">
+        <div className="container">
+          <div id="seatselection" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">
+                {airlineData.name} domestic flights from {iata_code}
+              </h3>
+              <p>
+                Looking for cheap {airlineData.name} domestic flights from {iata_code}. Air India
+                have{' '}
+                {
+                  flightData.filter((el: FlightData) => el.country_code === el.airport.country_code)
+                    .length
+                }{' '}
+                domestic flights from {iata_code}
+              </p>
+            </div>
+          </div>
+          {flightData.map((item: FlightData, index: number) => {
+            if (item.country_code === item.airport.country_code) {
+              return (
+                <ToggleFlightDetails
+                  key={index}
+                  item={item}
+                  airlineData={airlineData}
+                  airline_iata={airline_iata}
+                  index={index}
+                />
+              );
+            }
+          })}
+          <div id="seatselection" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">
+                {airlineData.name} international flights from {iata_code}
+              </h3>
+              <p>
+                Looking for cheap {airlineData.name} international flights from {iata_code}. Air
+                India have{' '}
+                {
+                  flightData.filter((el: FlightData) => el.country_code !== el.airport.country_code)
+                    .length
+                }{' '}
+                international flights from {iata_code}
+              </p>
+            </div>
+          </div>
+          {flightData.map((item: FlightData, index: number) => {
+            if (item.country_code !== item.airport.country_code) {
+              return (
+                <ToggleFlightDetails
+                  key={index}
+                  item={item}
+                  airlineData={airlineData}
+                  airline_iata={airline_iata}
+                  index={index}
+                />
+              );
+            }
+          })}
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Related Pages</h3>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="cpt" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / CPT</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="gbe" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / GBE</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="jnb" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / JNB</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="acc" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / ACC</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="ebb" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / EBB</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="mba" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / MBA</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="hre" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / HRE</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <a href="sez" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">{airlineData.iata_code} / SEZ</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div id="faq" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">{iata_code} airport hotels</h3>
+              <p>
+                If you are looking for accommodations in {iata_code} here you can get hotels near{' '}
+                {iata_code}
+                airport. Popular hotels in C Pearls Hotel &amp; Banquet,{' '}
+              </p>
+            </div>
+            <div className="column is-4">
+              <div className="single-tour-feature">
+                <div className="single-feature-icon">
+                  <i className="fa fa-bed" />
+                </div>
+                <div className="single-feature-titles">
+                  <p className="title-custom">
+                    <a
+                      href="https://clearbeds.com/hotel/Peepal-tree-residency?hid=18451190&tid=3"
+                      target="_blank"
+                    >
+                      Peepal Tree Residency
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="column is-4">
+              <div className="single-tour-feature">
+                <div className="single-feature-icon">
+                  <i className="fa fa-bed" />
+                </div>
+                <div className="single-feature-titles">
+                  <p className="title-custom">
+                    <a
+                      href="https://clearbeds.com/hotel/Hotel-emporio-dX?hid=33084010&tid=3"
+                      target="_blank"
+                    >
+                      Hotel Emporio DX
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="column is-4">
+              <div className="single-tour-feature">
+                <div className="single-feature-icon">
+                  <i className="fa fa-bed" />
+                </div>
+                <div className="single-feature-titles">
+                  <p className="title-custom">
+                    <a
+                      href="https://clearbeds.com/hotel/The-grand-tashree-at-delhi-airport?hid=36930932&tid=3"
+                      target="_blank"
+                    >
+                      The Grand Tashree at Delhi Airport
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="faq" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Attractions near {iata_code} airport</h3>
+              <p>
+                If you are looking for places to visit near {iata_code} airport. Find out the list
+                below.
+              </p>
+            </div>
+            <div className="column is-12">India Gate, Red Fort, Humayun’s Tomb</div>
+          </div>
+          <div id="overview" className="columns is-multiline single-content-space">
+            <div className="column is-6 order2">
+              <div className="columns is-multiline">
+                <div className="column is-12">
+                  <h3 className="title is-4 mt-3 mb-3">
+                    {airlineData.name} ({iata_code})
+                  </h3>
+                  <p className="mr-2">
+                    <i className="fa-regular fa-map theme-color" />
+                    {airlineData.website}
+                  </p>
+                  <p>
+                    <i className="fa fa-headphones theme-color" />
+                    {airlineData.phone}
+                  </p>
+                </div>
+                <hr className="seprator my-2" />
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-plane-up" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">Aircrafts</p>
+                      <span className="subtitle-custom">{airlineData.total_aircrafts}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-user" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">Flight Type</p>
+                      <span className="subtitle-custom">Economy</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-refresh" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">Fare Type</p>
+                      <span className="subtitle-custom">Refundable</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-globe" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">International</p>
+                      <span className="subtitle-custom">{airlineData.international}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-exchange" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">Destinations</p>
+                      <span className="subtitle-custom">{airlineData.total_destinations}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-shopping-cart" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">Seats &amp; Baggage</p>
+                      <span className="subtitle-custom">Extra Charge</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="column is-6 order1">
+              <img
+                src="https://aerocloud.s3.amazonaws.com/aeroweb/DEL.webp"
+                alt=""
+                className="overview-img"
+              />
+            </div>
+          </div>
+          <div id="faq" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
+            </div>
+            <div className="column is-12 accordions">
+              <div itemType="https://schema.org/FAQPage">
+                <div
+                  className="accordion is-active"
+                  itemProp="mainEntity"
+                  itemType="https://schema.org/Question"
+                >
+                  <div className="accordion-header">
+                    <button className="toggle" aria-label="toggle">
+                      <p itemProp="name">
+                        Which terminal {airlineData.name} use at {iata_code} Airport?
+                      </p>
+                    </button>
+                  </div>
+                  <div
+                    className="accordion-body"
+                    itemProp="acceptedAnswer"
+                    itemType="https://schema.org/Answer"
+                  >
+                    <p className="accordion-content" itemProp="text">
+                      {airlineData.name} uses the Terminal for its departure and arrivals.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="accordion"
+                  itemProp="mainEntity"
+                  itemType="https://schema.org/Question"
+                >
+                  <div className="accordion-header">
+                    <button className="toggle" aria-label="toggle">
+                      <p itemProp="name">
+                        How many domestic flights operate {airlineData.name} from {iata_code}{' '}
+                        airport?
+                      </p>
+                    </button>
+                  </div>
+                  <div
+                    className="accordion-body"
+                    itemProp="acceptedAnswer"
+                    itemType="https://schema.org/Answer"
+                  >
+                    <p className="accordion-content" itemProp="text">
+                      There are 30 flights operated by AIR INDIA from Delhi airport.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="accordion"
+                  itemProp="mainEntity"
+                  itemType="https://schema.org/Question"
+                >
+                  <div className="accordion-header">
+                    <button className="toggle" aria-label="toggle">
+                      <p itemProp="name">
+                        How many international {airlineData.name} flights from {iata_code}?
+                      </p>
+                    </button>
+                  </div>
+                  <div
+                    className="accordion-body"
+                    itemProp="acceptedAnswer"
+                    itemType="https://schema.org/Answer"
+                  >
+                    <p className="accordion-content" itemProp="text">
+                      AIR INDIA airlines operates&nbsp;37 international flights from Delhi.
+                    </p>
+                    <p className="accordion-content" itemProp="text">
+                      <br />
+                    </p>
+                    <p className="accordion-content" itemProp="text">
+                      <br />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 // Simulated airline search function
 async function searchAirlines(iata_code: string) {
   // Simulate an API call or database lookup
   const response = await getAirlineData(iata_code);
   if (response?.data.status) {
     return response.data.data[0];
+  }
+  return null;
+}
+
+// Simulated airline search function
+async function getFlightsFromAirline(iata_code: string, airline_iata: string) {
+  // Simulate an API call or database lookup
+  const response = await getFlightsToData(iata_code, airline_iata);
+  if (response?.data.status) {
+    return response.data.data;
   }
   return null;
 }
