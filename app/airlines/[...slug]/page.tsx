@@ -20,6 +20,8 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
   const resolvedParams = await params;
   const { slug } = resolvedParams;
+  const finalSlug = [];
+
   if (!slug) {
     return (
       <Error
@@ -28,6 +30,14 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
         msg="Unfortunately, we could not find any airlines for the specified iata_code. Please use format like ai and try again."
       />
     );
+  }
+
+  // Split the slug into an array
+  if (slug.length > 1) {
+    const slugParts = slug[1].split('-to-');
+    finalSlug.push(slug[0], ...slugParts);
+  } else {
+    finalSlug.push(slug[0]);
   }
 
   return (
@@ -48,10 +58,21 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
           </progress>
         }
       >
-        {slug.length === 1 ? (
-          <AirlineDetails iata_code={slug} />
-        ) : slug.length === 2 ? (
-          <FlightDetails iata_code={slug[1].toUpperCase()} airline_iata={slug[0].toUpperCase()} />
+        {finalSlug.length === 1 ? (
+          <AirlineDetails iata_code={finalSlug[0].toUpperCase()} />
+        ) : finalSlug.length === 2 ? (
+          <FlightDetails
+            iata_code={finalSlug[1].toUpperCase()}
+            airline_iata={finalSlug[0].toUpperCase()}
+            isMultiCity={false}
+          />
+        ) : finalSlug.length === 3 ? (
+          <FlightDetails
+            iata_code={finalSlug[1].toUpperCase()}
+            arr_iata={finalSlug[2].toUpperCase()}
+            airline_iata={finalSlug[0].toUpperCase()}
+            isMultiCity={true}
+          />
         ) : (
           <Error
             title="Invalid Route Format"
@@ -215,8 +236,8 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
                 </div>
               </div>
             </div>
-            <div className="column is-6 order1">
-              <img src="../images/flight1.jpg" alt="overview" className="overview-img" />
+            <div className="column is-6 order1 is-flex is-justify-content-center is-align-items-center">
+              <img src={`https://pics.avs.io/180/60/${iata_code}@2x.webp`} alt="overview" />
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
@@ -690,12 +711,17 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
 async function FlightDetails({
   iata_code,
   airline_iata,
+  isMultiCity,
+  arr_iata,
 }: {
   iata_code: string;
+  arr_iata?: string;
   airline_iata: string;
+  isMultiCity: boolean;
 }) {
   const airlineData = await searchAirlines(airline_iata);
   const flightData = await getFlightsFromAirline(iata_code, airline_iata);
+  console.log(flightData);
   if (!airlineData || !flightData.length) {
     return (
       <Error
@@ -742,24 +768,202 @@ async function FlightDetails({
       </div>
       <section className="single-content-wrap section p-0">
         <div className="container">
+          {isMultiCity ? (
+            <div id="overview" className="columns is-multiline single-content-space">
+              <div className="column is-6">
+                <div className="columns is-multiline">
+                  <div className="column is-12">
+                    <h2 className="title is-4 mt-3 mb-3">
+                      {airlineData.name} flights {iata_code} to {arr_iata}
+                    </h2>
+                  </div>
+                  <hr className="seprator my-2" />
+                  {/* <div className="column is-4 has-text-centered">
+                    <p className="title-custom">New Delhi</p>
+                  </div>
+                  <div className="column is-4 has-text-centered">
+                    <p>
+                      <i className="fa-regular fa-clock theme-color" />
+                    </p>
+                    <span className="subtitle-custom">02:15:00</span>
+                  </div>
+                  <div className="column is-4 has-text-centered">
+                    <p className="title-custom">Mumbai</p>
+                  </div>
+                  <div className="column is-12 has-text-centered bor-top bor-bottom mt-2 mb-3">
+                    <p className="title-custom">
+                      Distance: <span className="subtitle-custom">705.97</span>
+                    </p>
+                  </div> */}
+                  <div className="column is-8">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane-up" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">DEPARTURE</p>
+                        <span className="subtitle-custom">{iata_code}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-user" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">ARRIVAL</p>
+                        <span className="subtitle-custom">{arr_iata}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-8">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane-up" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Total Flights</p>
+                        <span className="subtitle-custom">{flightData.length}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-user" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Cheapest Fare</p>
+                        <span className="subtitle-custom">124</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-8">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-refresh" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Best Month</p>
+                        <span className="subtitle-custom">July</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-circle" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Temprature</p>
+                        <span className="subtitle-custom">NA</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-8">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Popular Airline</p>
+                        <span className="subtitle-custom">
+                          Jet Airways,Air Great Wall,Air India,Burrard Air,Air Uk,Air Sarnia,Blue
+                          Dart Aviation
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane-up" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Total Airlines</p>
+                        <span className="subtitle-custom">1</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-8">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane-up" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">First Flights</p>
+                        <span className="subtitle-custom">NA</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div className="single-feature-icon">
+                        <i className="fa fa-plane-up" />
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">Last Flights</p>
+                        <span className="subtitle-custom">NA</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="column is-6">
+                <img
+                  src={`https://aerocloud.s3.amazonaws.com/aeroweb/${arr_iata}.webp`}
+                  alt="city"
+                  className="overview-img"
+                />
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
-                {airlineData.name} domestic flights from {iata_code}
+                {airlineData.name} domestic flights from {iata_code}{' '}
+                {isMultiCity ? `to ${arr_iata}` : ''}
               </h3>
               <p>
-                Looking for cheap {airlineData.name} domestic flights from {iata_code}. Air India
-                have{' '}
-                {
-                  flightData.filter((el: FlightData) => el.country_code === el.airport.country_code)
-                    .length
-                }{' '}
-                domestic flights from {iata_code}
+                Looking for cheap {airlineData.name} domestic flights from {iata_code}{' '}
+                {isMultiCity ? `to ${arr_iata}` : ''}.{airlineData.name} have{' '}
+                {isMultiCity
+                  ? flightData.filter(
+                      (el: FlightData) =>
+                        el.country_code === el.airport.country_code &&
+                        el.iata_from === iata_code &&
+                        el.iata_to === arr_iata,
+                    ).length
+                  : flightData.filter(
+                      (el: FlightData) => el.country_code === el.airport.country_code,
+                    ).length}{' '}
+                domestic flights from {iata_code} {isMultiCity ? `to ${arr_iata}` : ''}
               </p>
             </div>
           </div>
           {flightData.map((item: FlightData, index: number) => {
             if (item.country_code === item.airport.country_code) {
+              if (isMultiCity) {
+                if (item.iata_from === iata_code && item.iata_to === arr_iata) {
+                  return (
+                    <ToggleFlightDetails
+                      key={index}
+                      item={item}
+                      airlineData={airlineData}
+                      airline_iata={airline_iata}
+                      index={index}
+                    />
+                  );
+                }
+                // Return `null` if the `isMultiCity` condition is not met
+                return null;
+              }
+
+              // Handle the single-city case
               return (
                 <ToggleFlightDetails
                   key={index}
@@ -770,6 +974,8 @@ async function FlightDetails({
                 />
               );
             }
+            // Return `null` if `country_code` does not match
+            return null;
           })}
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -777,18 +983,41 @@ async function FlightDetails({
                 {airlineData.name} international flights from {iata_code}
               </h3>
               <p>
-                Looking for cheap {airlineData.name} international flights from {iata_code}. Air
-                India have{' '}
-                {
-                  flightData.filter((el: FlightData) => el.country_code !== el.airport.country_code)
-                    .length
-                }{' '}
-                international flights from {iata_code}
+                Looking for cheap {airlineData.name} international flights from {iata_code}{' '}
+                {isMultiCity ? `to ${arr_iata}` : ''}. {airlineData.name} have{' '}
+                {isMultiCity
+                  ? flightData.filter(
+                      (el: FlightData) =>
+                        el.country_code !== el.airport.country_code &&
+                        el.iata_from === iata_code &&
+                        el.iata_to === arr_iata,
+                    ).length
+                  : flightData.filter(
+                      (el: FlightData) => el.country_code === el.airport.country_code,
+                    ).length}{' '}
+                international flights from {iata_code} {isMultiCity ? `to ${arr_iata}` : ''}
               </p>
             </div>
           </div>
           {flightData.map((item: FlightData, index: number) => {
             if (item.country_code !== item.airport.country_code) {
+              if (isMultiCity) {
+                if (item.iata_from === iata_code && item.iata_to === arr_iata) {
+                  return (
+                    <ToggleFlightDetails
+                      key={index}
+                      item={item}
+                      airlineData={airlineData}
+                      airline_iata={airline_iata}
+                      index={index}
+                    />
+                  );
+                }
+                // Return `null` if the `isMultiCity` condition is not met
+                return null;
+              }
+
+              // Handle the single-city case
               return (
                 <ToggleFlightDetails
                   key={index}
@@ -799,6 +1028,8 @@ async function FlightDetails({
                 />
               );
             }
+            // Return `null` if `country_code` does not match
+            return null;
           })}
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -1059,7 +1290,7 @@ async function FlightDetails({
             </div>
             <div className="column is-6 order1">
               <img
-                src="https://aerocloud.s3.amazonaws.com/aeroweb/DEL.webp"
+                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${iata_code}.webp`}
                 alt=""
                 className="overview-img"
               />

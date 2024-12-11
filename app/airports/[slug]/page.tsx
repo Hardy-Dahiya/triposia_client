@@ -201,7 +201,11 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               </div>
             </div>
             <div className="column is-6 order1">
-              <img src="../images/flight1.jpg" alt="overview" className="overview-img" />
+              <img
+                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${iata_code}.webp`}
+                alt="overview"
+                className="overview-img"
+              />
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">

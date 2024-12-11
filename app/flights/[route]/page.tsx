@@ -50,7 +50,10 @@ export default async function FlightRoutePage({ params }: FlightRouteParams) {
           </progress>
         }
       >
-        <FlightDetails departureCity={departure} arrivalCity={arrival} />
+        <FlightDetails
+          departureCity={departure.toUpperCase()}
+          arrivalCity={arrival.toUpperCase()}
+        />
       </Suspense>
       <Footer />
     </div>
@@ -215,7 +218,11 @@ async function FlightDetails({
               </div>
             </div>
             <div className="column is-6 order1">
-              <img src="../images/flight1.jpg" alt="overview" className="overview-img" />
+              <img
+                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${arrivalCity}.webp`}
+                alt="overview"
+                className="overview-img"
+              />
             </div>
           </div>
           <div id="cheapestflight" className="columns is-multiline single-content-space">
