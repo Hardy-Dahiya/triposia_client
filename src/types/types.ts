@@ -225,3 +225,47 @@ export interface UniqueAirlineDestination {
   city: string;
   country: string;
 }
+
+export interface FlightTime {
+  airport: string;
+  timezone: string;
+  iata: string;
+  icao: string;
+  terminal: string;
+  time: string;
+}
+
+export interface FlightRoute {
+  _id: string;
+  departure: {
+    airport: string;
+    timezone: string;
+    iata: string;
+    icao: string;
+    terminal: string;
+    time: string;
+    _id: string;
+  };
+  arrival: {
+    airport: string;
+    timezone: string;
+    iata: string;
+    icao: string;
+    terminal: string;
+    time: string;
+    _id: string;
+  };
+  airline: {
+    name: string;
+    callsign: string;
+    iata: string;
+    icao: string;
+    _id: string;
+  };
+  flight: {
+    number: string;
+    _id: string;
+  };
+  __v: number;
+  updatedAt: string;
+}

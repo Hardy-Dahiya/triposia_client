@@ -1314,7 +1314,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 .serach-flight-wrap .control.has-icons-left .icon,
 .serach-flight-wrap .control.has-icons-right .icon {
-  height: 3em;
+  height: 3em !important;
   color: #bbb;
 }
 .serach-flight-wrap input.input {
