@@ -6,6 +6,8 @@ import Header from '../../../src/components/Header/Header';
 import { Suspense } from 'react';
 import { Airline, Flight } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
+import BarChart from '@/src/components/Charts/Bar';
+import LineChart from '@/src/components/Charts/Line';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -80,6 +82,115 @@ async function FlightDetails({
       />
     );
   }
+  const options: ApexCharts.ApexOptions = {
+    chart: {
+      type: 'bar', // Correct type for the chart
+      height: 500,
+      width: '100%',
+      toolbar: { show: false },
+      zoom: { enabled: true },
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      foreColor: '#373d3f',
+      sparkline: { enabled: false },
+    },
+    plotOptions: {
+      bar: { horizontal: false },
+    },
+    colors: [
+      '#008FFB',
+      '#00E396',
+      '#feb019',
+      '#ff455f',
+      '#775dd0',
+      '#80effe',
+      '#0077B5',
+      '#ff6384',
+      '#c9cbcf',
+      '#0057ff',
+      '#00a9f4',
+      '#2ccdc9',
+      '#5e72e4',
+    ],
+    dataLabels: { enabled: false },
+    title: {
+      text: 'Flight Price According To Months',
+    },
+    subtitle: {
+      text: 'From January to December',
+      align: 'left',
+    },
+    xaxis: {
+      categories: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ],
+    },
+    grid: { show: false },
+    // markers: { show: false },
+  };
+  const weeklyOptions: ApexCharts.ApexOptions = {
+    chart: {
+      type: 'bar',
+      height: 500,
+      width: '100%',
+      toolbar: { show: false },
+      zoom: { enabled: true },
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      foreColor: '#373d3f',
+      sparkline: { enabled: false },
+    },
+    plotOptions: {
+      bar: { horizontal: false },
+    },
+    colors: [
+      '#008FFB',
+      '#00E396',
+      '#feb019',
+      '#ff455f',
+      '#775dd0',
+      '#80effe',
+      '#0077B5',
+      '#ff6384',
+      '#c9cbcf',
+      '#0057ff',
+      '#00a9f4',
+      '#2ccdc9',
+      '#5e72e4',
+    ],
+    series: [{ name: 'Flight Price', data: [124, 144, 126, 134, 126, 135, 146] }],
+    dataLabels: { enabled: false },
+    title: {
+      text: 'Flight Price According To Weekly',
+    },
+    subtitle: {
+      text: 'From Monday to Sunday',
+      align: 'left',
+    },
+    xaxis: {
+      categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+    grid: { show: false },
+  };
+
+  const series: ApexAxisChartSeries = [
+    {
+      name: 'Flight Price',
+      data: [0, 0, 0, 0, 126, 134, 124, 154, 0, 0, 0, 0],
+    },
+  ];
+  const weeklySeries: ApexAxisChartSeries = [
+    { name: 'Flight Price', data: [124, 144, 126, 134, 126, 135, 146] },
+  ];
   return (
     <div>
       <div className="single-content-nav sticky">
@@ -365,33 +476,42 @@ async function FlightDetails({
             })}
           </div>
           <div id="graph" className="columns is-multiline single-content-space">
-            <div className="column is-6">
-              <div className="graphs-container mt-0" data-title="Horizontal Graph">
-                <div className="data-container column is-full columns is-mobile is-size-7 has-text-white is-marginless">
-                  <div data-title="One" data-value={10} />
-                  <div data-title="Two" data-value={50} />
-                  <div data-title="Three" data-value={100} />
-                  <div data-title="Four" data-value={55} />
-                  <div data-title="Five" data-value={25} />
-                  <div data-title="Six" data-value={88} />
-                  <div data-title="Seven" data-value={77} />
-                  <div data-title="Eight" data-value={66} />
-                  <div data-title="Nine" data-value={9} />
-                  <div data-title="Ten" data-value={10} />
-                  <div data-title="Eleven" data-value={11} />
-                  <div data-title="Twelve" data-value={12} />
-                </div>
-              </div>
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">
+                Monthly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
+                flights
+              </h3>
+              <p>
+                July is cheapest month {flightData.departure_city} to {flightData.arrival_city}{' '}
+                flights. Fares start start in July from $ 124 and Monday is cheapest day to book
+                flights to Mumbai. Find out monthly fares graph predications{' '}
+                {flightData.departure_city} to {flightData.arrival_city} flights.
+              </p>
             </div>
             <div className="column is-6">
-              <div className="graphs-container mt-0" data-title="Vertical Graph">
-                <div className="data-container column is-full is-vertical-graph has-text-white">
-                  <div data-title="Mark" data-value={20} />
-                  <div data-title="Seline" data-value={60} />
-                  <div data-title="Lora" data-value={90} />
-                  <div data-title="Werner" data-value={55} />
-                </div>
-              </div>
+              <BarChart options={options} series={series} width="637" height="500" />
+            </div>
+            <div className="column is-6">
+              <LineChart options={options} series={series} width="637" height="500" />
+            </div>
+          </div>
+          <div id="graph" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">
+                Weekly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
+                flights
+              </h3>
+              <p>
+                Monday is cheapest day price start at 124 {flightData.departure_city} to{' '}
+                {flightData.arrival_city} flights. Get full real time stats of weekly fares{' '}
+                {flightData.departure_city} to {flightData.arrival_city} .
+              </p>
+            </div>
+            <div className="column is-6">
+              <BarChart options={weeklyOptions} series={weeklySeries} width="637" height="500" />
+            </div>
+            <div className="column is-6">
+              <LineChart options={weeklyOptions} series={weeklySeries} width="637" height="500" />
             </div>
           </div>
           <div id="bestairlines" className="columns is-multiline single-content-space">
@@ -448,60 +568,46 @@ async function FlightDetails({
               <article className="accordion is-active">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>
+                      What is the average flight duration from {flightData.departure_city} to{' '}
+                      {flightData.arrival_city}?
+                    </p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    The average flight duration is approximately {flightData.flights[0].duration}.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>
+                      How many flights operate daily between {flightData.departure_city} and{' '}
+                      {flightData.arrival_city}?
+                    </p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    There are around 100 flights daily, operated by various airlines.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>
+                      Which airlines operate direct flights between {flightData.departure_city} and{' '}
+                      {flightData.arrival_city}?
+                    </p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    Major airlines like Indigo, Air India, SpiceJet, and Vistara operate direct
+                    flights.
                   </div>
                 </div>
               </article>

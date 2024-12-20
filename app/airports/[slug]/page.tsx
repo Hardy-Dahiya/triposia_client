@@ -3,8 +3,9 @@ import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirportAirlines } from '@/src/types/types';
+import { AirportAirlines, Hotel, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
+import PlacesList from '@/src/components/Google/PlacesList';
 
 // Define the params interface
 type AirportRouteParams = {
@@ -46,7 +47,7 @@ export default async function AirportRoutePage({ params }: AirportRouteParams) {
           </progress>
         }
       >
-        <AirportDetails iata_code={slug} />
+        <AirportDetails iata_code={slug.toUpperCase()} />
       </Suspense>
       <Footer />
     </div>
@@ -638,6 +639,92 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                 nisl. Donec massa dui, commodo id arcu quis, venenatis scelerisque velit.
               </p>
             </div> */}
+          </div>
+          <div id="faq" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Attractions Near {airportData.city} Airport</h3>
+              <p>
+                If you are looking for places to visit near {airportData.city} airport, find out the
+                list below.
+              </p>
+            </div>
+            {airportData.places_visit.slice(0, 6).map((place: Place) => (
+              <div key={place.place_id} className="column is-4">
+                <PlacesList placeId={place.place_id} />
+              </div>
+            ))}
+          </div>
+
+          <div id="hotels" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Hotels Near {airportData.city} Airport</h3>
+              <p>
+                If you are looking for places to stay near {airportData.city} airport, explore the
+                options below.
+              </p>
+            </div>
+            {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
+              <div key={hotel.hotelId} className="column is-4">
+                <div className="card">
+                  <div className="card-image">
+                    <figure className="image is-4by3">
+                      <img src={hotel.imageURL} alt={hotel.hotelName} />
+                    </figure>
+                  </div>
+                  <div className="card-content">
+                    <div className="media">
+                      <div className="media-content">
+                        <p className="title is-6">{hotel.hotelName}</p>
+                        <p className="subtitle is-7">
+                          {hotel.starRating} ★ |{' '}
+                          {hotel.reviewScore > 0
+                            ? `${hotel.reviewScore}/10 (${hotel.reviewCount} reviews)`
+                            : 'No reviews yet'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="content">
+                      <p>
+                        <strong>
+                          {hotel.currency} {hotel.dailyRate.toFixed(2)}
+                        </strong>
+                        {hotel.crossedOutRate > 0 && (
+                          <span className="has-text-grey-lighter is-size-7 ml-2">
+                            <s>
+                              {hotel.currency} {hotel.crossedOutRate.toFixed(2)}
+                            </s>
+                          </span>
+                        )}
+                        {hotel.discountPercentage > 0 && (
+                          <span className="tag is-success is-light ml-2">
+                            -{hotel.discountPercentage}%
+                          </span>
+                        )}
+                      </p>
+                      <p>
+                        {hotel.includeBreakfast && (
+                          <span className="tag is-info is-light mr-1">Breakfast Included</span>
+                        )}
+                        {hotel.freeWifi && (
+                          <span className="tag is-primary is-light">Free Wi-Fi</span>
+                        )}
+                      </p>
+                      <a
+                        href={hotel.landingURL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button is-link is-small mt-3"
+                      >
+                        View Details
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
@@ -645,60 +732,44 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               <article className="accordion is-active">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>How early should I arrive at {airportData.name} before my flight?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    It is recommended to arrive at {airportData.name} at least 2 hours before a
+                    domestic flight and 3 hours before an international flight. Check with your
+                    airline for specific recommendations based on your travel itinerary.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>Does {airportData.name} offer free Wi-Fi?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    Yes, {airportData.name} provides free Wi-Fi for all passengers. Simply connect
+                    to the {airportData.name} Free Wi-Fi network and follow the instructions to get
+                    online. If you encounter any issues, assistance is available at the airport help
+                    desk.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>Are there luggage storage facilities at {airportData.name}?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    Yes, {airportData.name} offers luggage storage and locker facilities for
+                    short-term and long-term use. These services are typically located in the
+                    arrivals or departures area. For pricing and availability, please visit the
+                    airport website or inquire at the information desk.
                   </div>
                 </div>
               </article>

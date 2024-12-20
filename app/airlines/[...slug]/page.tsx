@@ -643,60 +643,45 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
               <article className="accordion is-active">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>What is the baggage allowance for {airlineData.name}?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    The baggage allowance for {airlineData.name} depends on the class of travel and
+                    the destination. Typically, economy class passengers are allowed one checked bag
+                    weighing up to 23kg and one carry-on bag. For specific details, please check
+                    your ticket or visit {airlineData.name} baggage policy page.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>How can I check in for my {airlineData.name} flight?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    You can check in for your {airlineData.name} flight online through the airline
+                    website or mobile app, usually starting 24 to 48 hours before departure.
+                    Alternatively, you can check in at the airport using self-service kiosks or at
+                    the airline check-in counter.
                   </div>
                 </div>
               </article>
               <article className="accordion">
                 <div className="accordion-header">
                   <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
+                    <p>What is {airlineData.name} cancellation and refund policy?</p>
                   </button>
                 </div>
                 <div className="accordion-body">
                   <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>Amendment in higher class charges</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima
-                    causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero
-                    inermis vel ut. An sit illum euismod facilisis Nullam id dolor id nibh ultricies
-                    vehicula ut id elit.
+                    {airlineData.name} cancellation and refund policy depends on the fare type you
+                    have purchased. Flexible tickets may allow cancellations and full refunds, while
+                    non-refundable tickets may only offer travel credits. For detailed terms, refer
+                    to the fare rules on your ticket or contact {airlineData.name} customer support.
                   </div>
                 </div>
               </article>
@@ -1192,16 +1177,6 @@ async function FlightDetails({
                 </div>
               </div>
             </div>
-          </div>
-          <div id="faq" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Attractions near {iata_code} airport</h3>
-              <p>
-                If you are looking for places to visit near {iata_code} airport. Find out the list
-                below.
-              </p>
-            </div>
-            <div className="column is-12">India Gate, Red Fort, Humayun’s Tomb</div>
           </div>
           <div id="overview" className="columns is-multiline single-content-space">
             <div className="column is-6 order2">

@@ -269,3 +269,38 @@ export interface FlightRoute {
   __v: number;
   updatedAt: string;
 }
+
+export interface Hotel {
+  hotelId: number;
+  hotelName: string;
+  starRating: number;
+  reviewScore: number;
+  reviewCount: number;
+  currency: string;
+  dailyRate: number;
+  crossedOutRate: number;
+  discountPercentage: number;
+  imageURL: string;
+  landingURL: string;
+  includeBreakfast: boolean;
+  freeWifi: boolean;
+  latitude: number;
+  longitude: number;
+}
+
+export interface Place {
+  _id: string;
+  place_id: string;
+  name: string;
+  overview: string;
+  rating: number;
+  vicinity: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  photos: string[];
+  distance_from_airport_km: string;
+  distance_from_city_center_km: string;
+  airport: string;
+}
