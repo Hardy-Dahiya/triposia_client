@@ -1,7 +1,7 @@
 import axios from 'axios';
 import url from '../../src/api/api';
 // getAirportsData
-const getAirportsData = async (iata_code: string | number | null) => {
+const getAirportsData = async (iata_code: string | number | null | undefined) => {
   try {
     const URL = `${url}/airport?iata_code=${iata_code}`;
     return await axios.get(URL, {});

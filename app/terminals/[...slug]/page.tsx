@@ -115,12 +115,8 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
                     <a className="navbar-item is-active" href="#overview" data-target="overview">
                       Airline Details
                     </a>
-                    <a
-                      className="navbar-item"
-                      href="#inflightfeatures"
-                      data-target="inflightfeatures"
-                    >
-                      Inflight Features
+                    <a className="navbar-item" href="#bestairlines" data-target="bestairlines">
+                      Terminals
                     </a>
                     <a className="navbar-item" href="#seatselection" data-target="seatselection">
                       Seat Selection
@@ -734,12 +730,8 @@ async function FlightDetails({
                     <a className="navbar-item is-active" href="#overview" data-target="overview">
                       Airline Details
                     </a>
-                    <a
-                      className="navbar-item"
-                      href="#inflightfeatures"
-                      data-target="inflightfeatures"
-                    >
-                      Inflight Features
+                    <a className="navbar-item" href="#bestairlines" data-target="bestairlines">
+                      Terminals
                     </a>
                     <a className="navbar-item" href="#seatselection" data-target="seatselection">
                       Seat Selection

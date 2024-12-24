@@ -4,10 +4,13 @@ import Header from '../../../src/components/Header/Header';
 
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { Airline, Flight } from '@/src/types/types';
+import { Airline, Flight, Hotel, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import BarChart from '@/src/components/Charts/Bar';
 import LineChart from '@/src/components/Charts/Line';
+import HotelsList from '@/src/components/Google/HotelsList';
+import PlacesList from '@/src/components/Google/PlacesList';
+import { getAirportsData } from '@/services/airports/AirportServices';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -72,6 +75,8 @@ async function FlightDetails({
 }) {
   // Simulated async flight search (replace with actual API call)
   const flightData = await searchFlights(departureCity, arrivalCity);
+  // Simulated async flight search (replace with actual API call)
+  const airportData = await searchAirport(arrivalCity);
   if (!flightData) {
     return (
       <Error
@@ -562,6 +567,35 @@ async function FlightDetails({
           </div>
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Attractions Near {airportData.city} Airport</h3>
+              <p>
+                If you are looking for places to visit near {airportData.city} airport, find out the
+                list below.
+              </p>
+            </div>
+            {airportData.places_visit.slice(0, 6).map((place: Place) => (
+              <div key={place.place_id} className="column is-4">
+                <PlacesList placeId={place.place_id} />
+              </div>
+            ))}
+          </div>
+
+          <div id="hotels" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Hotels Near {airportData.city} Airport</h3>
+              <p>
+                If you are looking for places to stay near {airportData.city} airport, explore the
+                options below.
+              </p>
+            </div>
+            {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
+              <div key={hotel.hotelId} className="column is-4">
+                <HotelsList hotel={hotel} />
+              </div>
+            ))}
+          </div>
+          <div id="faq" className="columns is-multiline single-content-space">
+            <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
             <div className="column is-12 accordions">
@@ -625,6 +659,16 @@ async function searchFlights(dep: string, arr: string) {
   const response = await getFlightsData(dep, arr);
   if (response?.data.status) {
     return response.data.data;
+  }
+  return null;
+}
+
+// Simulated airport search function
+async function searchAirport(iata_code: string) {
+  // Simulate an API call or database lookup
+  const response = await getAirportsData(iata_code);
+  if (response?.data.status) {
+    return response.data.data[0];
   }
   return null;
 }

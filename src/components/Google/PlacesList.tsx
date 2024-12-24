@@ -80,7 +80,7 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
         <p className="title is-6">{name}</p>
         <p className="subtitle is-7">{formatted_address}</p>
         <p>
-          <strong>Rating: {rating}</strong> | {reviews.length} Reviews
+          <strong>Rating: {rating}</strong> | {reviews?.length || 0} Reviews
         </p>
         <a
           href={`https://www.google.com/maps/search/?q=${name}`}
