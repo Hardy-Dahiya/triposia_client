@@ -11,6 +11,7 @@ import LineChart from '@/src/components/Charts/Line';
 import HotelsList from '@/src/components/Google/HotelsList';
 import PlacesList from '@/src/components/Google/PlacesList';
 import { getAirportsData } from '@/services/airports/AirportServices';
+import { getFlightPage } from '@/services/pages/PageServices';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -77,6 +78,7 @@ async function FlightDetails({
   const flightData = await searchFlights(departureCity, arrivalCity);
   // Simulated async flight search (replace with actual API call)
   const airportData = await searchAirport(arrivalCity);
+  const pageData = await getFlightPageDetails(flightData._id, 'en');
   if (!flightData) {
     return (
       <Error
@@ -486,12 +488,16 @@ async function FlightDetails({
                 Monthly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
                 flights
               </h3>
-              <p>
-                July is cheapest month {flightData.departure_city} to {flightData.arrival_city}{' '}
-                flights. Fares start start in July from $ 124 and Monday is cheapest day to book
-                flights to Mumbai. Find out monthly fares graph predications{' '}
-                {flightData.departure_city} to {flightData.arrival_city} flights.
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.monthlyGraph ||
+                    `July is cheapest month ${flightData.departure_city} to ${flightData.arrival_city}
+                flights. Fares start start in July from $124 and Monday is cheapest day to book
+                flights to Mumbai. Find out monthly fares graph predications
+                ${flightData.departure_city} to ${flightData.arrival_city} flights.`,
+                }}
+              />
             </div>
             <div className="column is-6">
               <BarChart options={options} series={series} width="637" height="500" />
@@ -506,11 +512,16 @@ async function FlightDetails({
                 Weekly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
                 flights
               </h3>
-              <p>
-                Monday is cheapest day price start at 124 {flightData.departure_city} to{' '}
-                {flightData.arrival_city} flights. Get full real time stats of weekly fares{' '}
-                {flightData.departure_city} to {flightData.arrival_city} .
-              </p>
+              <p></p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.weeklyGraph ||
+                    ` Monday is cheapest day price start at 124 ${flightData.departure_city} to
+                ${flightData.arrival_city} flights. Get full real time stats of weekly fares
+                ${flightData.departure_city} to ${flightData.arrival_city}.`,
+                }}
+              />
             </div>
             <div className="column is-6">
               <BarChart options={weeklyOptions} series={weeklySeries} width="637" height="500" />
@@ -524,10 +535,15 @@ async function FlightDetails({
               <h3 className="title is-5 mt-3 mb-3 has-text-centered">
                 Best airlines flying from {flightData.departure_city} to {flightData.arrival_city}
               </h3>
-              <p className="has-text-centered">
-                Compare and see reviews for airlines that fly from {flightData.departure_city} to{' '}
-                {flightData.arrival_city} with momondo
-              </p>
+              <p
+                className="has-text-centered"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.bestAirlinesFlyingFromDetails ||
+                    `Compare and see reviews for airlines that fly from ${flightData.departure_city} to
+                ${flightData.arrival_city} with momondo`,
+                }}
+              />
               <div className="b-table">
                 <div className="table-wrapper has-mobile-cards">
                   <table className="table is-fullwidth bestairlines-table">
@@ -669,6 +685,16 @@ async function searchAirport(iata_code: string) {
   const response = await getAirportsData(iata_code);
   if (response?.data.status) {
     return response.data.data[0];
+  }
+  return null;
+}
+
+// Simulated airline page search function
+async function getFlightPageDetails(airline_id: string | null, language_id: string | null) {
+  // Simulate an API call or database lookup
+  const response = await getFlightPage(airline_id, language_id);
+  if (response?.data.status) {
+    return response.data.data;
   }
   return null;
 }

@@ -13,6 +13,8 @@ import { getAirportsData } from '@/services/airports/AirportServices';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { calculateFlightDuration } from '@/utils/utils';
+import { getAirlinePage } from '@/services/pages/PageServices';
+import Head from 'next/head';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
@@ -93,6 +95,8 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
 async function AirlineDetails({ iata_code }: { iata_code: string }) {
   // Simulated async flight search (replace with actual API call)
   const airlineData = await searchAirlines(iata_code);
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+  console.log(pageData);
   if (!airlineData) {
     return (
       <Error
@@ -105,6 +109,11 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
   }
   return (
     <div>
+      <Head>
+        <title>{pageData.title}</title>
+        <meta name="description" content={pageData.meta} />
+        <meta name="keywords" content={pageData.keywords} />
+      </Head>
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -115,8 +124,12 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
                     <a className="navbar-item is-active" href="#overview" data-target="overview">
                       Airline Details
                     </a>
-                    <a className="navbar-item" href="#bestairlines" data-target="bestairlines">
-                      Terminals
+                    <a
+                      className="navbar-item"
+                      href="#inflightfeatures"
+                      data-target="inflightfeatures"
+                    >
+                      Inflight Features
                     </a>
                     <a className="navbar-item" href="#seatselection" data-target="seatselection">
                       Seat Selection
@@ -242,18 +255,17 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
               <h3 className="title is-5 mb-3">About {airlineData.name}</h3>
-              <p className="py-2">
-                {airlineData.overview} {airlineData.routes}
-              </p>
+              <p className="py-2">{pageData.overview}</p>
             </div>
           </div>
           <div id="inflightfeatures" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Inflight Features</h3>
               <p className="py-2">
-                Experience unparalleled comfort and convenience on every flight. Enjoy a wide range
+                {pageData.inFlightContent ||
+                  `Experience unparalleled comfort and convenience on every flight. Enjoy a wide range
                 of inflight entertainment, including movies, TV shows, and music, to keep you
-                entertained throughout your journey.
+                entertained throughout your journey.`}
               </p>
             </div>
             <div className="column is-4">
@@ -452,11 +464,15 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Baggage</h3>
-              <p>
-                In this section you ll find information on baggage allowances, special equipment and
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.baggageContent ||
+                    `In this section you ll find information on baggage allowances, special equipment and
                 sports items as well as restricted items. We ve also included some tips to make your
-                trip more enjoyable.
-              </p>
+                trip more enjoyable.`,
+                }}
+              />
             </div>
             <div className="column is-4">
               <div className="single-tour-feature">
@@ -560,7 +576,12 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
             </div>
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Basic Information</h3>
-              <p>{airlineData.baggage}</p>
+              {/* <p>{pageData.basicInformation}</p> */}
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: pageData.basicInformation || '',
+                }}
+              />
             </div>
           </div>
           <div id="faq" className="columns is-multiline single-content-space">
@@ -628,13 +649,17 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
               </div>
             </div>
             <div className="column is-12">
-              <p>
-                Understanding our fare rules ensures a seamless travel experience. Ticket changes,
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.fareRulesForYourFlight ||
+                    `Understanding our fare rules ensures a seamless travel experience. Ticket changes,
                 including date or time modifications, may incur fees based on your fare type.
                 Refunds depend on the fare category, with non-refundable tickets not eligible.
                 Baggage allowances vary by class, and excess fees apply for additional or oversized
-                luggage.
-              </p>
+                luggage.`,
+                }}
+              />
             </div>
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
@@ -1472,6 +1497,16 @@ async function getFlightsRoutes(
 ) {
   // Simulate an API call or database lookup
   const response = await getFlightsRouteData(dep_iata, arr_iata, airline_iata);
+  if (response?.data.status) {
+    return response.data.data;
+  }
+  return null;
+}
+
+// Simulated airline page search function
+async function getAirlinePageDetails(airline_id: string | null, language_id: string | null) {
+  // Simulate an API call or database lookup
+  const response = await getAirlinePage(airline_id, language_id);
   if (response?.data.status) {
     return response.data.data;
   }
