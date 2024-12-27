@@ -7,13 +7,36 @@ import { AirportAirlines, Hotel, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
-
+import { getAirportPage } from '@/services/pages/PageServices';
+import { Metadata } from 'next';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
     slug: string; // Matches the dynamic route segment `[route]`
   }>;
 };
+
+export async function generateMetadata({ params }: AirportRouteParams): Promise<Metadata> {
+  // Await `params` since it's treated as a Promise in the build environment
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+  const airportData = await searchAirport(slug.toUpperCase());
+  if (airportData && airportData._id) {
+    const pageData = await getAirportPageDetails(airportData._id, 'en');
+    if (pageData) {
+      return {
+        title: pageData.title,
+        description: pageData.meta,
+        keywords: pageData.keywords,
+      };
+    }
+  }
+  return {
+    title: 'TripOsia | Travel Made Easy',
+    description: `Plan your adventures effortlessly with Triposia! Discover top destinations, book accommodations, and explore curated travel experiences. Whether you're planning a weekend getaway or a dream vacation, Triposia helps you every step of the way. Your journey begins here!`,
+    keywords: 'TripOsia | Travel Made Easy',
+  };
+}
 
 export default async function AirportRoutePage({ params }: AirportRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
@@ -68,6 +91,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
       />
     );
   }
+  const pageData = await getAirportPageDetails(airportData._id, 'en');
   return (
     <div>
       <div className="single-content-nav sticky ">
@@ -212,7 +236,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
               <h3 className="title is-5 mb-3">About {airportData.name}</h3>
-              <p className="py-2">{airportData.overview}</p>
+              <p className="py-2">{pageData.overview || airportData.overview}</p>
             </div>
           </div>
           <div id="inflightfeatures" className="columns is-multiline single-content-space">
@@ -644,10 +668,14 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Attractions Near {airportData.city} Airport</h3>
-              <p>
-                If you are looking for places to visit near {airportData.city} airport, find out the
-                list below.
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.attractionContent ||
+                    `If you are looking for places to visit near ${airportData.city} airport, find out the
+                list below.`,
+                }}
+              />
             </div>
             {airportData.places_visit.slice(0, 6).map((place: Place) => (
               <div key={place.place_id} className="column is-4">
@@ -659,10 +687,14 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="hotels" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Hotels Near {airportData.city} Airport</h3>
-              <p>
-                If you are looking for places to stay near {airportData.city} airport, explore the
-                options below.
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.hotelsContent ||
+                    `If you are looking for places to stay near ${airportData.city} airport, explore the
+                options below.`,
+                }}
+              />
             </div>
             {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
               <div key={hotel.hotelId} className="column is-4">
@@ -676,50 +708,13 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
             <div className="column is-12 accordions">
-              <article className="accordion is-active">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>How early should I arrive at {airportData.name} before my flight?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    It is recommended to arrive at {airportData.name} at least 2 hours before a
-                    domestic flight and 3 hours before an international flight. Check with your
-                    airline for specific recommendations based on your travel itinerary.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>Does {airportData.name} offer free Wi-Fi?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Yes, {airportData.name} provides free Wi-Fi for all passengers. Simply connect
-                    to the {airportData.name} Free Wi-Fi network and follow the instructions to get
-                    online. If you encounter any issues, assistance is available at the airport help
-                    desk.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>Are there luggage storage facilities at {airportData.name}?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Yes, {airportData.name} offers luggage storage and locker facilities for
-                    short-term and long-term use. These services are typically located in the
-                    arrivals or departures area. For pricing and availability, please visit the
-                    airport website or inquire at the information desk.
-                  </div>
-                </div>
-              </article>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.faqs ||
+                    `no faqs found for this airport. Please check back later for more information.`,
+                }}
+              />
             </div>
           </div>
         </div>
@@ -734,6 +729,16 @@ async function searchAirport(iata_code: string) {
   const response = await getAirportsData(iata_code);
   if (response?.data.status) {
     return response.data.data[0];
+  }
+  return null;
+}
+
+// Simulated airline page search function
+async function getAirportPageDetails(airport_id: string | null, language_id: string | null) {
+  // Simulate an API call or database lookup
+  const response = await getAirportPage(airport_id, language_id);
+  if (response?.data.status) {
+    return response.data.data;
   }
   return null;
 }

@@ -1,7 +1,7 @@
 import { getFlightsData } from '@/services/flights/FlightServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
-
+import { Metadata } from 'next';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
 import { Airline, Flight, Hotel, Place } from '@/src/types/types';
@@ -19,6 +19,32 @@ type FlightRouteParams = {
     route: string; // Matches the dynamic route segment `[route]`
   }>;
 };
+
+export async function generateMetadata({ params }: FlightRouteParams): Promise<Metadata> {
+  // Await `params` since it's treated as a Promise in the build environment
+  const resolvedParams = await params;
+  const { route } = resolvedParams;
+
+  // Parse the route parameter
+  const [departure, arrival] = route.split('-to-');
+  // Simulated async flight search (replace with actual API call)
+  const flightData = await searchFlights(departure, arrival);
+  if (flightData && flightData._id) {
+    const pageData = await getFlightPageDetails(flightData._id, 'en');
+    if (pageData) {
+      return {
+        title: pageData.title,
+        description: pageData.meta,
+        keywords: pageData.keywords,
+      };
+    }
+  }
+  return {
+    title: 'TripOsia | Travel Made Easy',
+    description: `Plan your adventures effortlessly with Triposia! Discover top destinations, book accommodations, and explore curated travel experiences. Whether you're planning a weekend getaway or a dream vacation, Triposia helps you every step of the way. Your journey begins here!`,
+    keywords: 'TripOsia | Travel Made Easy',
+  };
+}
 
 export default async function FlightRoutePage({ params }: FlightRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
@@ -615,52 +641,13 @@ async function FlightDetails({
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
             <div className="column is-12 accordions">
-              <article className="accordion is-active">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>
-                      What is the average flight duration from {flightData.departure_city} to{' '}
-                      {flightData.arrival_city}?
-                    </p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    The average flight duration is approximately {flightData.flights[0].duration}.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>
-                      How many flights operate daily between {flightData.departure_city} and{' '}
-                      {flightData.arrival_city}?
-                    </p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    There are around 100 flights daily, operated by various airlines.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>
-                      Which airlines operate direct flights between {flightData.departure_city} and{' '}
-                      {flightData.arrival_city}?
-                    </p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    Major airlines like Indigo, Air India, SpiceJet, and Vistara operate direct
-                    flights.
-                  </div>
-                </div>
-              </article>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.faqs ||
+                    'no faqs found for this flight. Please check back later for more information.',
+                }}
+              />
             </div>
           </div>
         </div>

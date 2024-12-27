@@ -14,13 +14,35 @@ import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { calculateFlightDuration } from '@/utils/utils';
 import { getAirlinePage } from '@/services/pages/PageServices';
-import Head from 'next/head';
+import { Metadata } from 'next';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
     slug: string; // Matches the dynamic route segment `[route]`
   }>;
 };
+
+export async function generateMetadata({ params }: AirlineRouteParams): Promise<Metadata> {
+  // Await `params` since it's treated as a Promise in the build environment
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
+  const airlineData = await searchAirlines(slug[0]);
+  if (airlineData && airlineData._id) {
+    const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+    if (pageData) {
+      return {
+        title: pageData.title,
+        description: pageData.meta,
+        keywords: pageData.keywords,
+      };
+    }
+  }
+  return {
+    title: 'TripOsia | Travel Made Easy',
+    description: `Plan your adventures effortlessly with Triposia! Discover top destinations, book accommodations, and explore curated travel experiences. Whether you're planning a weekend getaway or a dream vacation, Triposia helps you every step of the way. Your journey begins here!`,
+    keywords: 'TripOsia | Travel Made Easy',
+  };
+}
 
 export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
@@ -95,7 +117,6 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
 async function AirlineDetails({ iata_code }: { iata_code: string }) {
   // Simulated async flight search (replace with actual API call)
   const airlineData = await searchAirlines(iata_code);
-  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
   if (!airlineData) {
     return (
       <Error
@@ -106,13 +127,9 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
       />
     );
   }
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
   return (
     <div>
-      <Head>
-        <title>{pageData.title}</title>
-        <meta name="description" content={pageData.meta} />
-        <meta name="keywords" content={pageData.keywords} />
-      </Head>
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -664,51 +681,13 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
             <div className="column is-12 accordions">
-              <article className="accordion is-active">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>What is the baggage allowance for {airlineData.name}?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    The baggage allowance for {airlineData.name} depends on the class of travel and
-                    the destination. Typically, economy class passengers are allowed one checked bag
-                    weighing up to 23kg and one carry-on bag. For specific details, please check
-                    your ticket or visit {airlineData.name} baggage policy page.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>How can I check in for my {airlineData.name} flight?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    You can check in for your {airlineData.name} flight online through the airline
-                    website or mobile app, usually starting 24 to 48 hours before departure.
-                    Alternatively, you can check in at the airport using self-service kiosks or at
-                    the airline check-in counter.
-                  </div>
-                </div>
-              </article>
-              <article className="accordion">
-                <div className="accordion-header">
-                  <button className="toggle" aria-label="toggle">
-                    <p>What is {airlineData.name} cancellation and refund policy?</p>
-                  </button>
-                </div>
-                <div className="accordion-body">
-                  <div className="accordion-content">
-                    {airlineData.name} cancellation and refund policy depends on the fare type you
-                    have purchased. Flexible tickets may allow cancellations and full refunds, while
-                    non-refundable tickets may only offer travel credits. For detailed terms, refer
-                    to the fare rules on your ticket or contact {airlineData.name} customer support.
-                  </div>
-                </div>
-              </article>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.faqs ||
+                    `no faqs found for this airline. Please check back later for more information.`,
+                }}
+              />
             </div>
           </div>
         </div>
@@ -733,6 +712,7 @@ async function FlightDetails({
   // Simulated async airport search (replace with actual API call)
   const airportData = await searchAirport(isMultiCity ? arr_iata : iata_code);
   const routeData = await getFlightsRoutes(iata_code, arr_iata, null);
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
   if (!airlineData || !flightData.length) {
     return (
       <Error
@@ -1379,81 +1359,13 @@ async function FlightDetails({
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
             </div>
             <div className="column is-12 accordions">
-              <div itemType="https://schema.org/FAQPage">
-                <div
-                  className="accordion is-active"
-                  itemProp="mainEntity"
-                  itemType="https://schema.org/Question"
-                >
-                  <div className="accordion-header">
-                    <button className="toggle" aria-label="toggle">
-                      <p itemProp="name">
-                        Which terminal {airlineData.name} use at {iata_code} Airport?
-                      </p>
-                    </button>
-                  </div>
-                  <div
-                    className="accordion-body"
-                    itemProp="acceptedAnswer"
-                    itemType="https://schema.org/Answer"
-                  >
-                    <p className="accordion-content" itemProp="text">
-                      {airlineData.name} uses the Terminal for its departure and arrivals.
-                    </p>
-                  </div>
-                </div>
-                <div
-                  className="accordion"
-                  itemProp="mainEntity"
-                  itemType="https://schema.org/Question"
-                >
-                  <div className="accordion-header">
-                    <button className="toggle" aria-label="toggle">
-                      <p itemProp="name">
-                        How many domestic flights operate {airlineData.name} from {iata_code}{' '}
-                        airport?
-                      </p>
-                    </button>
-                  </div>
-                  <div
-                    className="accordion-body"
-                    itemProp="acceptedAnswer"
-                    itemType="https://schema.org/Answer"
-                  >
-                    <p className="accordion-content" itemProp="text">
-                      There are 30 flights operated by AIR INDIA from Delhi airport.
-                    </p>
-                  </div>
-                </div>
-                <div
-                  className="accordion"
-                  itemProp="mainEntity"
-                  itemType="https://schema.org/Question"
-                >
-                  <div className="accordion-header">
-                    <button className="toggle" aria-label="toggle">
-                      <p itemProp="name">
-                        How many international {airlineData.name} flights from {iata_code}?
-                      </p>
-                    </button>
-                  </div>
-                  <div
-                    className="accordion-body"
-                    itemProp="acceptedAnswer"
-                    itemType="https://schema.org/Answer"
-                  >
-                    <p className="accordion-content" itemProp="text">
-                      AIR INDIA airlines operates&nbsp;37 international flights from Delhi.
-                    </p>
-                    <p className="accordion-content" itemProp="text">
-                      <br />
-                    </p>
-                    <p className="accordion-content" itemProp="text">
-                      <br />
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.faqs ||
+                    `no faqs found for this airline. Please check back later for more information.`,
+                }}
+              />
             </div>
           </div>
         </div>
