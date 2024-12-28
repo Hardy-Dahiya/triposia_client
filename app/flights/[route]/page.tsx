@@ -104,7 +104,6 @@ async function FlightDetails({
   const flightData = await searchFlights(departureCity, arrivalCity);
   // Simulated async flight search (replace with actual API call)
   const airportData = await searchAirport(arrivalCity);
-  const pageData = await getFlightPageDetails(flightData._id, 'en');
   if (!flightData) {
     return (
       <Error
@@ -115,6 +114,7 @@ async function FlightDetails({
       />
     );
   }
+  const pageData = await getFlightPageDetails(flightData._id, 'en');
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: 'bar', // Correct type for the chart
