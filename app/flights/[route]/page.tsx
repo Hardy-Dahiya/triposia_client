@@ -104,7 +104,7 @@ async function FlightDetails({
   const flightData = await searchFlights(departureCity, arrivalCity);
   // Simulated async flight search (replace with actual API call)
   const airportData = await searchAirport(arrivalCity);
-  if (!flightData) {
+  if (!flightData && !flightData._id) {
     return (
       <Error
         title="Invalid route format"
@@ -661,7 +661,7 @@ async function searchFlights(dep: string, arr: string) {
   // Simulate an API call or database lookup
   const response = await getFlightsData(dep, arr);
   if (response?.data.status) {
-    return response.data.data;
+    return response.data.data[0];
   }
   return null;
 }

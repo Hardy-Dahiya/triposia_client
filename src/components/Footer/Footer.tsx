@@ -9,8 +9,10 @@ function Footer() {
                 <img src="../../images/logo.png" />
               </a>
               <p className="my-5">
-                Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit
-                officia consequat duis enim velit mollit exercitation veniam.
+                Please note that all data, content, and images are collected from various sources,
+                and tripsearchs.com does not guarantee their originality. All media are sourced from
+                third-party providers. If you have any complaints or concerns, please contact us at
+                support@tripsearchs.com.
               </p>
               <ul className="social-list">
                 <li>
@@ -65,7 +67,9 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="container copyright">© 2023 Booking Hotel. All Rights Reserved.</div>
+        <div className="container copyright">
+          © {new Date().getFullYear()} Triposia. All Rights Reserved.
+        </div>
       </section>
     </footer>
   );
