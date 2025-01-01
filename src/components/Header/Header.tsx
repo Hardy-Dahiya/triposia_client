@@ -1,12 +1,14 @@
+import Link from 'next/link';
+
 function Header() {
   return (
     <header>
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="container">
           <div className="navbar-brand">
-            <a className="navbar-item">
-              <img src="../../images/logo.png" />
-            </a>
+            <Link className="navbar-item" href="/">
+              <img src="../../images/logo.png" alt="brand-logo" />
+            </Link>
             <a
               role="button"
               className="navbar-burger"
@@ -22,15 +24,15 @@ function Header() {
           <div id="navbarBasicExample" className="navbar-menu">
             <div className="navbar-start">
               <div>
-                <a className="navbar-item active">
+                <Link className="navbar-item active" href="/flights">
                   <i className="fas fa-plane-up" /> Flights
-                </a>
-                <a className="navbar-item">
+                </Link>
+                <Link className="navbar-item" href="/Hotels">
                   <i className="fas fa-hotel" /> Hotels
-                </a>
-                <a className="navbar-item">
+                </Link>
+                <Link className="navbar-item" href="/Cars">
                   <i className="fas fa-car" /> Cars
-                </a>
+                </Link>
               </div>
             </div>
             <div className="navbar-end">

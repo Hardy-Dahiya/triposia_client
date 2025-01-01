@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Header from '@/src/components/Header/Header';
 import Footer from '@/src/components/Footer/Footer';
 import Link from 'next/link';
@@ -17,12 +18,13 @@ function Home() {
                 href="https://tp.media/click?shmarker=192130&promo_id=2058&source_type=banner&type=click&campaign_id=84&trs=29510"
                 target="_blank"
               >
-                <img
+                <Image
                   className="offer-img"
-                  src="https://c84.travelpayouts.com/content?promo_id=2058&shmarker=192130&type=init&trs=29510"
+                  src="/images/offer1.webp"
                   width={300}
                   height={252}
                   alt="300*252"
+                  priority // This ensures the first image is loaded first
                 />
               </Link>
             </div>
@@ -31,9 +33,9 @@ function Home() {
                 href="https://tp.media/click?shmarker=192130&promo_id=3393&source_type=banner&type=click&campaign_id=1&trs=100916"
                 target="_blank"
               >
-                <img
+                <Image
                   className="offer-img"
-                  src="https://c1.travelpayouts.com/content?promo_id=3393&shmarker=192130&type=init&trs=100916"
+                  src="/images/offer2.webp"
                   width={300}
                   height={250}
                   alt="300х250_англ."
@@ -45,9 +47,9 @@ function Home() {
                 href="https://tp.media/click?shmarker=192130&promo_id=3866&source_type=banner&type=click&campaign_id=130&trs=100916"
                 target="_blank"
               >
-                <img
+                <Image
                   className="offer-img"
-                  src="https://c130.travelpayouts.com/content?promo_id=3866&shmarker=192130&type=init&trs=100916"
+                  src="/images/offer3.webp"
                   width={300}
                   height={250}
                   alt="ES - 300x250"
@@ -344,22 +346,22 @@ function Home() {
             <div className="column is-12">
               <ul className="brand-footer">
                 <li>
-                  <img src="images/logo1.png" alt="" />
+                  <img src="images/logo1.png" alt="logo1" />
                 </li>
                 <li>
-                  <img src="images/logo2.png" alt="" />
+                  <img src="images/logo2.png" alt="logo2" />
                 </li>
                 <li>
-                  <img src="images/logo3.png" alt="" />
+                  <img src="images/logo3.png" alt="logo3" />
                 </li>
                 <li>
-                  <img src="images/logo4.png" alt="" />
+                  <img src="images/logo4.png" alt="logo4" />
                 </li>
                 <li>
-                  <img src="images/logo5.png" alt="" />
+                  <img src="images/logo5.png" alt="logo5" />
                 </li>
                 <li>
-                  <img src="images/logo6.png" alt="" />
+                  <img src="images/logo6.png" alt="logo6" />
                 </li>
               </ul>
             </div>

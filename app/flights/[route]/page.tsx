@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getFlightsData } from '@/services/flights/FlightServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
@@ -362,13 +363,34 @@ async function FlightDetails({
               </div>
             </div>
             <div className="column is-6 order1">
-              <img
-                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${arrivalCity}.webp`}
-                alt="overview"
-                className="overview-img"
-              />
+              <picture>
+                {/* Image for small screen sizes */}
+                <source
+                  srcSet={`https://aerocloud.s3.amazonaws.com/aeroweb/${flightData.arrival_iata}.webp`}
+                  media="(max-width: 768px)"
+                />
+
+                {/* Image for larger screen sizes */}
+                <source
+                  srcSet={`https://aerocloud.s3.amazonaws.com/aeroweb/${flightData.arrival_iata}.webp`}
+                  media="(min-width: 769px)"
+                />
+
+                {/* Fallback image using next/image */}
+                <Image
+                  src={`https://aerocloud.s3.amazonaws.com/aeroweb/${flightData.arrival_iata}.webp`}
+                  alt="overview"
+                  className="overview-img"
+                  width={800} // You can specify the width you want, this could be dynamic if needed
+                  height={600} // Same for height
+                  layout="intrinsic" // or "responsive" for fully responsive images
+                  loading="lazy" // Lazy loading is enabled by default with next/image
+                  priority={false} // Set to true if this image is important for SEO or above the fold
+                />
+              </picture>
             </div>
           </div>
+
           <div id="cheapestflight" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
@@ -378,7 +400,13 @@ async function FlightDetails({
               </h3>
             </div>
             <div className="table-container">
-              <table className="is-fullwidth table-custom">
+              <table className="is-fullwidth table-custom" style={{ tableLayout: 'fixed' }}>
+                <colgroup>
+                  <col style={{ width: '25%' }} />
+                  <col style={{ width: '25%' }} />
+                  <col style={{ width: '25%' }} />
+                  <col style={{ width: '25%' }} />
+                </colgroup>
                 <thead>
                   <tr>
                     <th className="first">Popular in</th>
@@ -426,6 +454,7 @@ async function FlightDetails({
               </table>
             </div>
           </div>
+
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Flights from - {flightData.departure_city}</h3>
@@ -436,9 +465,12 @@ async function FlightDetails({
                   <div className="departing-flights">
                     <div className="flights-booking-item">
                       <div className="flight-logo">
-                        <img
+                        <Image
                           src={`https://aerocloud.s3.amazonaws.com/airweb/${item.airline_iata}.webp`}
                           alt="flight-logo"
+                          width={100} // Replace with the appropriate width you need
+                          height={100} // Replace with the appropriate height you need
+                          layout="intrinsic" // Optional, you can adjust this based on your needs (intrinsic, fixed, or responsive)
                         />
                       </div>
                       <div className="flight-time">

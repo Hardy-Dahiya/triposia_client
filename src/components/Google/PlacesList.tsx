@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 interface AddressComponent {
   long_name: string;
@@ -47,35 +47,66 @@ interface ApiResponse {
 
 const PlacesList = ({ placeId }: { placeId: string }) => {
   const [placeData, setPlaceData] = useState<ApiResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPlaceData = async () => {
-      const response = await fetch(`https://api.triposia.com/v1/google/place/${placeId}`);
-      const data: ApiResponse = await response.json();
-      if (data.status) {
-        setPlaceData(data);
+      try {
+        const response = await fetch(`https://api.triposia.com/v1/google/place/${placeId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+        const data: ApiResponse = await response.json();
+        if (data.status) {
+          setPlaceData(data);
+        } else {
+          setError('Failed to fetch place details.');
+        }
+      } catch (err) {
+        setError((err as Error).message);
       }
     };
 
     fetchPlaceData();
   }, [placeId]);
 
-  if (!placeData) return <div>Loading...</div>;
+  const mainPhoto = useMemo(() => placeData?.data.photos?.[0], [placeData]);
 
-  const { name, formatted_address, photos, rating, reviews } = placeData.data;
+  if (error) {
+    return <div className="notification is-danger">Error: {error}</div>;
+  }
+
+  if (!placeData) {
+    return (
+      <progress
+        className="progress is-primary"
+        style={{
+          height: '4px', // Extremely thin
+          animationDuration: '0.6s',
+          transitionTimingFunction: 'ease-out',
+        }}
+        max="100"
+      >
+        15%
+      </progress>
+    );
+  }
+
+  const { name, formatted_address, rating, reviews } = placeData.data;
 
   return (
     <div className="card">
-      <div className="card-image">
-        <figure className="image is-4by3">
-          {photos.length > 0 && (
+      {mainPhoto && (
+        <div className="card-image">
+          <figure className="image is-4by3">
             <img
-              src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photos[0].photo_reference}&key=AIzaSyDgy8yP6mPr4iO4jRP_MSBdq-HfT3lKH4E`}
+              src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${mainPhoto.photo_reference}&key=AIzaSyDgy8yP6mPr4iO4jRP_MSBdq-HfT3lKH4E`}
               alt={name}
+              loading="lazy"
             />
-          )}
-        </figure>
-      </div>
+          </figure>
+        </div>
+      )}
       <div className="card-content">
         <p className="title is-6">{name}</p>
         <p className="subtitle is-7">{formatted_address}</p>
@@ -83,7 +114,7 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
           <strong>Rating: {rating}</strong> | {reviews?.length || 0} Reviews
         </p>
         <a
-          href={`https://www.google.com/maps/search/?q=${name}`}
+          href={`https://www.google.com/maps/search/?q=${encodeURIComponent(name)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="button is-link is-small mt-3"
