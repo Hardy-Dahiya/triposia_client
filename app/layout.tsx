@@ -26,17 +26,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Preload Bulma and Font Awesome CSS */}
-        <link
-          rel="preload"
-          href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
-          as="style"
-        />
-        <link
-          rel="preload"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          as="style"
-        />
         {/* Link normal CSS files after preloading */}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
         <link
