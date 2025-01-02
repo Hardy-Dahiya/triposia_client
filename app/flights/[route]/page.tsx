@@ -256,8 +256,11 @@ async function FlightDetails({
           </div>
         </div>
       </div>
+
       <section className="single-content-wrap section p-0">
         <div className="container">
+
+
           <div id="overview" className="columns is-multiline single-content-space">
             <div className="column is-6 order2">
               <div className="columns is-multiline">
@@ -390,6 +393,9 @@ async function FlightDetails({
               </picture>
             </div>
           </div>
+</div>
+
+<div className="container">
 
           <div id="cheapestflight" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -455,7 +461,11 @@ async function FlightDetails({
             </div>
           </div>
 
-          <div id="seatselection" className="columns is-multiline single-content-space">
+      </div>
+
+      <div className="container">
+
+        <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Flights from - {flightData.departure_city}</h3>
             </div>
@@ -540,6 +550,11 @@ async function FlightDetails({
               );
             })}
           </div>
+</div>
+
+<div className="container">
+
+
           <div id="graph" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
@@ -564,6 +579,10 @@ async function FlightDetails({
               <LineChart options={options} series={series} width="637" height="500" />
             </div>
           </div>
+
+       </div>
+
+        <div className="container">  
           <div id="graph" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
@@ -588,6 +607,10 @@ async function FlightDetails({
               <LineChart options={weeklyOptions} series={weeklySeries} width="637" height="500" />
             </div>
           </div>
+        </div>
+
+        <div className="container">
+          
           <div id="bestairlines" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3 has-text-centered">
