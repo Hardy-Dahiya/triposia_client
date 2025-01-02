@@ -464,13 +464,18 @@ async function FlightDetails({
       </div>
 
       <div className="container">
-
-        <div id="seatselection" className="columns is-multiline single-content-space">
-            <div className="column is-12">
+<div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Flights from - {flightData.departure_city}</h3>
             </div>
+          </div>
+
+    <div className="container">
+
+    
+            
             {flightData.flights.map((item: Flight, index: number) => {
               return (
+                 <div id="seatselection" className="columns is-multiline single-content-space">
                 <div key={index} className="column is-12 pt-0">
                   <div className="departing-flights">
                     <div className="flights-booking-item">
@@ -547,9 +552,11 @@ async function FlightDetails({
                     </div>
                   </div>
                 </div>
+                </div>
               );
             })}
-          </div>
+     
+
 </div>
 
 <div className="container">
@@ -610,7 +617,7 @@ async function FlightDetails({
         </div>
 
         <div className="container">
-          
+
           <div id="bestairlines" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3 has-text-centered">
