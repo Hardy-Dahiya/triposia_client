@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       'pix8.agoda.net',
     ], // Add the relevant domains here
   },
+  output: 'standalone',
 };
 
 export default nextConfig;
