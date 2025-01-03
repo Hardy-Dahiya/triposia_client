@@ -26,13 +26,32 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Link normal CSS files after preloading 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />*/}
-        <link rel="stylesheet" href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css" />
-         {/*<link
+        {/* Link normal CSS files after preloading */}
+        <link
+          rel="stylesheet"
+          href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css"
+          media="print"
+          onLoad="this.media='all'"
+        />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css"
+          />
+        </noscript>
+
+        <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />*/}
+          media="print"
+          onLoad="this.media='all'"
+        />
+        <noscript>
+          <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          />
+        </noscript>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
