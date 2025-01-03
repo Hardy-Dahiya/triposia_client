@@ -27,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Link normal CSS files after preloading */}
+        
         <link
           rel="stylesheet"
           href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css"
