@@ -28,11 +28,7 @@ export default function RootLayout({
       <head>
         {/* Link normal CSS files after preloading */}
 
-        <link
-          rel="stylesheet"
-          href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css"
-          media="print"
-        />
+        <link rel="stylesheet" href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css" />
         <noscript>
           <link
             rel="stylesheet"
@@ -43,7 +39,6 @@ export default function RootLayout({
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          media="print"
         />
         <noscript>
           <link

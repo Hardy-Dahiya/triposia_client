@@ -96,7 +96,6 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
   // Simulated async flight search (replace with actual API call)
   const airlineData = await searchAirlines(iata_code);
   const pageData = await getAirlinePageDetails(airlineData._id, 'en');
-  console.log(pageData);
   if (!airlineData) {
     return (
       <Error

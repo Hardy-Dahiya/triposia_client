@@ -72,7 +72,6 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
 
 async function Page({ slug }: { slug: string }) {
   const getBlogData = await getBlog(slug);
-  console.log(getBlogData);
   if (!getBlogData.name) {
     return (
       <Error
