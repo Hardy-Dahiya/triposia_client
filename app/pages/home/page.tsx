@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Header from '@/src/components/Header/Header';
 import Footer from '@/src/components/Footer/Footer';
 import Link from 'next/link';
+import Blogs from '@/src/components/Blogs/Blogs';
 
 function Home() {
   return (
@@ -284,62 +285,7 @@ function Home() {
           </div>
         </div>
       </section>
-      <section className="blog-wrap section">
-        <div className="container">
-          <div className="columns is-multiline">
-            <div className="column is-12">
-              <h2 className="title is-4">Latest Blog</h2>
-            </div>
-            <div className="column is-4">
-              <Link
-                href="https://triposia.com/travel/cancellation/shaheen-air-cancellation-and-reimbursement"
-                target="_blank"
-              >
-                <img
-                  src="https://blog.triposia.com/storage/photos/1/6638a75ae5a09.jpg"
-                  alt="Shaheen Air Cancellation Policy"
-                  className="image imgw100 img-radius-top-right"
-                />
-              </Link>
-              <div className="card-box">
-                <h3 className="title is-5 mb-4">
-                  <Link
-                    href="https://triposia.com/travel/cancellation/shaheen-air-cancellation-and-reimbursement"
-                    target="_blank"
-                  >
-                    {' '}
-                    Shaheen Air Cancellation Policy{' '}
-                  </Link>
-                </h3>
-              </div>
-            </div>
-            <div className="column is-4">
-              <Link
-                href="https://triposia.com/travel/cancellation/emirates-cancellation-and-reimbursement"
-                target="_blank"
-              >
-                <img
-                  src="https://blog.triposia.com/storage/photos/1/6638a75ae5a09.jpg"
-                  alt="Emirates Cancellation Policy 2024"
-                  className="image imgw100 img-radius-top-right"
-                />
-              </Link>
-              <div className="card-box">
-                <h3 className="title is-5 mb-4">
-                  <Link
-                    href="https://triposia.com/travel/cancellation/emirates-cancellation-and-reimbursement"
-                    target="_blank"
-                  >
-                    {' '}
-                    Emirates Cancellation Policy 2024{' '}
-                  </Link>
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      <Blogs />
       <section className="section">
         <div className="container">
           <div className="columns">

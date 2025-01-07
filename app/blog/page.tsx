@@ -1,7 +1,11 @@
+import { getBlogs } from '@/services/blogs/BlogServices';
 import Footer from '../../src/components/Footer/Footer';
 import Header from '../../src/components/Header/Header';
+import { Blog } from '@/src/types/types';
+import Link from 'next/link';
 
-function Page() {
+async function Page() {
+  const blogs = await getBlogsList();
   return (
     <div>
       <Header />
@@ -15,162 +19,35 @@ function Page() {
                     <div className="column is-12">
                       <h2 className="title is-4">Latest Blog</h2>
                     </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog1.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href=""> Great Deals to Send Your Loved Ones Somewhere Nice </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
+                    {blogs.map((blog: Blog, key: number) => {
+                      return (
+                        <div className="column is-6" key={key}>
+                          <Link href={`/blog-details/${blog.blog_slug}`} target="_blank">
+                            <img
+                              src={`https://blog.triposia.com${blog.featured_image}`}
+                              alt={blog.featured_image}
+                              className="image imgw100 img-radius-top-right"
+                            />
+                          </Link>
+                          <div className="card-box">
+                            <h3 className="title is-5 mb-4">
+                              <Link href={`/blog-details/${blog.blog_slug}`} target="_blank">
+                                {' '}
+                                {blog.name}{' '}
+                              </Link>
+                            </h3>
+                            <div className="single-blog-details-content-tags mt-3">
+                              <span className="single-blog-details-content-tags-item">
+                                <a href="javascript:void(0)"> Category </a>
+                              </span>
+                              <span className="single-blog-details-content-tags-item">
+                                {blog.created_at}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog2.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href="">
-                            {' '}
-                            Read Real Guest Reviews. 24/7 Customer Service and others.{' '}
-                          </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog3.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href="">
-                            {' '}
-                            Compare hotel prices and find an amazing price for the Resort{' '}
-                          </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog1.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href=""> Great Deals to Send Your Loved Ones Somewhere Nice </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog2.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href="">
-                            {' '}
-                            Read Real Guest Reviews. 24/7 Customer Service and others.{' '}
-                          </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="column is-6">
-                      <a href="">
-                        <img
-                          src="images/blog3.jpg"
-                          alt=""
-                          className="image imgw100 img-radius-top-right"
-                        />
-                      </a>
-                      <div className="card-box">
-                        <h3 className="title is-5 mb-4">
-                          <a href="">
-                            {' '}
-                            Compare hotel prices and find an amazing price for the Resort{' '}
-                          </a>
-                        </h3>
-                        <div className="single-blog-details-content-tags mt-3">
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            <a href="javascript:void(0)"> Category </a>{' '}
-                          </span>
-                          <span className="single-blog-details-content-tags-item">
-                            {' '}
-                            28 Jun 2022{' '}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               </section>
@@ -188,7 +65,7 @@ function Page() {
                               {' '}
                               <img
                                 className="lazyloads radius-5"
-                                src="images/recent-post1.jpg"
+                                src="../../images/recent-post1.jpg"
                                 alt=""
                               />{' '}
                             </a>
@@ -323,6 +200,13 @@ function Page() {
       <Footer />
     </div>
   );
+}
+
+async function getBlogsList() {
+  const resposne = await getBlogs();
+  if (resposne?.data) {
+    return resposne.data;
+  }
 }
 
 export default Page;

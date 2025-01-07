@@ -304,3 +304,52 @@ export interface Place {
   distance_from_city_center_km: string;
   airport: string;
 }
+
+export interface Blog {
+  id: number;
+  name: string;
+  blog_slug: string;
+  featured_image: string;
+  category_name: string;
+  category_id: number;
+  website_id: number;
+  language_id: number;
+  category_slug: string;
+  created_at: string;
+}
+
+export interface BlogDetails {
+  id: number;
+  name: string;
+  slug: string;
+  intro: string;
+  content: string;
+  type: string;
+  category_id: number;
+  website_id: number;
+  language_id: number;
+  category_name: string;
+  is_featured: number;
+  featured_image: string;
+  meta_title: string;
+  meta_keywords: string;
+  meta_description: string;
+  meta_og_image: string;
+  meta_og_url: string | null;
+  hits: number;
+  created_at: string;
+  updated_at: string;
+  author_id: number;
+  authors_name: string;
+  authors_slug: string;
+  authors_featured_image: string;
+  authors_linkedin: string;
+  authors_twitter: string;
+  authors_instagram: string;
+  authors_description: string;
+  authors_meta_title: string;
+  authors_meta_keyword: string;
+  posts?: {
+    created_at: string;
+  };
+}
