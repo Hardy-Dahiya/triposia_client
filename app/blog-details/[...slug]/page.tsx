@@ -72,7 +72,7 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
 
 async function Page({ slug }: { slug: string }) {
   const getBlogData = await getBlog(slug);
-  if (!getBlogData.name) {
+  if (!getBlogData?.name) {
     return (
       <Error
         title="Invalid slug format"

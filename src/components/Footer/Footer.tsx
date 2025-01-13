@@ -6,7 +6,7 @@ function Footer() {
       <section className="section has-text-centered">
         <div className="container">
           <div className="columns is-multiline">
-            <div className="column is-6 is-offset-3">
+            <div className="column is-offset-3">
               <Link href="/" aria-label="Home">
                 <img
                   src="../../images/logo.png"

@@ -208,7 +208,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airline/jetstar-asia-airways">
+                    <Link href="/airlines/3K">
                       <img
                         src="https://pics.avs.io/180/60/3K@2x.webp"
                         alt="Jetstar Asia"
@@ -218,7 +218,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airline/jetstar-asia-airways">Jetstar Asia</Link>
+                  <Link href="/airlines/3K">Jetstar Asia</Link>
                 </h3>
                 <p>Singapore Changi Airport T1, PO Box 323, Singapore 918144.</p>
               </div>
@@ -227,7 +227,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airline/aurora-airlines">
+                    <Link href="/airlines/HZ">
                       <img
                         src="https://pics.avs.io/180/60/HZ@2x.webp"
                         alt="Aurora"
@@ -237,7 +237,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airline/aurora-airlines">Aurora</Link>
+                  <Link href="/airlines/HZ">Aurora</Link>
                 </h3>
                 <p>50A, Gorkiy St.</p>
               </div>
@@ -246,7 +246,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airline/klm">
+                    <Link href="/airlines/KL">
                       <img
                         src="https://pics.avs.io/180/60/KL@2x.webp"
                         alt="KLM airlines"
@@ -256,7 +256,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airline/klm">KLM airlines</Link>
+                  <Link href="/airlines/KL">KLM airlines</Link>
                 </h3>
                 <p>KLM Royal Dutch airlines2 1117 ZL</p>
               </div>
@@ -265,7 +265,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airline/tam---transportes-aereos-del-mercosur-sociedad-anonima">
+                    <Link href="/airlines/PZ">
                       <img
                         src="https://pics.avs.io/180/60/PZ@2x.webp"
                         alt="LATAM Paraguay"
@@ -275,9 +275,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airline/tam---transportes-aereos-del-mercosur-sociedad-anonima">
-                    LATAM Paraguay
-                  </Link>
+                  <Link href="/airlines/PZ">LATAM Paraguay</Link>
                 </h3>
                 <p>{`Hangar TAM Aeropuerto Internacional "Silvio Pettirossi"`}</p>
               </div>
