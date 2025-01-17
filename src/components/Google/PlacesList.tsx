@@ -114,7 +114,7 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
           <strong>Rating: {rating}</strong> | {reviews?.length || 0} Reviews
         </p>
         <a
-          href={`https://www.google.com/maps/search/?q=${encodeURIComponent(name)}`}
+          href={`/places`}
           target="_blank"
           rel="noopener noreferrer"
           className="button is-link is-small mt-3"

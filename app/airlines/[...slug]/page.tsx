@@ -8,13 +8,13 @@ import { AirlineDestination, FlightData, FlightRoute, Hotel, Place } from '@/src
 import Error from '@/src/components/Message/Error';
 import { getFlightsRouteData, getFlightsToData } from '@/services/flights/FlightServices';
 // @Components
-import ToggleFlightDetails from '@/src/components/Flight/ToggleFlightDetails';
 import { getAirportsData } from '@/services/airports/AirportServices';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { calculateFlightDuration } from '@/utils/utils';
 import { getAirlinePage } from '@/services/pages/PageServices';
 import { Metadata } from 'next';
+import FlightList from '@/src/components/Flight/FlightList';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
@@ -87,18 +87,18 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
         }
       >
         {finalSlug.length === 1 ? (
-          <AirlineDetails iata_code={finalSlug[0].toUpperCase()} />
+          <AirlineDetails iata_code={finalSlug[0]} />
         ) : finalSlug.length === 2 ? (
           <FlightDetails
             iata_code={finalSlug[1].toUpperCase()}
-            airline_iata={finalSlug[0].toUpperCase()}
+            airline_iata={finalSlug[0]}
             isMultiCity={false}
           />
         ) : finalSlug.length === 3 ? (
           <FlightDetails
             iata_code={finalSlug[1].toUpperCase()}
             arr_iata={finalSlug[2].toUpperCase()}
-            airline_iata={finalSlug[0].toUpperCase()}
+            airline_iata={finalSlug[0]}
             isMultiCity={true}
           />
         ) : (
@@ -169,11 +169,18 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
             <div className="column is-6 order2">
               <div className="columns is-multiline">
                 <div className="column is-12">
-                  <h2 className="title is-4 mt-3 mb-3">
+                  <h3 className="title is-4 mt-3 mb-3">
+                    {' '}
                     {airlineData.name} ({airlineData.iata_code})
-                  </h2>
+                  </h3>
                   <p className="mr-2">
                     <span className="badge">{airlineData.check_in}</span>
+                  </p>
+                  <p className="mr-2">
+                    <i className="fa-regular fa-map theme-color" /> {airlineData.website}
+                  </p>
+                  <p>
+                    <i className="fa fa-headphones theme-color" /> {airlineData.phone}
                   </p>
                 </div>
                 <hr className="seprator my-2" />
@@ -266,7 +273,10 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
               </div>
             </div>
             <div className="column is-6 order1 is-flex is-justify-content-center is-align-items-center">
-              <img src={`https://pics.avs.io/180/60/${iata_code}@2x.webp`} alt="overview" />
+              <img
+                src={`https://pics.avs.io/180/60/${airlineData.iata_code}@2x.webp`}
+                alt="overview"
+              />
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
@@ -708,7 +718,7 @@ async function FlightDetails({
   isMultiCity: boolean;
 }) {
   const airlineData = await searchAirlines(airline_iata);
-  const flightData = await getFlightsFromAirline(iata_code, airline_iata);
+  const flightData = await getFlightsFromAirline(iata_code, airline_iata.toLocaleUpperCase());
   // Simulated async airport search (replace with actual API call)
   const airportData = await searchAirport(isMultiCity ? arr_iata : iata_code);
   const routeData = await getFlightsRoutes(iata_code, arr_iata, null);
@@ -936,38 +946,23 @@ async function FlightDetails({
               </p>
             </div>
           </div>
-          {flightData.map((item: FlightData, index: number) => {
-            if (item.country_code === item.airport.country_code) {
-              if (isMultiCity) {
-                if (item.iata_from === iata_code && item.iata_to === arr_iata) {
-                  return (
-                    <ToggleFlightDetails
-                      key={index}
-                      item={item}
-                      airlineData={airlineData}
-                      airline_iata={airline_iata}
-                      index={index}
-                    />
-                  );
-                }
-                // Return `null` if the `isMultiCity` condition is not met
-                return null;
-              }
-
-              // Handle the single-city case
-              return (
-                <ToggleFlightDetails
-                  key={index}
-                  item={item}
-                  airlineData={airlineData}
-                  airline_iata={airline_iata}
-                  index={index}
-                />
-              );
+          <FlightList
+            flightData={
+              isMultiCity
+                ? flightData.filter(
+                    (el: FlightData) =>
+                      el.country_code === el.airport.country_code &&
+                      el.iata_from === iata_code &&
+                      el.iata_to === arr_iata,
+                  )
+                : flightData.filter((el: FlightData) => el.country_code === el.airport.country_code)
             }
-            // Return `null` if `country_code` does not match
-            return null;
-          })}
+            isMultiCity={isMultiCity}
+            iata_code={iata_code}
+            arr_iata={arr_iata}
+            airlineData={airlineData}
+            airline_iata={airline_iata}
+          />
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
@@ -984,44 +979,29 @@ async function FlightDetails({
                         el.iata_to === arr_iata,
                     ).length
                   : flightData.filter(
-                      (el: FlightData) => el.country_code === el.airport.country_code,
+                      (el: FlightData) => el.country_code !== el.airport.country_code,
                     ).length}{' '}
                 international flights from {iata_code} {isMultiCity ? `to ${arr_iata}` : ''}
               </p>
             </div>
           </div>
-          {flightData.map((item: FlightData, index: number) => {
-            if (item.country_code !== item.airport.country_code) {
-              if (isMultiCity) {
-                if (item.iata_from === iata_code && item.iata_to === arr_iata) {
-                  return (
-                    <ToggleFlightDetails
-                      key={index}
-                      item={item}
-                      airlineData={airlineData}
-                      airline_iata={airline_iata}
-                      index={index}
-                    />
-                  );
-                }
-                // Return `null` if the `isMultiCity` condition is not met
-                return null;
-              }
-
-              // Handle the single-city case
-              return (
-                <ToggleFlightDetails
-                  key={index}
-                  item={item}
-                  airlineData={airlineData}
-                  airline_iata={airline_iata}
-                  index={index}
-                />
-              );
+          <FlightList
+            flightData={
+              isMultiCity
+                ? flightData.filter(
+                    (el: FlightData) =>
+                      el.country_code !== el.airport.country_code &&
+                      el.iata_from === iata_code &&
+                      el.iata_to === arr_iata,
+                  )
+                : flightData.filter((el: FlightData) => el.country_code !== el.airport.country_code)
             }
-            // Return `null` if `country_code` does not match
-            return null;
-          })}
+            isMultiCity={isMultiCity}
+            iata_code={iata_code}
+            arr_iata={arr_iata}
+            airlineData={airlineData}
+            airline_iata={airline_iata}
+          />
           <div id="bestairlines" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <div className="b-table">

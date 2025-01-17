@@ -9,6 +9,7 @@ import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { getAirportPage } from '@/services/pages/PageServices';
 import { Metadata } from 'next';
+import Link from 'next/link';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
@@ -228,7 +229,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
             </div>
             <div className="column is-6 order1">
               <img
-                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${iata_code}.webp`}
+                src={`https://aerocloud.s3.amazonaws.com/aeroweb/${airportData.iata_code}.webp`}
                 alt="overview"
                 className="overview-img"
               />
@@ -384,13 +385,17 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                       className="flights-booking-item"
                       style={{ display: 'flex', flexDirection: 'column' }}
                     >
-                      <div className="flight-logo">
-                        <img
-                          src={`https://aerocloud.s3.amazonaws.com/airweb/${item.iata_code}.webp`}
-                          alt="flight-logo"
-                        />
-                      </div>
-                      <h4 className="title is-6 mb-2 mt-2">{item.name}</h4>
+                      <Link href={`/airlines/${item.iata_code}`}>
+                        <div className="flight-logo">
+                          <img
+                            src={`https://aerocloud.s3.amazonaws.com/airweb/${item.iata_code}.webp`}
+                            alt="flight-logo"
+                          />
+                        </div>
+                      </Link>
+                      <Link href={`/airlines/${item.iata_code}`}>
+                        <h4 className="title is-6 mb-2 mt-2">{item.name}</h4>
+                      </Link>
                     </div>
                   </div>
                 </div>

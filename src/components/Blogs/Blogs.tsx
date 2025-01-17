@@ -3,7 +3,6 @@ import { Blog } from '@/src/types/types';
 import Link from 'next/link';
 export default async function Blogs() {
   const blogs = await getBlogsList();
-
   return (
     <section className="blog-wrap section">
       <div className="container">

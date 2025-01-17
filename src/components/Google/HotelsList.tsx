@@ -18,7 +18,6 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
     discountPercentage,
     includeBreakfast,
     freeWifi,
-    landingURL,
   } = hotel;
 
   // Memoized conditional data for performance optimization
@@ -82,7 +81,7 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
             {freeWifi && <span className="tag is-primary is-light">Free Wi-Fi</span>}
           </p>
           <a
-            href={landingURL}
+            href={'/hotels'}
             target="_blank"
             rel="noopener noreferrer"
             className="button is-link is-small mt-3"

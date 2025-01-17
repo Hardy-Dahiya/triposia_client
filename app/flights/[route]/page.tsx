@@ -5,7 +5,7 @@ import Header from '../../../src/components/Header/Header';
 import { Metadata } from 'next';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { Airline, Flight, Hotel, Place } from '@/src/types/types';
+import { Airline, Hotel, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import BarChart from '@/src/components/Charts/Bar';
 import LineChart from '@/src/components/Charts/Line';
@@ -13,6 +13,8 @@ import HotelsList from '@/src/components/Google/HotelsList';
 import PlacesList from '@/src/components/Google/PlacesList';
 import { getAirportsData } from '@/services/airports/AirportServices';
 import { getFlightPage } from '@/services/pages/PageServices';
+import Link from 'next/link';
+import FlightFromList from '@/src/components/Flight/FlightFromList';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -420,7 +422,7 @@ async function FlightDetails({
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="second">December</td>
+                    <td className="second">{flightData.cheapest_day}</td>
                     <td className="second">{flightData.cheapest_month}</td>
                     <td className="second">$197</td>
                     <td className="second">$34</td>
@@ -466,7 +468,8 @@ async function FlightDetails({
         </div>
 
         <div className="container">
-          {flightData.flights.map((item: Flight, index: number) => {
+          <FlightFromList flightData={flightData} />
+          {/* {flightData.flights.map((item: Flight, index: number) => {
             return (
               <div
                 key={index}
@@ -551,7 +554,7 @@ async function FlightDetails({
                 </div>
               </div>
             );
-          })}
+          })} */}
         </div>
 
         <div className="container">
@@ -649,7 +652,9 @@ async function FlightDetails({
                             </td>
                             <td data-label="Price">From ${item.price}</td>
                             <td className="search-flight-btn">
-                              <a className="button is-primary">Search {item.name} flights1</a>
+                              <Link href={`/airlines/${item.name}`} className="button is-primary">
+                                Search {item.name} flights
+                              </Link>
                             </td>
                           </tr>
                         );

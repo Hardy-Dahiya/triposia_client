@@ -29,7 +29,7 @@ export default function ToggleFlightDetails({
           <div className="flights-booking-item">
             <div className="flight-logo">
               <img
-                src={`https://aerocloud.s3.amazonaws.com/airweb/${airline_iata}.webp`}
+                src={`https://aerocloud.s3.amazonaws.com/airweb/${airline_iata.toLocaleUpperCase()}.webp`}
                 alt="airline"
                 loading="lazy"
               />

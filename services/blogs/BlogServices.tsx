@@ -20,7 +20,7 @@ const getBlogs = async () => {
 // get Blogs details
 const getBlogsDetail = async (slug: string | null) => {
   try {
-    const URL = `https://blog.triposia.com/blogdetails/${slug}`;
+    const URL = `https://blog.triposia.com/blogdetails/1/1/${slug}`;
     return await axios.get(URL, {});
   } catch (error) {
     if (axios.isAxiosError(error)) {
