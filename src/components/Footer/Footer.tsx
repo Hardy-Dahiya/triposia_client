@@ -49,28 +49,44 @@ function Footer() {
               <nav aria-label="Footer Navigation">
                 <ul className="fot-link mt-4">
                   <li>
-                    <a href="#">About</a>
+                    <Link href="/about" aria-label="Home">
+                      About
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Jobs</a>
+                    <Link href="/jobs" aria-label="Jobs">
+                      Jobs
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Blog</a>
+                    <Link href="/blog" aria-label="Blog">
+                      Blog
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Press</a>
+                    <Link href="/press" aria-label="Press">
+                      Press
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Careers</a>
+                    <Link href="/careers" aria-label="Careers">
+                      Careers
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Terms of Use</a>
+                    <Link href="/terms" aria-label="Home">
+                      Terms of Use
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Privacy Policy</a>
+                    <Link href="/privacy" aria-label="Home">
+                      Privacy Policy
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">Contact</a>
+                    <Link href="/contact" aria-label="Home">
+                      Contact
+                    </Link>
                   </li>
                 </ul>
               </nav>

@@ -7,6 +7,7 @@ interface HotelsListProps {
 
 const HotelsList = ({ hotel }: HotelsListProps) => {
   const {
+    hotelId,
     imageURL,
     hotelName,
     starRating,
@@ -81,7 +82,7 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
             {freeWifi && <span className="tag is-primary is-light">Free Wi-Fi</span>}
           </p>
           <a
-            href={'/hotels'}
+            href={`/hotel/${hotelId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="button is-link is-small mt-3"

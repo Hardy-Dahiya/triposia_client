@@ -114,7 +114,7 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
           <strong>Rating: {rating}</strong> | {reviews?.length || 0} Reviews
         </p>
         <a
-          href={`/places`}
+          href={`/place/${placeId}`}
           target="_blank"
           rel="noopener noreferrer"
           className="button is-link is-small mt-3"

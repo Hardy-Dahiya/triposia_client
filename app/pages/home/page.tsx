@@ -147,7 +147,7 @@ function Home() {
               <h2 className="title is-4">Popular Airports</h2>
             </div>
             <div className="column is-3">
-              <Link href="/airports/DXB">
+              <Link href="/airports/dubai-omdb-dxb-ae">
                 <img
                   src="https://aerocloud.s3.amazonaws.com/aeroweb/DXB.webp"
                   alt=""
@@ -156,13 +156,13 @@ function Home() {
               </Link>
               <div className="card-box">
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airports/DXB">Dubai International Airport</Link>
+                  <Link href="/airports/dubai-omdb-dxb-ae">Dubai International Airport</Link>
                 </h3>
                 <p>Dubai International Airport,Dubai</p>
               </div>
             </div>
             <div className="column is-3">
-              <Link href="/airports/PDL">
+              <Link href="/airports/ponta-delgada-joao-paulo-lppd-pdl-pt">
                 <img
                   src="https://aerocloud.s3.amazonaws.com/aeroweb/PDL.webp"
                   alt=""
@@ -171,13 +171,15 @@ function Home() {
               </Link>
               <div className="card-box">
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airports/PDL">Joao Paulo II Airport</Link>
+                  <Link href="/airports/ponta-delgada-joao-paulo-lppd-pdl-pt">
+                    Joao Paulo II Airport
+                  </Link>
                 </h3>
                 <p>Joao Paulo II Airport, Portugal</p>
               </div>
             </div>
             <div className="column is-3">
-              <Link href="/airports/ISG">
+              <Link href="/airports/new-ishigaki-roig-isg-jp">
                 <img
                   src="https://aerocloud.s3.amazonaws.com/aeroweb/ISG.webp"
                   alt=""
@@ -186,13 +188,13 @@ function Home() {
               </Link>
               <div className="card-box">
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airports/ISG">Painushima Ishigaki Airport</Link>
+                  <Link href="/airports/new-ishigaki-roig-isg-jp">Painushima Ishigaki Airport</Link>
                 </h3>
                 <p>Sabiha Gökçen Havaalanı</p>
               </div>
             </div>
             <div className="column is-3">
-              <Link href="/airports/DEL">
+              <Link href="/airports/indira-gandhi-vidp-del-in">
                 <img
                   src="https://aerocloud.s3.amazonaws.com/aeroweb/DEL.webp"
                   alt=""
@@ -201,7 +203,7 @@ function Home() {
               </Link>
               <div className="card-box">
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airports/DEL">Delhi Airport</Link>
+                  <Link href="/airports/indira-gandhi-vidp-del-in">Delhi Airport</Link>
                 </h3>
                 <p>Indira Gandhi International Airport</p>
               </div>
@@ -228,7 +230,7 @@ function Home() {
                   </Link>
                   <div className="card-box">
                     <h3 className="title is-5 mb-4">
-                      <Link href={item.landingURL}>{item.hotelName}</Link>
+                      <Link href={`/hotel/${item.hotelId}`}>{item.hotelName}</Link>
                     </h3>
                     <p>We have over 28K reviews to assure you top notch service.</p>
                   </div>
@@ -248,7 +250,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airlines/3K">
+                    <Link href="/airlines/jetstar-asia-3k-jsa-jetstarasia-sg">
                       <img
                         src="https://pics.avs.io/180/60/3K@2x.webp"
                         alt="Jetstar Asia"
@@ -258,7 +260,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airlines/3K">Jetstar Asia</Link>
+                  <Link href="/airlines/jetstar-asia-3k-jsa-jetstarasia-sg">Jetstar Asia</Link>
                 </h3>
                 <p>Singapore Changi Airport T1, PO Box 323, Singapore 918144.</p>
               </div>
@@ -267,7 +269,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airlines/HZ">
+                    <Link href="/airlines/aurora-hz-shu-ru">
                       <img
                         src="https://pics.avs.io/180/60/HZ@2x.webp"
                         alt="Aurora"
@@ -277,7 +279,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airlines/HZ">Aurora</Link>
+                  <Link href="/airlines/aurora-hz-shu-ru">Aurora</Link>
                 </h3>
                 <p>50A, Gorkiy St.</p>
               </div>
@@ -286,7 +288,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airlines/KL">
+                    <Link href="/airlines/klm-royal-kl-klm-nl">
                       <img
                         src="https://pics.avs.io/180/60/KL@2x.webp"
                         alt="KLM airlines"
@@ -296,7 +298,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airlines/KL">KLM airlines</Link>
+                  <Link href="/airlines/klm-royal-kl-klm-nl">KLM airlines</Link>
                 </h3>
                 <p>KLM Royal Dutch airlines2 1117 ZL</p>
               </div>
@@ -305,7 +307,7 @@ function Home() {
               <div className="card-box">
                 <div className="card-image">
                   <figure className="image is-3by1">
-                    <Link href="/airlines/PZ">
+                    <Link href="/airlines/latam-paraguay-pz-lap-paraguaya-py">
                       <img
                         src="https://pics.avs.io/180/60/PZ@2x.webp"
                         alt="LATAM Paraguay"
@@ -315,7 +317,7 @@ function Home() {
                   </figure>
                 </div>
                 <h3 className="title is-5 mb-4">
-                  <Link href="/airlines/PZ">LATAM Paraguay</Link>
+                  <Link href="/airlines/latam-paraguay-pz-lap-paraguaya-py">LATAM Paraguay</Link>
                 </h3>
                 <p>{`Hangar TAM Aeropuerto Internacional "Silvio Pettirossi"`}</p>
               </div>
