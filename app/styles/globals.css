@@ -3576,3 +3576,37 @@ blockquote .blockquote-contents-title {
   height: 224px;
   border-radius: 5%;
 }
+
+.call-popup {
+  background-color: #ffbb00 !important;
+  border-color: transparent;
+  color: #000 !important;
+}
+
+.popup {
+  display: block;
+  position: fixed;
+  top: 95%;
+  left: 68%;
+  transform: translate(-50%, -50%);
+  /* background-color: #fff; */
+  padding: 20px;
+  z-index: 9999;
+  max-width: 400px;
+}
+
+.hello {
+  display: flex;
+  font-size: 14px;
+  line-height: 12px;
+  position: fixed;
+  text-align: right;
+  margin-top: 26px;
+  margin-right: -60px;
+}
+
+.hellos {
+  display: block;
+  line-height: 20px;
+  margin-top: -10px;
+}
