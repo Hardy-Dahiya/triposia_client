@@ -1,4 +1,5 @@
 import { getHotelDetails } from '@/services/google/GoogleServices';
+import ImageCarousel from '@/src/common/ImageCarousel';
 import Footer from '@/src/components/Footer/Footer';
 import Header from '@/src/components/Header/Header';
 import Error from '@/src/components/Message/Error';
@@ -19,9 +20,9 @@ export async function generateMetadata({ params }: HotelRouteParams): Promise<Me
   const hotelData = await searchHotels(slug[0]);
   if (hotelData && hotelData.matchedHotel) {
     return {
-      title: hotelData.matchedHotel.hotelName,
-      description: hotelData.matchedHotel.hotelName,
-      keywords: hotelData.matchedHotel.hotelName,
+      title: hotelData.matchedHotel.hotel_name,
+      description: hotelData.matchedHotel.addressline1,
+      keywords: hotelData.matchedHotel.accommodation_type,
     };
   }
   return {
@@ -48,15 +49,26 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
   return (
     <div>
       <Header />
-      <div className="w-full is-flex is-justify-content-center">
-        <div className="gallery-cell w-full">
-          <img
-            src={hotelData.matchedHotel.imageURL}
-            alt="hotel-img"
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      </div>
+      <ImageCarousel
+        images={[
+          {
+            src: hotelData.matchedHotel.photo1,
+            alt: `photo1`,
+          },
+          {
+            src: hotelData.matchedHotel.photo2,
+            alt: `photo2`,
+          },
+          {
+            src: hotelData.matchedHotel.photo3,
+            alt: `photo3`,
+          },
+          {
+            src: hotelData.matchedHotel.photo4,
+            alt: `photo4`,
+          },
+        ]}
+      />
       {/* partial */}
       <section className="single-content-wrap section pb-0">
         <div className="container">
@@ -67,17 +79,19 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
                   <div className="list-content-top">
                     <h3>
                       {' '}
-                      <a href="#">{hotelData.matchedHotel.hotelName}</a>{' '}
+                      <a href="#">{hotelData.matchedHotel.hotel_name}</a>{' '}
                       <span className="hotel-view-contents-review">
                         {' '}
-                        <i className="fa-solid fa-star" /> 5{' '}
+                        <i className="fa-solid fa-star" /> {hotelData.matchedHotel.star_rating}{' '}
                       </span>
                     </h3>
                     <p>
-                      <i className="fa-solid fa-location-dot" /> 4140 Parker Rd. Allentown, New
-                      Mexico 31134
+                      <i className="fa-solid fa-location-dot" />
+                      {hotelData.matchedHotel.addressline1} {hotelData.matchedHotel.city},{' '}
+                      {hotelData.matchedHotel.state}
+                      {hotelData.matchedHotel.country} {hotelData.matchedHotel.zipcode}
                     </p>
-                    <div className="is-flex">
+                    {/* <div className="is-flex">
                       <p className="mr-3">
                         <i className="fa-solid fa-phone" /> <a href="tel:9811XXXXXX">9811XXXXXX</a>
                       </p>
@@ -87,7 +101,7 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
                           www.xyz.com
                         </a>
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="list-content-mid">
                     <ul>
@@ -194,17 +208,11 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
           </div>
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Title</h3>
-              <p>
-                In this section you will find information on baggage allowances, special equipment
-                and sports items as well as restricted items. We also included some tips to make
-                your trip more enjoyable. In this section you will find information on baggage
-                allowances, special equipment and sports items as well as restricted items. We also
-                included some tips to make your trip more enjoyable.
-              </p>
+              <h3 className="title is-5 mt-3 mb-3">OVerview</h3>
+              <p>{hotelData.matchedHotel.overview || ''}</p>
             </div>
           </div>
-          <div className="columns is-multiline single-content-space">
+          {/* <div className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h2 className="title is-4">Guest Reviews</h2>
             </div>
@@ -269,7 +277,7 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
@@ -348,17 +356,17 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
             {hotelData.similarHotels.map((item: Hotel, index: number) => {
               return (
                 <div key={index} className="column is-3">
-                  <Link href={item.landingURL}>
+                  <Link href={`/hotel/${item.hotel_id}`}>
                     <img
-                      src={item.imageURL}
-                      alt={item.hotelName}
+                      src={item.photo1}
+                      alt={item.hotel_name}
                       className="image imgw100 img-radius-top-right"
                       style={{ width: '318px', height: '212px' }}
                     />
                   </Link>
                   <div className="card-box">
                     <h3 className="title is-5 mb-4">
-                      <Link href={`/hotel/${item.hotelId}`}>{item.hotelName}</Link>
+                      <Link href={`/hotel/${item.hotel_id}`}>{item.hotel_name}</Link>
                     </h3>
                     <p>We have over 28K reviews to assure you top notch service.</p>
                   </div>

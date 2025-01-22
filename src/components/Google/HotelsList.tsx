@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { Hotel } from '@/src/types/types';
+import { HotelAirport } from '@/src/types/types';
 
 interface HotelsListProps {
-  hotel: Hotel;
+  hotel: HotelAirport;
 }
 
 const HotelsList = ({ hotel }: HotelsListProps) => {

@@ -4,7 +4,13 @@ import Header from '../../../src/components/Header/Header';
 
 // app/airlines/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirlineDestination, FlightData, FlightRoute, Hotel, Place } from '@/src/types/types';
+import {
+  AirlineDestination,
+  FlightData,
+  FlightRoute,
+  HotelAirport,
+  Place,
+} from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import { getFlightsRouteData, getFlightsToData } from '@/services/flights/FlightServices';
 // @Components
@@ -1364,7 +1370,7 @@ async function FlightDetails({
                 options below.
               </p>
             </div>
-            {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
+            {airportData.hotels.slice(0, 6).map((hotel: HotelAirport) => (
               <div key={hotel.hotelId} className="column is-4">
                 <HotelsList hotel={hotel} />
               </div>

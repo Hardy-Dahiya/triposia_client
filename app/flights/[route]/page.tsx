@@ -5,7 +5,7 @@ import Header from '../../../src/components/Header/Header';
 import { Metadata } from 'next';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { Airline, Hotel, Place } from '@/src/types/types';
+import { Airline, HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import BarChart from '@/src/components/Charts/Bar';
 import LineChart from '@/src/components/Charts/Line';
@@ -688,7 +688,7 @@ async function FlightDetails({
                 options below.
               </p>
             </div>
-            {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
+            {airportData.hotels.slice(0, 6).map((hotel: HotelAirport) => (
               <div key={hotel.hotelId} className="column is-4">
                 <HotelsList hotel={hotel} />
               </div>

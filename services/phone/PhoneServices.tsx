@@ -3,7 +3,7 @@ import url from '../../src/api/api';
 // get Phone
 const getPhone = async () => {
   try {
-    const URL = `${url}/phone`;
+    const URL = `${url}/phone?domainId=2`;
     return await axios.get(URL, {});
   } catch (error) {
     if (axios.isAxiosError(error)) {

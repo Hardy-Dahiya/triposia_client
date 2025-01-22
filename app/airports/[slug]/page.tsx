@@ -3,7 +3,7 @@ import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirportAirlines, Hotel, Place } from '@/src/types/types';
+import { AirportAirlines, HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
@@ -701,7 +701,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                 }}
               />
             </div>
-            {airportData.hotels.slice(0, 6).map((hotel: Hotel) => (
+            {airportData.hotels.slice(0, 6).map((hotel: HotelAirport) => (
               <div key={hotel.hotelId} className="column is-4">
                 <HotelsList hotel={hotel} />
               </div>

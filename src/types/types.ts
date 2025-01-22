@@ -283,7 +283,7 @@ export interface FlightRoute {
   updatedAt: string;
 }
 
-export interface Hotel {
+export interface HotelAirport {
   hotelId: number;
   hotelName: string;
   starRating: number;
@@ -297,6 +297,17 @@ export interface Hotel {
   landingURL: string;
   includeBreakfast: boolean;
   freeWifi: boolean;
+  latitude: number;
+  longitude: number;
+}
+
+export interface Hotel {
+  hotel_id: number;
+  hotel_name: string;
+  url: string;
+  star_rating: number;
+  rates_currency: string;
+  photo1: string;
   latitude: number;
   longitude: number;
 }
