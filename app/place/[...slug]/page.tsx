@@ -44,7 +44,7 @@ export default async function PlaceRoutePage({ params }: PlaceRouteParams) {
   const { slug } = resolvedParams;
   const placeData = await searchPlaces(slug[0]);
 
-  const GOOGLE_API_KEY = 'AIzaSyDgy8yP6mPr4iO4jRP_MSBdq-HfT3lKH4E';
+  const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   const getPhotoUrls = (photos: GooglePhoto[]) => {
     if (!photos) return [];
