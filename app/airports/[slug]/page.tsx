@@ -1,3 +1,5 @@
+// app/page.tsx or your server component
+import { headers } from 'next/headers';
 import { getAirportsData } from '@/services/airports/AirportServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
@@ -19,11 +21,13 @@ type AirportRouteParams = {
 
 export async function generateMetadata({ params }: AirportRouteParams): Promise<Metadata> {
   // Await `params` since it's treated as a Promise in the build environment
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   const airportData = await searchAirport(slug.toUpperCase());
   if (airportData && airportData._id) {
-    const pageData = await getAirportPageDetails(airportData._id, 'en');
+    const pageData = await getAirportPageDetails(airportData._id, 'en', host);
     if (pageData) {
       return {
         title: pageData.title,
@@ -92,7 +96,9 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
       />
     );
   }
-  const pageData = await getAirportPageDetails(airportData._id, 'en');
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
+  const pageData = await getAirportPageDetails(airportData._id, 'en', host);
   return (
     <div>
       <div className="single-content-nav sticky ">
@@ -739,11 +745,29 @@ async function searchAirport(iata_code: string) {
 }
 
 // Simulated airline page search function
-async function getAirportPageDetails(airport_id: string | null, language_id: string | null) {
+async function getAirportPageDetails(
+  airport_id: string | null,
+  language_id: string | null,
+  host: string,
+) {
   // Simulate an API call or database lookup
-  const response = await getAirportPage(airport_id, language_id);
+  const response = await getAirportPage(airport_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }
   return null;
+}
+
+async function getDomainID() {
+  const host = await fetch('/api', {
+    headers: {
+      Accept: 'application/json',
+      method: 'GET',
+    },
+  });
+  if (host) {
+    const data = await host.json();
+    console.log(data);
+    // domainId = domainMap[data.data.hostname];
+  }
 }

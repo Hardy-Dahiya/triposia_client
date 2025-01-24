@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { getAirlineData } from '@/services/airlines/AirlineServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
@@ -30,11 +31,13 @@ type AirlineRouteParams = {
 
 export async function generateMetadata({ params }: AirlineRouteParams): Promise<Metadata> {
   // Await `params` since it's treated as a Promise in the build environment
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   const airlineData = await searchAirlines(slug[0]);
   if (airlineData && airlineData._id) {
-    const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+    const pageData = await getAirlinePageDetails(airlineData._id, 'en', host);
     if (pageData) {
       return {
         title: pageData.title,
@@ -122,6 +125,8 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
 
 async function AirlineDetails({ iata_code }: { iata_code: string }) {
   // Simulated async flight search (replace with actual API call)
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const airlineData = await searchAirlines(iata_code);
   if (!airlineData) {
     return (
@@ -133,7 +138,7 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
       />
     );
   }
-  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en', host);
   return (
     <div>
       <div className="single-content-nav sticky ">
@@ -723,12 +728,14 @@ async function FlightDetails({
   airline_iata: string;
   isMultiCity: boolean;
 }) {
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const airlineData = await searchAirlines(airline_iata);
   const flightData = await getFlightsFromAirline(iata_code, airline_iata.toLocaleUpperCase());
   // Simulated async airport search (replace with actual API call)
   const airportData = await searchAirport(isMultiCity ? arr_iata : iata_code);
   const routeData = await getFlightsRoutes(iata_code, arr_iata, null);
-  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en', host);
   if (!airlineData || !flightData.length) {
     return (
       <Error
@@ -1405,9 +1412,13 @@ async function getFlightsRoutes(
 }
 
 // Simulated airline page search function
-async function getAirlinePageDetails(airline_id: string | null, language_id: string | null) {
+async function getAirlinePageDetails(
+  airline_id: string | null,
+  language_id: string | null,
+  host: string,
+) {
   // Simulate an API call or database lookup
-  const response = await getAirlinePage(airline_id, language_id);
+  const response = await getAirlinePage(airline_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }

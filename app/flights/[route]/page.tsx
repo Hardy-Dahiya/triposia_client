@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import { getFlightsData } from '@/services/flights/FlightServices';
 import Footer from '../../../src/components/Footer/Footer';
@@ -25,6 +26,8 @@ type FlightRouteParams = {
 
 export async function generateMetadata({ params }: FlightRouteParams): Promise<Metadata> {
   // Await `params` since it's treated as a Promise in the build environment
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const resolvedParams = await params;
   const { route } = resolvedParams;
 
@@ -33,7 +36,7 @@ export async function generateMetadata({ params }: FlightRouteParams): Promise<M
   // Simulated async flight search (replace with actual API call)
   const flightData = await searchFlights(departure, arrival);
   if (flightData && flightData._id) {
-    const pageData = await getFlightPageDetails(flightData._id, 'en');
+    const pageData = await getFlightPageDetails(flightData._id, 'en', host);
     if (pageData) {
       return {
         title: pageData.title,
@@ -107,6 +110,8 @@ async function FlightDetails({
   const flightData = await searchFlights(departureCity, arrivalCity);
   // Simulated async flight search (replace with actual API call)
   const airportData = await searchAirport(arrivalCity);
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   if (!flightData && !flightData._id) {
     return (
       <Error
@@ -117,7 +122,8 @@ async function FlightDetails({
       />
     );
   }
-  const pageData = await getFlightPageDetails(flightData._id, 'en');
+
+  const pageData = await getFlightPageDetails(flightData._id, 'en', host);
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: 'bar', // Correct type for the chart
@@ -735,9 +741,13 @@ async function searchAirport(iata_code: string) {
 }
 
 // Simulated airline page search function
-async function getFlightPageDetails(airline_id: string | null, language_id: string | null) {
+async function getFlightPageDetails(
+  airline_id: string | null,
+  language_id: string | null,
+  host: string,
+) {
   // Simulate an API call or database lookup
-  const response = await getFlightPage(airline_id, language_id);
+  const response = await getFlightPage(airline_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }
