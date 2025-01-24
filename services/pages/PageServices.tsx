@@ -18,7 +18,7 @@ const getFlightPage = async (
   language_id: string | number | null,
 ) => {
   try {
-    const host = await axios.get('http://localhost:3000/api');
+    const host = await axios.get('https://https://triposia-client.vercel.app/api');
     const domainId = domainMap[host.data.hostname];
     const URL = `${url}/page/flight?flight_id=${flight_id}&language_id=${language_id}&domain_id=${domainId}`;
     return await axios.get(URL, {});
