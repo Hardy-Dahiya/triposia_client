@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { getAirlineData } from '@/services/airlines/AirlineServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
@@ -100,8 +101,10 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
 
 async function AirlineDetails({ iata_code }: { iata_code: string }) {
   // Simulated async flight search (replace with actual API call)
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const airlineData = await searchAirlines(iata_code);
-  const pageData = await getAirlinePageDetails(airlineData._id, 'en');
+  const pageData = await getAirlinePageDetails(airlineData._id, 'en', host);
   if (!airlineData) {
     return (
       <Error
@@ -1509,9 +1512,13 @@ async function getFlightsRoutes(
 }
 
 // Simulated airline page search function
-async function getAirlinePageDetails(airline_id: string | null, language_id: string | null) {
+async function getAirlinePageDetails(
+  airline_id: string | null,
+  language_id: string | null,
+  host: string,
+) {
   // Simulate an API call or database lookup
-  const response = await getAirlinePage(airline_id, language_id);
+  const response = await getAirlinePage(airline_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }

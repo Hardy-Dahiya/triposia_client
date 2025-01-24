@@ -757,17 +757,3 @@ async function getAirportPageDetails(
   }
   return null;
 }
-
-async function getDomainID() {
-  const host = await fetch('/api', {
-    headers: {
-      Accept: 'application/json',
-      method: 'GET',
-    },
-  });
-  if (host) {
-    const data = await host.json();
-    console.log(data);
-    // domainId = domainMap[data.data.hostname];
-  }
-}
