@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './styles/globals.css';
-import { getPhone } from '@/services/phone/PhoneServices';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -24,7 +23,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const phone = await fetchPhone();
   return (
     <html lang="en">
       <head>
@@ -50,34 +48,7 @@ export default async function RootLayout({
         </noscript>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-        <div id="popup" className="popup content">
-          <p className="title is-4">
-            <a
-              href={`tel:+${phone.phone}`}
-              className="button is-danger has-text-weight-bold is-large call-popup"
-            >
-              <img height={62} width={62} src="../images/phone.gif" alt="call" /> &nbsp;{' '}
-              <span className="hello">Speak with Expert*</span>{' '}
-              <span className="hellos">+{phone.phone}</span>
-            </a>
-          </p>
-        </div>
-      </body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   );
-}
-
-async function fetchPhone() {
-  try {
-    const response = await getPhone();
-    if (response?.data.status) {
-      return response.data.data;
-    }
-    return { phone: '' }; // Default value if data is missing
-  } catch (error) {
-    console.log(error);
-    return { phone: '' }; // Default value if data is missing
-  }
 }

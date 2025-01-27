@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Phone from '../Phone/Phone';
 
 function Header() {
   return (
@@ -175,6 +176,7 @@ function Header() {
           <div style={{ clear: 'both' }} />
         </div>
       </section>
+      <Phone />
     </header>
   );
 }
