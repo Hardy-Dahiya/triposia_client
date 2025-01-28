@@ -1,7 +1,27 @@
 import Link from 'next/link';
 import Phone from '../Phone/Phone';
+import { getPhone } from '@/services/phone/PhoneServices';
 
-function Header() {
+interface FooterMenu {
+  name: string;
+  slug: string;
+}
+
+async function fetchPhone() {
+  try {
+    const response = await getPhone();
+    if (response?.data.status) {
+      return response.data.data;
+    }
+    return { phone: '' }; // Default value if data is missing
+  } catch (error) {
+    console.log(error);
+    return { phone: '' }; // Default value if data is missing
+  }
+}
+
+async function Header() {
+  const phoneData = await fetchPhone();
   return (
     <header>
       <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -25,15 +45,19 @@ function Header() {
           <div id="navbarBasicExample" className="navbar-menu">
             <div className="navbar-start">
               <div>
-                <Link className="navbar-item active" href="/flights">
-                  <i className="fas fa-plane-up" /> Flights
-                </Link>
-                <Link className="navbar-item" href="/Hotels">
-                  <i className="fas fa-hotel" /> Hotels
-                </Link>
-                <Link className="navbar-item" href="/Cars">
-                  <i className="fas fa-car" /> Cars
-                </Link>
+                {phoneData.upperMenu.map((menu: FooterMenu, index: number) => {
+                  return (
+                    <Link
+                      key={index}
+                      href={`/page/${menu.slug}`}
+                      aria-label={menu.name}
+                      className="navbar-item active"
+                    >
+                      {' '}
+                      {menu.name}{' '}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
             <div className="navbar-end">

@@ -23,16 +23,16 @@ a:hover {
   color: #1e84fe;
   font-size: 16px;
   border-radius: 0px;
-  padding: 8px 15px;
+  padding: 8px 20px !important;
   display: inline-flex;
-  font-weight: 400;
+  font-weight: 600 !important;
 }
 .navbar-menu a.navbar-item i {
   margin-right: 10px;
   font-size: 18px;
 }
 .navbar-menu a.navbar-item:hover {
-  background: #00d1b2;
+  background: #04aa91;
   color: #fff;
 }
 .navbar-menu a.active {
@@ -42,7 +42,7 @@ a:hover {
   min-height: 4.25rem;
 }
 .navbar-start {
-  margin-top: 4px;
+  margin-top: 4px !important;
 }
 .search-wrap {
   background: #f7f7f7;

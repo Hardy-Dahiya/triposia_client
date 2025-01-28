@@ -1,6 +1,25 @@
 import Link from 'next/link';
+import { getPhone } from '@/services/phone/PhoneServices';
 
-function Footer() {
+interface FooterMenu {
+  name: string;
+  slug: string;
+}
+
+async function fetchPhone() {
+  try {
+    const response = await getPhone();
+    if (response?.data.status) {
+      return response.data.data;
+    }
+    return { phone: '' }; // Default value if data is missing
+  } catch (error) {
+    console.log(error);
+    return { phone: '' }; // Default value if data is missing
+  }
+}
+async function Footer() {
+  const phoneData = await fetchPhone();
   return (
     <footer>
       <section className="section has-text-centered">
@@ -48,46 +67,16 @@ function Footer() {
             <div className="column is-12">
               <nav aria-label="Footer Navigation">
                 <ul className="fot-link mt-4">
-                  <li>
-                    <Link href="/about" aria-label="Home">
-                      About
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/jobs" aria-label="Jobs">
-                      Jobs
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/blog" aria-label="Blog">
-                      Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/press" aria-label="Press">
-                      Press
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/careers" aria-label="Careers">
-                      Careers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/terms" aria-label="Home">
-                      Terms of Use
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/privacy" aria-label="Home">
-                      Privacy Policy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/contact" aria-label="Home">
-                      Contact
-                    </Link>
-                  </li>
+                  {phoneData.footerMenu.map((menu: FooterMenu, index: number) => {
+                    return (
+                      <li key={index}>
+                        <Link href={`/page/${menu.slug}`} aria-label={menu.name}>
+                          {' '}
+                          {menu.name}{' '}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
             </div>
