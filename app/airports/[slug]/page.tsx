@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: AirportRouteParams): Promise<
   // Await `params` since it's treated as a Promise in the build environment
   const headersList = await headers();
   const host = headersList.get('host') || 'default';
+  console.log('host', host);
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   const airportData = await searchAirport(slug.toUpperCase());
