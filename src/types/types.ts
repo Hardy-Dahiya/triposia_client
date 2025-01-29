@@ -310,6 +310,10 @@ export interface Hotel {
   photo1: string;
   latitude: number;
   longitude: number;
+  city: string;
+  state: string;
+  country: string;
+  zipcode: number;
 }
 
 export interface Place {

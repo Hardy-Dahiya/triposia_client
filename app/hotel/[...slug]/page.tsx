@@ -208,7 +208,7 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
           </div>
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">OVerview</h3>
+              <h3 className="title is-5 mt-3 mb-3">Overview</h3>
               <p>{hotelData.matchedHotel.overview || ''}</p>
             </div>
           </div>
@@ -356,7 +356,9 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
             {hotelData.similarHotels.map((item: Hotel, index: number) => {
               return (
                 <div key={index} className="column is-3">
-                  <Link href={`/hotel/${item.hotel_id}`}>
+                  <Link
+                    href={`/hotel/${item.hotel_id}?hotel=${item.hotel_name}&hotelId=${item.hotel_id}&city=${item.city}&state=${item.state}&country=${item.country}&zipcode=${item.zipcode}`}
+                  >
                     <img
                       src={item.photo1}
                       alt={item.hotel_name}
@@ -366,7 +368,11 @@ export default async function HotelRoutePage({ params }: HotelRouteParams) {
                   </Link>
                   <div className="card-box">
                     <h3 className="title is-5 mb-4">
-                      <Link href={`/hotel/${item.hotel_id}`}>{item.hotel_name}</Link>
+                      <Link
+                        href={`/hotel/${item.hotel_id}?hotel=${item.hotel_name}&hotelId=${item.hotel_id}&city=${item.city}&state=${item.state}&country=${item.country}&zipcode=${item.zipcode}`}
+                      >
+                        {item.hotel_name}
+                      </Link>
                     </h3>
                     <p>We have over 28K reviews to assure you top notch service.</p>
                   </div>
