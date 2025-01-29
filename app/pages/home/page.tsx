@@ -16,6 +16,10 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=59877314&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.283611,
     longitude: 55.399246,
+    city: '',
+    state: '',
+    country: '',
+    zipcode: 0,
   },
   {
     hotel_id: 68218,
@@ -27,6 +31,10 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=68218&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.2731186,
     longitude: 55.3197938,
+    city: '',
+    state: '',
+    country: '',
+    zipcode: 0,
   },
   {
     hotel_id: 1249,
@@ -38,6 +46,10 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?hid=1249',
     latitude: 25.069480895996094,
     longitude: 55.1348991394043,
+    city: '',
+    state: '',
+    country: '',
+    zipcode: 0,
   },
   {
     hotel_id: 180212,
@@ -49,6 +61,10 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=180212&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.2720937,
     longitude: 55.31586589999999,
+    city: '',
+    state: '',
+    country: '',
+    zipcode: 0,
   },
 ];
 
