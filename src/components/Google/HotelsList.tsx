@@ -82,7 +82,7 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
             {freeWifi && <span className="tag is-primary is-light">Free Wi-Fi</span>}
           </p>
           <a
-            href={`/hotel/${hotelId}?hotel=${hotelName}&hotelId=${hotelId}&currency=${currency}&dailyRate=${dailyRate}&discountedRate=${crossedOutRate}&discountPercentage=${discountPercentage}&includeBreakfast=${includeBreakfast}&freeWifi=${freeWifi}`}
+            href={`/hotel/${hotelId}?{hotelName}`}
             target="_blank"
             rel="noopener noreferrer"
             className="button is-link is-small mt-3"
