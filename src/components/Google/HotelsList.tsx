@@ -70,7 +70,7 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
         <div className="content">
           <p>
             <strong>
-              {currency} {dailyRate.toFixed(2)}
+              {currency} {dailyRate?.toFixed(2) || 0}
             </strong>
             {discountedRate}
             {discountTag}

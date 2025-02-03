@@ -147,25 +147,59 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                   </p>
                 </div>
                 <hr className="seprator my-2" />
-                {/* <div className="column is-4 mob-view has-text-centered">
-                  <p className="title-custom">Flight Take off</p>
-                  <span className="subtitle-custom">12 Jun 2020, 7:50 am</span>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div
+                      className="single-feature-icon"
+                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                    >
+                      <a href="">
+                        <i className="fa-brands fa-youtube" style={{ color: '#ff0000' }} />
+                      </a>
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">
+                        <a href="">Youtube</a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="column is-4 mob-view has-text-centered">
-                  <p>
-                    <i className="fa-regular fa-clock theme-color" />
-                  </p>
-                  <span className="subtitle-custom">1H 40M</span>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div
+                      className="single-feature-icon"
+                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                    >
+                      <a href="">
+                        <i className="fa-brands fa-twitter" style={{ color: '#1DA1F2' }} />
+                      </a>
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">
+                        <a href="">Twitter</a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="column is-4 mob-view has-text-centered">
-                  <p className="title-custom">Flight Landing</p>
-                  <span className="subtitle-custom">13 Jun 2020, 5:50 am</span>
+                <div className="column is-4">
+                  <div className="single-tour-feature">
+                    <div
+                      className="single-feature-icon"
+                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                    >
+                      <a href="">
+                        <i className="fa-brands fa-facebook-f" style={{ color: '#3b5998' }} />
+                      </a>
+                    </div>
+                    <div className="single-feature-titles">
+                      <p className="title-custom">
+                        <a href="">Facebook</a>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="column is-12 mob-view has-text-centered bor-top bor-bottom mt-2 mb-3">
-                  <p className="title-custom">
-                    Total flight time: <span className="subtitle-custom">13 Hours 40 min</span>
-                  </p>
-                </div> */}
+                <hr className="seprator my-2" />
+
                 <div className="column is-4">
                   <div className="single-tour-feature">
                     <div className="single-feature-icon">
@@ -243,8 +277,12 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
-              <h3 className="title is-5 mb-3">About {airportData.name}</h3>
-              <p className="py-2">{pageData.overview || airportData.overview}</p>
+              <p
+                className="py-2"
+                dangerouslySetInnerHTML={{
+                  __html: pageData.overview || `Airport Overview Content`,
+                }}
+              />
             </div>
           </div>
           <div id="inflightfeatures" className="columns is-multiline single-content-space">
@@ -713,6 +751,84 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                 <HotelsList hotel={hotel} />
               </div>
             ))}
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Airline</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.airlineContent ||
+                    `no airline content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Destination</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.destinationContent ||
+                    `no car destination content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Car Rental</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.carRentalContent ||
+                    `no car content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Parking</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.parkingContent ||
+                    `no parking content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Hotel</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.hotelsContent ||
+                    `no hotel content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Attraction</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.attractionContent ||
+                    `no attraction content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
+            </div>
           </div>
 
           <div id="faq" className="columns is-multiline single-content-space">
