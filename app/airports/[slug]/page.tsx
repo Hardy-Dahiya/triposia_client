@@ -5,13 +5,12 @@ import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirportAirlines, HotelAirport, Place } from '@/src/types/types';
+import { HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { getAirportPage } from '@/services/pages/PageServices';
 import { Metadata } from 'next';
-import Link from 'next/link';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
@@ -100,6 +99,8 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
   const headersList = await headers();
   const host = headersList.get('host') || 'default';
   const pageData = await getAirportPageDetails(airportData._id, 'en', host);
+  // const flightData = await getFlightData(airportData.iata_code);
+  // console.log('flightData', flightData);
   return (
     <div>
       <div className="single-content-nav sticky ">
@@ -145,59 +146,80 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                   <p className="mr-2">
                     Timezon <span className="badge">{airportData.timezone}</span>
                   </p>
+                  <p>
+                    <i className="fa fa-headphones theme-color" /> {airportData.phone}
+                  </p>
+                  <p>
+                    <i className="fa fa-globe theme-color" /> {airportData.website}
+                  </p>
                 </div>
                 <hr className="seprator my-2" />
-                <div className="column is-4">
-                  <div className="single-tour-feature">
-                    <div
-                      className="single-feature-icon"
-                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
-                    >
-                      <a href="">
-                        <i className="fa-brands fa-youtube" style={{ color: '#ff0000' }} />
-                      </a>
-                    </div>
-                    <div className="single-feature-titles">
-                      <p className="title-custom">
-                        <a href="">Youtube</a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="column is-4">
-                  <div className="single-tour-feature">
-                    <div
-                      className="single-feature-icon"
-                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
-                    >
-                      <a href="">
-                        <i className="fa-brands fa-twitter" style={{ color: '#1DA1F2' }} />
-                      </a>
-                    </div>
-                    <div className="single-feature-titles">
-                      <p className="title-custom">
-                        <a href="">Twitter</a>
-                      </p>
+
+                {airportData.youtube && (
+                  <div className="column is-4">
+                    {' '}
+                    <div className="single-tour-feature">
+                      <div
+                        className="single-feature-icon"
+                        style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                      >
+                        <a href={`https://${airportData.youtube}`} target="_blank">
+                          <i className="fa-brands fa-youtube" style={{ color: '#ff0000' }} />
+                        </a>
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">
+                          <a href={`https://${airportData.youtube}`} target="_blank">
+                            Youtube
+                          </a>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="column is-4">
-                  <div className="single-tour-feature">
-                    <div
-                      className="single-feature-icon"
-                      style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
-                    >
-                      <a href="">
-                        <i className="fa-brands fa-facebook-f" style={{ color: '#3b5998' }} />
-                      </a>
-                    </div>
-                    <div className="single-feature-titles">
-                      <p className="title-custom">
-                        <a href="">Facebook</a>
-                      </p>
+                )}
+
+                {airportData.twitter && (
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div
+                        className="single-feature-icon"
+                        style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                      >
+                        <a href={`https://${airportData.twitter}`} target="_blank">
+                          <i className="fa-brands fa-twitter" style={{ color: '#1DA1F2' }} />
+                        </a>
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">
+                          <a href={`https://${airportData.twitter}`} target="_blank">
+                            Twitter
+                          </a>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {airportData.facebook && (
+                  <div className="column is-4">
+                    <div className="single-tour-feature">
+                      <div
+                        className="single-feature-icon"
+                        style={{ backgroundColor: 'rgba(40, 125, 250, 0.1)' }}
+                      >
+                        <a href={`https://${airportData.facebook}`} target="_blank">
+                          <i className="fa-brands fa-facebook-f" style={{ color: '#3b5998' }} />
+                        </a>
+                      </div>
+                      <div className="single-feature-titles">
+                        <p className="title-custom">
+                          <a href={`https://${airportData.facebook}`} target="_blank">
+                            Facebook
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <hr className="seprator my-2" />
 
                 <div className="column is-4">
@@ -217,8 +239,8 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                       <i className="fa fa-user" />
                     </div>
                     <div className="single-feature-titles">
-                      <p className="title-custom">Flight Type</p>
-                      <span className="subtitle-custom">Economy</span>
+                      <p className="title-custom">Domestic</p>
+                      <span className="subtitle-custom">{airportData.domestic || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -228,8 +250,8 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                       <i className="fa fa-refresh" />
                     </div>
                     <div className="single-feature-titles">
-                      <p className="title-custom">Fare Type</p>
-                      <span className="subtitle-custom">Refundable</span>
+                      <p className="title-custom">Terminals</p>
+                      <span className="subtitle-custom">{airportData.terminals.length || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -240,7 +262,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                     </div>
                     <div className="single-feature-titles">
                       <p className="title-custom">International</p>
-                      <span className="subtitle-custom">{airportData.international}</span>
+                      <span className="subtitle-custom">{airportData.international || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -251,7 +273,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                     </div>
                     <div className="single-feature-titles">
                       <p className="title-custom">Runways</p>
-                      <span className="subtitle-custom">{airportData.runways}</span>
+                      <span className="subtitle-custom">{airportData.runways || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -262,7 +284,9 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
                     </div>
                     <div className="single-feature-titles">
                       <p className="title-custom">Airlines</p>
-                      <span className="subtitle-custom">{airportData.airlines_names.length}</span>
+                      <span className="subtitle-custom">
+                        {airportData.airlines_names.length || 0}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -285,435 +309,44 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               />
             </div>
           </div>
-          <div id="inflightfeatures" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Inflight Features</h3>
-              <p className="py-2">
-                Experience unparalleled comfort and convenience on every flight. Enjoy a wide range
-                of inflight entertainment, including movies, TV shows, and music, to keep you
-                entertained throughout your journey.
-              </p>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-wifi" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">WI-FI</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-music" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Entertainment</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-television" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Television</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-tree" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Air Conditioning</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa-solid fa-martini-glass" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Drink</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-gamepad" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Games</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-coffee" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Coffee</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa-solid fa-martini-glass" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Wines</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-shopping-cart" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Shopping</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-cutlery" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Food</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-bed" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Comfort</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-image" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Magazines</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="seatselection" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Select Your Airlines</h3>
-            </div>
-            {airportData.airlines_names.map((item: AirportAirlines, index: number) => {
-              return (
-                <div className="column is-3 pt-0" key={index}>
-                  <div
-                    className="departing-flights"
-                    style={{ display: 'flex', justifyContent: 'center' }}
-                  >
-                    <div
-                      className="flights-booking-item"
-                      style={{ display: 'flex', flexDirection: 'column' }}
-                    >
-                      <Link href={`/airlines/${item.iata_code}`}>
-                        <div className="flight-logo">
-                          <img
-                            src={`https://aerocloud.s3.amazonaws.com/airweb/${item.iata_code}.webp`}
-                            alt="flight-logo"
-                          />
-                        </div>
-                      </Link>
-                      <Link href={`/airlines/${item.iata_code}`}>
-                        <h4 className="title is-6 mb-2 mt-2">{item.name}</h4>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {/* <div id="container">
-  <button class="menu">TITLE</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-  <button class="menu">TITLE 2</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-  <button class="menu">TITLE 3</button>
-  <div class="text">Wolf: Lamb, tell me a story! Lamb: There was once a pale man with dark hair who was very lonely. Wolf: Why was it lonely? Lamb: All things must meet this man. So, they shunned him. Wolf: Did he chase them all? Lamb: He took an axe and split himself in two, right down the middle. Wolf: So he would always have a friend? Lamb: So he would always have a friend.</div>
-</div> */}
-          {/* <div id="seatselection" class="columns is-multiline single-content-space">
-
-  <div class="column is-12">
-    <h3 class="title is-5 mt-3 mb-3">Select your Seats</h3>
-<p class="py-2">Maecenas vitae turpis condimentum metus tincidunt semper bibendum ut orci. Donec eget accumsan est. Duis laoreet sagittis elit et vehicula.</p>
-  </div> 
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>  
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="column is-12">
-    <div class="cabin-type-item">
-      <div class="cabin-type-img"><img src="images/seat1.png" alt=""></div>
-      <div class="cabin-type-detail">
-        <h4 class="title is-5 mb-3">Standard advance seat selection</h4>
-        <p>Donec urna arcu, venenatis quis augue sit amet, mattis gravida nunc. Integer faucibus, tortor a tristique adipiscing, arcu metus luctus libero, nec vulputate risus elit id nibh.</p>
-      </div>
-      <div class="cabin-price has-text-centered">
-        <p class="price-start">Starting at
-        <strong>$15</strong></p>
-        <a class="button is-primary mt-4">Book Now</a>
-      </div>
-    </div>
-  </div>
-
-</div> */}
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Baggage</h3>
-              <p>
-                In this section you ll find information on baggage allowances, special equipment and
-                sports items as well as restricted items. We ve also included some tips to make your
-                trip more enjoyable.
-              </p>
+              <h3 className="title is-5 mt-3 mb-3">Airline</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.airlineContent ||
+                    `no airline content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
             </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-shopping-cart" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Carry-on Allowance</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Baggage Allowance</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Delayed Baggage</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Damaged Baggage</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Baggage Status</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Baggage Services</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-briefcase" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Baggage Tips</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-user-times" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Restricted Items</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-file" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Liability Limitations</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-gift" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Lost and Found</p>
-                </div>
-              </div>
-            </div>
-            {/* <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Basic Information</h3>
-              <p>
-                Vestibulum ut iaculis justo, auctor sodales lectus. Donec et tellus tempus,
-                dignissim maurornare, consequat lacus. Integer dui neque, scelerisque nec
-                sollicitudin sit amet, sodales a erat. Duis vitae condimentum ligula. Integer eu mi
-                nisl. Donec massa dui, commodo id arcu quis, venenatis scelerisque velit.
-              </p>
-            </div> */}
           </div>
-          <div id="faq" className="columns is-multiline single-content-space">
+          <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Fare Rules for your Flight</h3>
+              <h3 className="title is-5 mt-3 mb-3">Destination</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.destinationContent ||
+                    `no destination content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
             </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Rules And Policies</p>
-                </div>
-              </div>
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Flights From City</h3>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    pageData.flightsFromCity ||
+                    `no flights from city content found for this airport. Please check back later for more information.`,
+                }}
+              />
+              <br />
             </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Flight Changes</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Refunds</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Airline Penalties</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Flight Cancellation</p>
-                </div>
-              </div>
-            </div>
-            <div className="column is-4">
-              <div className="single-tour-feature">
-                <div className="single-feature-icon">
-                  <i className="fa fa-check" />
-                </div>
-                <div className="single-feature-titles">
-                  <p className="title-custom">Airline Terms Of Use</p>
-                </div>
-              </div>
-            </div>
-            {/* <div className="column is-12">
-              <p>
-                Vestibulum ut iaculis justo, auctor sodales lectus. Donec et tellus tempus,
-                dignissim maurornare, consequat lacus. Integer dui neque, scelerisque nec
-                sollicitudin sit amet, sodales a erat. Duis vitae condimentum ligula. Integer eu mi
-                nisl. Donec massa dui, commodo id arcu quis, venenatis scelerisque velit.
-              </p>
-            </div> */}
           </div>
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -754,32 +387,6 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           </div>
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Airline</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.airlineContent ||
-                    `no airline content found for this airport. Please check back later for more information.`,
-                }}
-              />
-              <br />
-            </div>
-          </div>
-          <div id="baggage" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Destination</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.destinationContent ||
-                    `no car destination content found for this airport. Please check back later for more information.`,
-                }}
-              />
-              <br />
-            </div>
-          </div>
-          <div id="baggage" className="columns is-multiline single-content-space">
-            <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Car Rental</h3>
               <p
                 dangerouslySetInnerHTML={{
@@ -804,33 +411,6 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               <br />
             </div>
           </div>
-          <div id="baggage" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Hotel</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.hotelsContent ||
-                    `no hotel content found for this airport. Please check back later for more information.`,
-                }}
-              />
-              <br />
-            </div>
-          </div>
-          <div id="baggage" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Attraction</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.attractionContent ||
-                    `no attraction content found for this airport. Please check back later for more information.`,
-                }}
-              />
-              <br />
-            </div>
-          </div>
-
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
@@ -874,3 +454,12 @@ async function getAirportPageDetails(
   }
   return null;
 }
+// Simulated airline page search function
+// async function getFlightData(iata_code: string | null) {
+//   // Simulate an API call or database lookup
+//   const response = await getFlightsToData(iata_code, null);
+//   if (response?.data.status) {
+//     return response.data.data;
+//   }
+//   return null;
+// }
