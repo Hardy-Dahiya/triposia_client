@@ -5,7 +5,7 @@ html {
   scroll-behavior: smooth;
 }
 strong {
-  color: #4a4a4a !important;
+  color: #000000 !important;
 }
 a {
   transition: all 0.3s;

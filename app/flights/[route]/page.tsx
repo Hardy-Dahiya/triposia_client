@@ -474,7 +474,7 @@ async function FlightDetails({
         </div>
 
         <div className="container">
-          <FlightFromList flightData={flightData} />
+          <FlightFromList type="flight" flightData={flightData} />
           {/* {flightData.flights.map((item: Flight, index: number) => {
             return (
               <div
@@ -681,7 +681,7 @@ async function FlightDetails({
             </div>
             {airportData.places_visit.slice(0, 6).map((place: Place) => (
               <div key={place.place_id} className="column is-4">
-                <PlacesList placeId={place.place_id} />
+                <PlacesList placeId={place.place_id} distance={place.distance_from_airport_km} />
               </div>
             ))}
           </div>

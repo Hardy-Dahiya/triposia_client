@@ -11,6 +11,10 @@ import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
 import { getAirportPage } from '@/services/pages/PageServices';
 import { Metadata } from 'next';
+import FlightFromList from '@/src/components/Flight/FlightFromList';
+import TruncatedText from '@/src/common/TrucateText';
+import AirlineParser from '@/src/common/AirlineParser';
+import { getFlightsToData } from '@/services/flights/FlightServices';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
@@ -99,8 +103,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
   const headersList = await headers();
   const host = headersList.get('host') || 'default';
   const pageData = await getAirportPageDetails(airportData._id, 'en', host);
-  // const flightData = await getFlightData(airportData.iata_code);
-  // console.log('flightData', flightData);
+  const flightData = await getFlightData(airportData.iata_code);
   return (
     <div>
       <div className="single-content-nav sticky ">
@@ -301,6 +304,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
             </div>
             <hr className="seprator my-5" />
             <div className="column is-12 order3">
+              <h3 className="title is-5 mt-3 mb-3">{airportData.name}</h3>
               <p
                 className="py-2"
                 dangerouslySetInnerHTML={{
@@ -311,39 +315,35 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           </div>
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Airline</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.airlineContent ||
-                    `no airline content found for this airport. Please check back later for more information.`,
-                }}
+              <h3 className="title is-5 mt-3 mb-3">Airlines</h3>
+              <TruncatedText
+                maxLength={600}
+                content={pageData.airlineContent}
+                fallbackMessage="no airline content found for this airport. Please check back later for more information."
+              />
+              <br />
+            </div>
+            <AirlineParser content={pageData.airlineContent} />
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Flights From {airportData.city}</h3>
+              <TruncatedText
+                maxLength={600}
+                content={pageData.flightsFromCity}
+                fallbackMessage="no flights from city content found for this airport. Please check back later for more information."
               />
               <br />
             </div>
           </div>
+          <FlightFromList flightData={flightData} type="airport" />
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Destination</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.destinationContent ||
-                    `no destination content found for this airport. Please check back later for more information.`,
-                }}
-              />
-              <br />
-            </div>
-          </div>
-          <div id="baggage" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">Flights From City</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.flightsFromCity ||
-                    `no flights from city content found for this airport. Please check back later for more information.`,
-                }}
+              <TruncatedText
+                maxLength={600}
+                content={pageData.destinationContent}
+                fallbackMessage="no destination content found for this airport. Please check back later for more information."
               />
               <br />
             </div>
@@ -351,18 +351,16 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Attractions Near {airportData.city} Airport</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.attractionContent ||
-                    `If you are looking for places to visit near ${airportData.city} airport, find out the
-                list below.`,
-                }}
+              <TruncatedText
+                maxLength={500}
+                content={pageData.attractionContent}
+                fallbackMessage={`If you are looking for places to visit near ${airportData.city} airport, find out the
+                list below.`}
               />
             </div>
             {airportData.places_visit.slice(0, 6).map((place: Place) => (
               <div key={place.place_id} className="column is-4">
-                <PlacesList placeId={place.place_id} />
+                <PlacesList placeId={place.place_id} distance={place.distance_from_airport_km} />
               </div>
             ))}
           </div>
@@ -370,13 +368,11 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="hotels" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Hotels Near {airportData.city} Airport</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.hotelsContent ||
-                    `If you are looking for places to stay near ${airportData.city} airport, explore the
-                options below.`,
-                }}
+              <TruncatedText
+                maxLength={500}
+                content={pageData.hotelsContent}
+                fallbackMessage={`If you are looking for places to stay near ${airportData.city} airport, explore the
+                options below.`}
               />
             </div>
             {airportData.hotels.slice(0, 6).map((hotel: HotelAirport) => (
@@ -388,12 +384,10 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Car Rental</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.carRentalContent ||
-                    `no car content found for this airport. Please check back later for more information.`,
-                }}
+              <TruncatedText
+                maxLength={600}
+                content={pageData.carRentalContent}
+                fallbackMessage="no car content found for this airport. Please check back later for more information."
               />
               <br />
             </div>
@@ -401,12 +395,10 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Parking</h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.parkingContent ||
-                    `no parking content found for this airport. Please check back later for more information.`,
-                }}
+              <TruncatedText
+                maxLength={600}
+                content={pageData.parkingContent}
+                fallbackMessage="no parking content found for this airport. Please check back later for more information."
               />
               <br />
             </div>
@@ -455,11 +447,17 @@ async function getAirportPageDetails(
   return null;
 }
 // Simulated airline page search function
-// async function getFlightData(iata_code: string | null) {
-//   // Simulate an API call or database lookup
-//   const response = await getFlightsToData(iata_code, null);
-//   if (response?.data.status) {
-//     return response.data.data;
-//   }
-//   return null;
-// }
+async function getFlightData(iata_code: string | null) {
+  // Simulate an API call or database lookup
+  const response = await getFlightsToData(iata_code, null);
+  const data = {
+    flights: [],
+    departure_iata: '',
+    arrival_iata: '',
+  };
+  if (response?.data.status) {
+    data.flights = response.data.data;
+    return data;
+  }
+  return data;
+}

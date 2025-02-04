@@ -43,6 +43,9 @@ export interface TimeSlot {
 
 export interface Flight {
   _id: string;
+  airlineroutes: Airlineroute[];
+  price: string;
+  city_name_en: string;
   iata_from: string;
   iata_to: string;
   departure_time: string;

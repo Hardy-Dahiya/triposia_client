@@ -45,7 +45,7 @@ interface ApiResponse {
   };
 }
 
-const PlacesList = ({ placeId }: { placeId: string }) => {
+const PlacesList = ({ placeId, distance }: { placeId: string; distance: string }) => {
   const [placeData, setPlaceData] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,7 +75,6 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
   if (error) {
     return <div className="notification is-danger">Error: {error}</div>;
   }
-
   if (!placeData) {
     return (
       <progress
@@ -109,7 +108,9 @@ const PlacesList = ({ placeId }: { placeId: string }) => {
       )}
       <div className="card-content">
         <p className="title is-6">{name}</p>
-        <p className="subtitle is-7">{formatted_address}</p>
+        <p className="subtitle is-7">
+          {formatted_address} (distance from airport {distance}km)
+        </p>
         <p>
           <strong>Rating: {rating}</strong> | {reviews?.length || 0} Reviews
         </p>
