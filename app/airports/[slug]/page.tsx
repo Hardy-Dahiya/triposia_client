@@ -5,7 +5,7 @@ import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { HotelAirport, Place } from '@/src/types/types';
+import { FlightData, HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
@@ -15,6 +15,8 @@ import FlightFromList from '@/src/components/Flight/FlightFromList';
 import TruncatedText from '@/src/common/TrucateText';
 import AirlineParser from '@/src/common/AirlineParser';
 import { getFlightsToData } from '@/services/flights/FlightServices';
+import CityParser from '@/src/common/CityParser';
+import Link from 'next/link';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
@@ -26,7 +28,6 @@ export async function generateMetadata({ params }: AirportRouteParams): Promise<
   // Await `params` since it's treated as a Promise in the build environment
   const headersList = await headers();
   const host = headersList.get('host') || 'default';
-  console.log('host', host);
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   const airportData = await searchAirport(slug.toUpperCase());
@@ -347,6 +348,29 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               />
               <br />
             </div>
+            <CityParser content={pageData.destinationContent} />
+          </div>
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Airport Near By {airportData.city}</h3>
+              <br />
+            </div>
+            {flightData.flights.slice(0, 12).map((item: FlightData, index) => {
+              return (
+                <div className="column is-3" key={index}>
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-plane" />
+                    </div>
+                    <div className="single-feature-titles">
+                      <Link href={`/airports/${item.airport.IATA}`}>
+                        <p className="title-custom">{item.airport.name}</p>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
