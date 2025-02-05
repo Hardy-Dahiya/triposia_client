@@ -309,7 +309,9 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               <p
                 className="py-2"
                 dangerouslySetInnerHTML={{
-                  __html: pageData.overview || `Airport Overview Content`,
+                  __html:
+                    pageData.overview ||
+                    `no content found for this airport. Please check back later for more information.`,
                 }}
               />
             </div>
