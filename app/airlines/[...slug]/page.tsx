@@ -24,6 +24,7 @@ import { Metadata } from 'next';
 import FlightList from '@/src/components/Flight/FlightList';
 import TruncatedText from '@/src/common/TrucateText';
 import FlightFromList from '@/src/components/Flight/FlightFromList';
+import Link from 'next/link';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
@@ -481,66 +482,15 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
             </div>
             {airlineData.destinations.map((item: AirlineDestination, index: number) => {
               return (
-                <div key={index} className="column is-12 pt-0">
-                  <div className="departing-flights">
-                    <div className="flights-booking-item">
-                      <div className="flight-time">
-                        <h4 className="title is-6 mb-0">{item.city}</h4>
-                        <p className="detailtxt">{item.name}</p>
-                      </div>
-                      <div className="duration">
-                        <h4 className="title is-6 mb-0">{item.iata_code}</h4>
-                        {/* <p className="detailtxt">BOM-DEL</p> */}
-                      </div>
-                      <div className="nonstop">
-                        <h4 className="title is-6 mb-0">{item.country}</h4>
-                      </div>
-                      <div className="weightkg">
-                        <h4 className="title is-6 mb-0">
-                          109 kg CO2<sub>2</sub>
-                        </h4>
-                        <p className="detailtxt">+36% emissions</p>
-                      </div>
-                      <div className="flight-price">
-                        <h4 className="title is-6 mb-0">₹9,195</h4>
-                        <p className="detailtxt">round trip</p>
-                      </div>
+                <div className="column is-2" key={index}>
+                  <div className="single-tour-feature">
+                    <div className="single-feature-icon">
+                      <i className="fa fa-plane" />
                     </div>
-                    <button className="toggle_menu" />
-                    <div className="toggle_text">
-                      <div className="columns is-multiline is-justify-content-space-around">
-                        <div className="column is-6">
-                          <div className="time-travel-wrap is-clearfix">
-                            <div className="time-travel">
-                              <div className="time-travel-circle" />
-                              <div className="time-travel-dot" />
-                              <div className="time-travel-circle" />
-                            </div>
-                            <p className="time-start-end">
-                              11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira
-                              Gandhi International Airport (DEL)
-                            </p>
-                            <p className="total-time">Travel time: 2 hr 10 min</p>
-                            <p className="time-start-end">
-                              1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
-                              Shivaji Maharaj International Airport (BOM)
-                            </p>
-                          </div>
-                          <div className="flightlist-bottom">
-                            Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
-                            <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
-                            <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
-                          </div>
-                        </div>
-                        <div className="column is-3">
-                          <ul className="check-list">
-                            <li>Below average legroom (29 in)</li>
-                            <li>In-seat USB outlet</li>
-                            <li>Stream media to your device</li>
-                            <li>Carbon emissions estimate: 97 kg</li>
-                          </ul>
-                        </div>
-                      </div>
+                    <div className="single-feature-titles">
+                      <Link href={`/airports/${item.iata_code}`}>
+                        <p className="title-custom">{item.city}</p>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -727,6 +677,108 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
               </table>
             </div>
           </div>
+          <div id="pages" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">Related airlines</h3>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/bearskin-jv-bls-ca" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Bearskin Airlines</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/belgium-kf-abb-be" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Air Belgium</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/iran-ir-ira-iranair" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Iran Air</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/navitaire-1n-us" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Navitaire</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/nepal-ra-rna-royalnepal-np" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Nepal Airlines</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/qatar-qr-qtr-qatari-qa" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Qatar Airways</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/raindo-united-r0-rbf-raindo-id" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Raindo United Services</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div className="column is-3">
+              <div className="single-tour-feature">
+                <Link href="/airlines/rano-r4-ran-ng" target="_blank">
+                  <div className="single-feature-icon">
+                    <i className="fa fa-map" />
+                  </div>
+                  <div className="single-feature-titles">
+                    <p className="title-custom">Rano Air</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+
           <div id="faq" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">FAQs</h3>
