@@ -479,6 +479,11 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
           <div id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Destinations</h3>
+              <TruncatedText
+                maxLength={600}
+                content={pageData.destinationContent}
+                fallbackMessage="no content found for this airline. Please check back later for more information."
+              />
             </div>
             {airlineData.destinations.map((item: AirlineDestination, index: number) => {
               return (
