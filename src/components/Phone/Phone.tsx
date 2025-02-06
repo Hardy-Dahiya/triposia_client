@@ -8,7 +8,7 @@ export default async function Phone() {
           href={`tel:+${phone.phone}`}
           className="button is-danger has-text-weight-bold is-large call-popup"
         >
-          <img height={62} width={62} src="../images/phone.gif" alt="call" /> &nbsp;{' '}
+          <img height={62} width={62} src="../../images/phone.gif" alt="call" /> &nbsp;{' '}
           <span className="hello">Speak with Expert*</span>{' '}
           <span className="hellos">+{phone.phone}</span>
         </a>

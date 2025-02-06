@@ -84,5 +84,57 @@ const getAirlinePage = async (
     }
   }
 };
+// getAirlineToCityPage
+const getAirlineToCityPage = async (
+  airline_id: string | number | null,
+  language_id: string | number | null,
+  host: string,
+) => {
+  try {
+    const domainID = domainMap[host];
+    const URL = `${url}/page/airline/city-to?airline_id=${airline_id}&language_id=${language_id}&domain_id=${domainID}`;
+    return await axios.get(URL, {});
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Invalid token or session expired');
+        // Handle 401 errorlogout
+      } else {
+        console.error('An error occurred:', error.response?.data);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+};
+// getAirlineCityToCityPage
+const getAirlineCityToCityPage = async (
+  airline_id: string | number | null,
+  language_id: string | number | null,
+  host: string,
+) => {
+  try {
+    const domainID = domainMap[host];
+    const URL = `${url}/page/airline/city-to-city?airline_id=${airline_id}&language_id=${language_id}&domain_id=${domainID}`;
+    return await axios.get(URL, {});
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Invalid token or session expired');
+        // Handle 401 errorlogout
+      } else {
+        console.error('An error occurred:', error.response?.data);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+};
 
-export { getFlightPage, getAirlinePage, getAirportPage };
+export {
+  getFlightPage,
+  getAirlinePage,
+  getAirportPage,
+  getAirlineToCityPage,
+  getAirlineCityToCityPage,
+};
