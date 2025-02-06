@@ -219,6 +219,10 @@ export interface UniqueAirlineData {
   twitter_url: string;
   wikipedia_url: string;
   youtube_url: string;
+  airline: {
+    name: string;
+    iata: string;
+  };
   updated_at: string; // ISO date string
 }
 

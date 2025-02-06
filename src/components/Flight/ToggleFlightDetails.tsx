@@ -46,7 +46,8 @@ export default function ToggleFlightDetails({
             </div>
             <div className="nonstop">
               <p className="title is-6 mb-0">
-                {airlineData.name} ({airlineData.iata_code})
+                {airlineData.name || airlineData.airline.name} (
+                {airlineData.iata_code || airlineData.airline.iata})
               </p>
             </div>
             <div className="weightkg">

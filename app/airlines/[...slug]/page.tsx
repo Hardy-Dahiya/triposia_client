@@ -851,6 +851,7 @@ async function AirlineCityToCity({
 }) {
   const airlineData = await searchAirlinesCityToCity(airline_iata, dep_iata, arr_iata);
   const pageData = await getAirlineCityToCityPageDetails(airlineData._id, language_id, host);
+  const flightData = await getFlightsFromAirline(dep_iata, airline_iata.toLocaleUpperCase());
   return (
     <div>
       <div id="baggage" className="columns is-multiline single-content-space">
@@ -864,6 +865,14 @@ async function AirlineCityToCity({
           <br />
         </div>
       </div>
+      <FlightList
+        flightData={flightData}
+        isMultiCity={true}
+        iata_code={dep_iata}
+        arr_iata={arr_iata}
+        airlineData={airlineData}
+        airline_iata={airline_iata}
+      />
       <div id="baggage" className="columns is-multiline single-content-space">
         <div className="column is-12">
           <h3 className="title is-5 mt-3 mb-3">
@@ -1176,9 +1185,7 @@ async function FlightDetails({
             <div>
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Flights From {airlineCityData.airline.carrier_name}
-                  </h3>
+                  <h3 className="title is-5 mt-3 mb-3">Flights From {airlineData.name}</h3>
                   <TruncatedText
                     maxLength={600}
                     content={pageData.flightsFromCity}
@@ -1187,11 +1194,29 @@ async function FlightDetails({
                   <br />
                 </div>
               </div>
+              <FlightList
+                flightData={
+                  isMultiCity
+                    ? flightData.filter(
+                        (el: FlightData) =>
+                          el.country_code === el.airport.country_code &&
+                          el.iata_from === iata_code &&
+                          el.iata_to === arr_iata,
+                      )
+                    : flightData.filter(
+                        (el: FlightData) => el.country_code === el.airport.country_code,
+                      )
+                }
+                isMultiCity={isMultiCity}
+                iata_code={iata_code}
+                arr_iata={arr_iata}
+                airlineData={airlineData}
+                airline_iata={airline_iata}
+              />
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    Cheap {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
+                    Cheap {airlineData.name} Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
                     maxLength={600}
@@ -1201,11 +1226,29 @@ async function FlightDetails({
                   <br />
                 </div>
               </div>
+              <FlightList
+                flightData={
+                  isMultiCity
+                    ? flightData.filter(
+                        (el: FlightData) =>
+                          el.country_code !== el.airport.country_code &&
+                          el.iata_from === iata_code &&
+                          el.iata_to === arr_iata,
+                      )
+                    : flightData.filter(
+                        (el: FlightData) => el.country_code !== el.airport.country_code,
+                      )
+                }
+                isMultiCity={isMultiCity}
+                iata_code={iata_code}
+                arr_iata={arr_iata}
+                airlineData={airlineData}
+                airline_iata={airline_iata}
+              />
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    {airlineCityData.airline.carrier_name} Business Class Flights to{' '}
-                    {airlineCityData.city_name_en}
+                    {airlineData.name} Business Class Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
                     maxLength={600}
@@ -1218,8 +1261,7 @@ async function FlightDetails({
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    Direct {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
+                    Direct {airlineData.name} Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
                     maxLength={600}
@@ -1232,8 +1274,7 @@ async function FlightDetails({
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    Oneway {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
+                    Oneway {airlineData.name} Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
                     maxLength={600}
@@ -1246,8 +1287,7 @@ async function FlightDetails({
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    Round Trip {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
+                    Round Trip {airlineData.name} Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
                     maxLength={600}
@@ -1270,133 +1310,6 @@ async function FlightDetails({
               </div>
             </div>
           )}
-          <div id="seatselection" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">
-                {airlineData.name} domestic flights from {iata_code}{' '}
-                {isMultiCity ? `to ${arr_iata}` : ''}
-              </h3>
-              <p>
-                Looking for cheap {airlineData.name} domestic flights from {iata_code}{' '}
-                {isMultiCity ? `to ${arr_iata}` : ''}.{airlineData.name} have{' '}
-                {isMultiCity
-                  ? flightData.filter(
-                      (el: FlightData) =>
-                        el.country_code === el.airport.country_code &&
-                        el.iata_from === iata_code &&
-                        el.iata_to === arr_iata,
-                    ).length
-                  : flightData.filter(
-                      (el: FlightData) => el.country_code === el.airport.country_code,
-                    ).length}{' '}
-                domestic flights from {iata_code} {isMultiCity ? `to ${arr_iata}` : ''}
-              </p>
-            </div>
-          </div>
-          <FlightList
-            flightData={
-              isMultiCity
-                ? flightData.filter(
-                    (el: FlightData) =>
-                      el.country_code === el.airport.country_code &&
-                      el.iata_from === iata_code &&
-                      el.iata_to === arr_iata,
-                  )
-                : flightData.filter((el: FlightData) => el.country_code === el.airport.country_code)
-            }
-            isMultiCity={isMultiCity}
-            iata_code={iata_code}
-            arr_iata={arr_iata}
-            airlineData={airlineData}
-            airline_iata={airline_iata}
-          />
-          <div id="seatselection" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <h3 className="title is-5 mt-3 mb-3">
-                {airlineData.name} international flights from {iata_code}
-              </h3>
-              <p>
-                Looking for cheap {airlineData.name} international flights from {iata_code}{' '}
-                {isMultiCity ? `to ${arr_iata}` : ''}. {airlineData.name} have{' '}
-                {isMultiCity
-                  ? flightData.filter(
-                      (el: FlightData) =>
-                        el.country_code !== el.airport.country_code &&
-                        el.iata_from === iata_code &&
-                        el.iata_to === arr_iata,
-                    ).length
-                  : flightData.filter(
-                      (el: FlightData) => el.country_code !== el.airport.country_code,
-                    ).length}{' '}
-                international flights from {iata_code} {isMultiCity ? `to ${arr_iata}` : ''}
-              </p>
-            </div>
-          </div>
-          <FlightList
-            flightData={
-              isMultiCity
-                ? flightData.filter(
-                    (el: FlightData) =>
-                      el.country_code !== el.airport.country_code &&
-                      el.iata_from === iata_code &&
-                      el.iata_to === arr_iata,
-                  )
-                : flightData.filter((el: FlightData) => el.country_code !== el.airport.country_code)
-            }
-            isMultiCity={isMultiCity}
-            iata_code={iata_code}
-            arr_iata={arr_iata}
-            airlineData={airlineData}
-            airline_iata={airline_iata}
-          />
-          {/* <div id="bestairlines" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <div className="b-table">
-                <div className="table-wrapper has-mobile-cards">
-                  <table className="table is-fullwidth bestairlines-table is-striped is-hoverable is-fullwidth mt-0 font-14">
-                    <thead>
-                      <tr className="is-selected">
-                        <th>DATE</th>
-                        <th>FLIGHT</th>
-                        <th>Departure</th>
-                        <th>Terminal</th>
-                        <th>Arrival</th>
-                        <th>Terminal</th>
-                        <th>STA</th>
-                        <th>AIRCRAFT</th>
-                        <th>STATUS</th>
-                        <th>DURATION</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {routeData.map((item: FlightRoute, index: number) => {
-                        return (
-                          <tr key={index}>
-                            <td data-label="DATE">{item.updatedAt}</td>
-                            <td data-label="FLIGHT">
-                              {item.airline.iata}
-                              {item.flight.number}
-                            </td>
-                            <td data-label="ORIGIN">{item.departure.airport}</td>
-                            <td data-label="ORIGIN">{item.departure.terminal}</td>
-                            <td data-label="DESTINATION">{item.arrival.airport}</td>
-                            <td data-label="DESTINATION">{item.arrival.terminal}</td>
-                            <td data-label="STA">{item.updatedAt}</td>
-                            <td data-label="AIRCRAFT">
-                              {item.airline.icao}
-                              {item.flight.number}
-                            </td>
-                            <td data-label="STATUS">Active</td>
-                            <td data-label="DURATION">{calculateFlightDuration(item)}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div> */}
 
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
