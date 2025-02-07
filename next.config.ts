@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     ], // Add the relevant domains here
   },
   output: 'standalone',
+  reactStrictMode: true,
+  generateBuildId: async () => `${new Date().getTime()}`, // Forces new build ID
 };
 
 export default nextConfig;
