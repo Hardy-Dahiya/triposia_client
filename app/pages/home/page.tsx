@@ -16,9 +16,9 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=59877314&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.283611,
     longitude: 55.399246,
-    city: '',
+    city: 'Dubai',
     state: '',
-    country: '',
+    country: 'United Arab Emirates',
     zipcode: 0,
   },
   {
@@ -31,9 +31,9 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=68218&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.2731186,
     longitude: 55.3197938,
-    city: '',
+    city: 'Dubai',
     state: '',
-    country: '',
+    country: 'United Arab Emirates',
     zipcode: 0,
   },
   {
@@ -46,9 +46,9 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?hid=1249',
     latitude: 25.069480895996094,
     longitude: 55.1348991394043,
-    city: '',
+    city: 'Gurugram',
     state: '',
-    country: '',
+    country: 'India',
     zipcode: 0,
   },
   {
@@ -61,9 +61,9 @@ const topHotels = [
     url: 'https://www.agoda.com/partners/partnersearch.aspx?cid=1918595&hid=180212&currency=USD&checkin=2024-09-02&checkout=2024-09-03&NumberofAdults=2&NumberofChildren=1&childages=17&Rooms=1&pcs=6',
     latitude: 25.2720937,
     longitude: 55.31586589999999,
-    city: '',
+    city: 'Dubai',
     state: '',
-    country: '',
+    country: 'United Arab Emirates',
     zipcode: 0,
   },
 ];
@@ -204,7 +204,9 @@ function Home() {
             {topHotels.map((item: Hotel, index: number) => {
               return (
                 <div key={index} className="column is-3">
-                  <Link href={`/hotel/${item.hotel_id}`}>
+                  <Link
+                    href={`/hotel/${item.hotel_id}?name=${item.hotel_name}&city=${item.city}&country=${item.country}`}
+                  >
                     <img
                       src={item.photo1}
                       alt={item.hotel_name}
@@ -214,7 +216,11 @@ function Home() {
                   </Link>
                   <div className="card-box">
                     <h3 className="title is-5 mb-4">
-                      <Link href={`/hotel/${item.hotel_id}`}>{item.hotel_name}</Link>
+                      <Link
+                        href={`/hotel/${item.hotel_id}?name=${item.hotel_name}&city=${item.city}&country=${item.country}`}
+                      >
+                        {item.hotel_name}
+                      </Link>
                     </h3>
                     <p>We have over 28K reviews to assure you top notch service.</p>
                   </div>

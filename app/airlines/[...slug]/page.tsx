@@ -503,7 +503,7 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">{airlineData.name} Flights</h3>
-              <FlightFromList flightData={data} type="airport" />
+              <FlightFromList flightCount={5} flightData={data} type="airport" />
               <br />
             </div>
           </div>

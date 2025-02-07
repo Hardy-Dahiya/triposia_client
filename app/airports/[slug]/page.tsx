@@ -339,7 +339,7 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
               <br />
             </div>
           </div>
-          <FlightFromList flightData={flightData} type="airport" />
+          <FlightFromList flightCount={5} flightData={flightData} type="airport" />
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">Destination</h3>

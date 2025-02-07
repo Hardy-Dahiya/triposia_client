@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { HotelAirport } from '@/src/types/types';
+import Link from 'next/link';
 
 interface HotelsListProps {
   hotel: HotelAirport;
@@ -81,14 +82,14 @@ const HotelsList = ({ hotel }: HotelsListProps) => {
             )}
             {freeWifi && <span className="tag is-primary is-light">Free Wi-Fi</span>}
           </p>
-          <a
-            href={`/hotel/${hotelId}?{hotelName}`}
+          <Link
+            href={`/hotel/${hotelId}?name=${hotelName}&currecny=${currency}&review=${reviewCount}&score=${reviewScore}`}
             target="_blank"
             rel="noopener noreferrer"
             className="button is-link is-small mt-3"
           >
             View Details
-          </a>
+          </Link>
         </div>
       </div>
     </div>

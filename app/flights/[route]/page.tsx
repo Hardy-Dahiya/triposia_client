@@ -16,6 +16,7 @@ import { getAirportsData } from '@/services/airports/AirportServices';
 import { getFlightPage } from '@/services/pages/PageServices';
 import Link from 'next/link';
 import FlightFromList from '@/src/components/Flight/FlightFromList';
+import TruncatedText from '@/src/common/TrucateText';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -124,6 +125,7 @@ async function FlightDetails({
   }
 
   const pageData = await getFlightPageDetails(flightData._id, 'en', host);
+  console.log(pageData);
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: 'bar', // Correct type for the chart
@@ -402,6 +404,17 @@ async function FlightDetails({
         </div>
 
         <div className="container">
+          <div id="baggage" className="columns is-multiline single-content-space">
+            <div className="column is-12">
+              <h3 className="title is-5 mt-3 mb-3">About</h3>
+              <TruncatedText
+                maxLength={600}
+                content={pageData.overview}
+                fallbackMessage="no conent found for this flight. Please check back later for more information."
+              />
+              <br />
+            </div>
+          </div>
           <div id="cheapestflight" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">
@@ -470,99 +483,43 @@ async function FlightDetails({
         <div className="container">
           <div className="column is-12">
             <h3 className="title is-5 mt-3 mb-3">Flights from - {flightData.departure_city}</h3>
+            <TruncatedText
+              content={pageData.flightsFromDetails}
+              fallbackMessage="no conent found for this flight. Please check back later for more information."
+              maxLength={600}
+            />
           </div>
         </div>
 
         <div className="container">
-          <FlightFromList type="flight" flightData={flightData} />
-          {/* {flightData.flights.map((item: Flight, index: number) => {
-            return (
-              <div
-                key={index}
-                id="seatselection"
-                className="columns is-multiline single-content-space"
-              >
-                <div className="column is-12 pt-0">
-                  <div className="departing-flights">
-                    <div className="flights-booking-item">
-                      <div className="flight-logo">
-                        <Image
-                          src={`https://aerocloud.s3.amazonaws.com/airweb/${item.airline_iata}.webp`}
-                          alt="flight-logo"
-                          width={100} // Replace with the appropriate width you need
-                          height={100} // Replace with the appropriate height you need
-                          layout="intrinsic" // Optional, you can adjust this based on your needs (intrinsic, fixed, or responsive)
-                        />
-                      </div>
-                      <div className="flight-time">
-                        <h4 className="title is-6 mb-0">
-                          {item.departure_time}-{item.arrival_time}
-                        </h4>
-                        <p className="detailtxt">Separate tickets booked together</p>
-                      </div>
-                      <div className="duration">
-                        <h4 className="title is-6 mb-0">{item.duration}</h4>
-                        <p className="detailtxt">
-                          {flightData.departure_iata}-{flightData.arrival_iata}
-                        </p>
-                      </div>
-                      <div className="nonstop">
-                        <h4 className="title is-6 mb-0">Nonstop</h4>
-                      </div>
-                      <div className="weightkg">
-                        <h4 className="title is-6 mb-0">
-                          109 kg CO2<sub>2</sub>
-                        </h4>
-                        <p className="detailtxt">+36% emissions</p>
-                      </div>
-                      <div className="flight-price">
-                        <h4 className="title is-6 mb-0">₹9,195</h4>
-                        <p className="detailtxt">round trip</p>
-                      </div>
-                    </div>
-                    <button className="toggle_menu" />
-                    <div className="toggle_text">
-                      <div className="columns is-multiline is-justify-content-space-around">
-                        <div className="column is-6">
-                          <div className="time-travel-wrap is-clearfix">
-                            <div className="time-travel">
-                              <div className="time-travel-circle" />
-                              <div className="time-travel-dot" />
-                              <div className="time-travel-circle" />
-                            </div>
-                            <p className="time-start-end">
-                              11:40 AM <i className="fa-solid fa-circle dot-seprator" /> Indira
-                              Gandhi International Airport (DEL)
-                            </p>
-                            <p className="total-time">Travel time: 2 hr 10 min</p>
-                            <p className="time-start-end">
-                              1:50 PM <i className="fa-solid fa-circle dot-seprator" /> Chhatrapati
-                              Shivaji Maharaj International Airport (BOM)
-                            </p>
-                          </div>
-                          <div className="flightlist-bottom">
-                            Vistara <i className="fa-solid fa-circle dot-seprator" /> Economy{' '}
-                            <i className="fa-solid fa-circle dot-seprator" /> Airbus{' '}
-                            <i className="fa-solid fa-circle dot-seprator" /> A320UK 945
-                          </div>
-                        </div>
-                        <div className="column is-3">
-                          <ul className="check-list">
-                            <li>Below average legroom (29 in)</li>
-                            <li>In-seat USB outlet</li>
-                            <li>Stream media to your device</li>
-                            <li>Carbon emissions estimate: 97 kg</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })} */}
+          <FlightFromList flightCount={5} type="flight" flightData={flightData} />
         </div>
-
+        <div className="container">
+          <div className="column is-12">
+            <h3 className="title is-5 mt-3 mb-3">One-Way Flight Details</h3>
+            <TruncatedText
+              content={pageData.oneWayFlightDetails}
+              fallbackMessage="no conent found for this flight. Please check back later for more information."
+              maxLength={600}
+            />
+          </div>
+          <div className="container">
+            <FlightFromList flightCount={5} type="flight" flightData={flightData} />
+          </div>
+        </div>
+        <div className="container">
+          <div className="column is-12">
+            <h3 className="title is-5 mt-3 mb-3">Round-Trip Details</h3>
+            <TruncatedText
+              content={pageData.roundTripDetails}
+              fallbackMessage="no conent found for this flight. Please check back later for more information."
+              maxLength={600}
+            />
+          </div>
+          <div className="container">
+            <FlightFromList flightCount={5} type="flight" flightData={flightData} />
+          </div>
+        </div>
         <div className="container">
           <div id="graph" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -570,15 +527,10 @@ async function FlightDetails({
                 Monthly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
                 flights
               </h3>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.monthlyGraph ||
-                    `July is cheapest month ${flightData.departure_city} to ${flightData.arrival_city}
-                flights. Fares start start in July from $124 and Monday is cheapest day to book
-                flights to Mumbai. Find out monthly fares graph predications
-                ${flightData.departure_city} to ${flightData.arrival_city} flights.`,
-                }}
+              <TruncatedText
+                content={pageData.monthlyGraph}
+                fallbackMessage="no conent found for this flight. Please check back later for more information."
+                maxLength={600}
               />
             </div>
             <div className="column is-6">
@@ -597,15 +549,10 @@ async function FlightDetails({
                 Weekly price statistics {flightData.departure_city} to {flightData.arrival_city}{' '}
                 flights
               </h3>
-              <p></p>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.weeklyGraph ||
-                    ` Monday is cheapest day price start at 124 ${flightData.departure_city} to
-                ${flightData.arrival_city} flights. Get full real time stats of weekly fares
-                ${flightData.departure_city} to ${flightData.arrival_city}.`,
-                }}
+              <TruncatedText
+                content={pageData.weeklyGraph}
+                fallbackMessage="no conent found for this flight. Please check back later for more information."
+                maxLength={600}
               />
             </div>
             <div className="column is-6">
@@ -623,14 +570,10 @@ async function FlightDetails({
               <h3 className="title is-5 mt-3 mb-3 has-text-centered">
                 Best airlines flying from {flightData.departure_city} to {flightData.arrival_city}
               </h3>
-              <p
-                className="has-text-centered"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    pageData.bestAirlinesFlyingFromDetails ||
-                    `Compare and see reviews for airlines that fly from ${flightData.departure_city} to
-                ${flightData.arrival_city} with momondo`,
-                }}
+              <TruncatedText
+                content={pageData.bestAirlinesFlyingFromDetails}
+                fallbackMessage="no conent found for this flight. Please check back later for more information."
+                maxLength={600}
               />
               <div className="b-table">
                 <div className="table-wrapper has-mobile-cards">

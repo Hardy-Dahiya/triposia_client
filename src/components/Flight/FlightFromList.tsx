@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { Flight } from '@/src/types/types'; // Assuming the Flight type exists in your types directory
 
 interface FlightFromListProps {
   type: string;
+  flightCount: number;
   flightData: {
     flights: Flight[] | null | undefined;
     departure_iata: string;
@@ -13,26 +14,31 @@ interface FlightFromListProps {
   };
 }
 
-const FlightFromList: React.FC<FlightFromListProps> = ({ flightData, type }) => {
+const FlightFromList: React.FC<FlightFromListProps> = ({ flightData, type, flightCount }) => {
   const [visibleIndex, setVisibleIndex] = useState<number | null>(null);
-  const [visibleCount, setVisibleCount] = useState(10); // Number of flights to show initially
+  const [visibleCount, setVisibleCount] = useState(5); // Number of flights to show initially
+
+  const shuffledFlights = useMemo(() => {
+    if (!flightData.flights) return [];
+    return [...flightData.flights].sort(() => Math.random() - 0.5);
+  }, [flightData.flights]);
 
   const toggleDetails = (index: number) => {
-    setVisibleIndex(visibleIndex === index ? null : index);
+    setVisibleIndex(flightCount === index ? null : index);
   };
 
   const loadMoreFlights = () => {
-    setVisibleCount(visibleCount + 10); // Load 3 more flights
+    setVisibleCount(visibleCount + 5); // Load 3 more flights
   };
 
   const showLessFlights = () => {
-    setVisibleCount(10); // Reset to show only 3 flights
+    setVisibleCount(flightCount); // Reset to show only 3 flights
     setVisibleIndex(null); // Hide any expanded details
   };
   if (type === 'flight' && flightData.flights) {
     return (
       <div>
-        {flightData.flights.slice(0, visibleCount).map((item: Flight, index: number) => (
+        {shuffledFlights.slice(0, visibleCount).map((item: Flight, index: number) => (
           <div key={index} id="seatselection" className="columns is-multiline single-content-space">
             <div className="column is-12 pt-0">
               <div className="departing-flights">

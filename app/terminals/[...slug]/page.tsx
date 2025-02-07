@@ -58,17 +58,6 @@ export async function generateMetadata({ params }: AirlineRouteParams): Promise<
       };
     }
   }
-  if (finalSlug.length === 3) {
-    const airlineData = await searchAirlinesCityToCity(finalSlug[0], finalSlug[1], finalSlug[2]);
-    const pageData = await getAirlineCityToCityPageDetails(airlineData._id, 'en', host);
-    if (pageData) {
-      return {
-        title: pageData.title,
-        description: pageData.meta,
-        keywords: pageData.keywords,
-      };
-    }
-  }
 
   const airlineData = await searchAirlines(slug[0]);
   if (airlineData && airlineData._id) {
@@ -137,13 +126,6 @@ export default async function AirlineRoutePage({ params }: AirlineRouteParams) {
             iata_code={finalSlug[1].toUpperCase()}
             airline_iata={finalSlug[0]}
             isMultiCity={false}
-          />
-        ) : finalSlug.length === 3 ? (
-          <FlightDetails
-            iata_code={finalSlug[1].toUpperCase()}
-            arr_iata={finalSlug[2].toUpperCase()}
-            airline_iata={finalSlug[0]}
-            isMultiCity={true}
           />
         ) : (
           <Error
@@ -503,7 +485,7 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
               <h3 className="title is-5 mt-3 mb-3">{airlineData.name} Flights</h3>
-              <FlightFromList flightData={data} type="airport" />
+              <FlightFromList flightCount={5} flightData={data} type="airport" />
               <br />
             </div>
           </div>
