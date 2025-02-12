@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { getDistance } from '@/services/flights/FlightServices';
 import { Suspense } from 'react';
 import Error from '@/src/components/Message/Error';
@@ -6,6 +7,8 @@ import Header from '../../../src/components/Header/Header';
 import { Metadata } from 'next';
 import { Flight } from '@/src/types/types';
 import RouteMap from '@/src/components/Map/RouteMap';
+import { getFlightDistancePage } from '@/services/pages/PageServices';
+import TruncatedText from '@/src/common/TrucateText';
 
 // Define the params interface
 type AirportRouteParams = {
@@ -17,6 +20,8 @@ type AirportRouteParams = {
 export async function generateMetadata({ params }: AirportRouteParams): Promise<Metadata> {
   // Await `params` since it's treated as a Promise in the build environment
   const resolvedParams = await params;
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const finalSlug = [];
   const { slug } = resolvedParams;
   // Split the slug into an array
@@ -25,11 +30,12 @@ export async function generateMetadata({ params }: AirportRouteParams): Promise<
     finalSlug.push(...slugParts);
   }
   const flightData = await searchFlight(finalSlug[0].toUpperCase(), finalSlug[1].toUpperCase());
-  if (flightData) {
+  const flightPage = await getFlightPageDetails(flightData._id, 'en', host);
+  if (flightData && flightPage) {
     return {
-      title: `${flightData.departure_city} to ${flightData.arrival_city}`,
-      description: `${flightData.departure_iata} to ${flightData.arrival_iata}`,
-      keywords: `#${flightData.departure_iata} #${flightData.arrival_iata}`,
+      title: flightPage.title,
+      description: flightPage.meta,
+      keywords: flightPage.keywords,
     };
   }
   return {
@@ -86,7 +92,10 @@ export default async function DistanceRoutePage({ params }: AirportRouteParams) 
 }
 
 async function Page({ dep_iata, arr_iata }: { dep_iata: string; arr_iata: string }) {
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const flightData = await searchFlight(dep_iata, arr_iata);
+  const flightPage = await getFlightPageDetails(flightData._id, 'en', host);
   return (
     <section className="single-content-wrap section p-0">
       <div className="container">
@@ -143,6 +152,22 @@ async function Page({ dep_iata, arr_iata }: { dep_iata: string; arr_iata: string
         </div>
       </div>
       <div className="container">
+        <div className="column is-12">
+          <h3 className="title is-5 mt-3 mb-3">Flight From</h3>
+          <TruncatedText
+            maxLength={600}
+            content={flightPage.flightsFrom}
+            fallbackMessage="no content found for this airline. Please check back later for more information."
+          />
+        </div>
+        <div className="column is-12">
+          <h3 className="title is-5 mt-3 mb-3">Basic Information</h3>
+          <TruncatedText
+            maxLength={600}
+            content={flightPage.basicInformation}
+            fallbackMessage="no content found for this airline. Please check back later for more information."
+          />
+        </div>
         <div id="seatselection" className="columns is-multiline single-content-space">
           <div className="column is-12 content">
             <h2 className="title is-4 mt-3 mb-3">
@@ -222,7 +247,8 @@ async function Page({ dep_iata, arr_iata }: { dep_iata: string; arr_iata: string
         <div id="inflightfeatures" className="columns is-multiline single-content-space">
           <div className="column is-12 content">
             <h3 className="title is-5 mt-3 mb-3">
-              Visual Map Comparison of Distance from Delhi to Bangkok by Flights and Road.
+              Visual Map Comparison of Distance from {flightData.departure_city} to{' '}
+              {flightData.arrival_city} by Flights and Road.
             </h3>
             <div
               id="map"
@@ -244,11 +270,16 @@ async function Page({ dep_iata, arr_iata }: { dep_iata: string; arr_iata: string
                   <th>Distance (in kilometers)</th>
                 </tr>
                 <tr id="airDistanceRow">
-                  <td>Delhi to Bangkok Air Distance</td>
+                  <td>
+                    {flightData.departure_city} to {flightData.arrival_city} Air Distance
+                  </td>
                   <td id="airDistance">2947.74</td>
                 </tr>
                 <tr>
-                  <td>Delhi to Bangkok via road route and road distance</td>
+                  <td>
+                    {flightData.departure_city} to {flightData.arrival_city} via road route and road
+                    distance
+                  </td>
                   <td>4147.28</td>
                 </tr>
               </tbody>
@@ -342,7 +373,8 @@ BKK15121"
         <div id="inflightfeatures" className="columns is-multiline single-content-space">
           <div className="column is-12 content">
             <h4 className="title is-5 mt-3 mb-3">
-              Some important facts while you are searching for distance Delhi to Bangkok
+              Some important facts while you are searching for distance {flightData.departure_city}{' '}
+              to {flightData.arrival_city}
             </h4>
             <p />
             <p></p>
@@ -501,6 +533,19 @@ BKK15121"
 async function searchFlight(dep_iata: string, arr_iata: string) {
   // Simulate an API call or database lookup
   const response = await getDistance(dep_iata, arr_iata);
+  if (response?.data.status) {
+    return response.data.data;
+  }
+  return null;
+}
+
+async function getFlightPageDetails(
+  airline_id: string | null,
+  language_id: string | null,
+  host: string,
+) {
+  // Simulate an API call or database lookup
+  const response = await getFlightDistancePage(airline_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }

@@ -1,9 +1,5 @@
 import { headers } from 'next/headers';
-import {
-  getAirlineCityToCityData,
-  getAirlineData,
-  getAirlineToCityData,
-} from '@/services/airlines/AirlineServices';
+import { getAirlineData, getAirlineToCityData } from '@/services/airlines/AirlineServices';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 
@@ -16,11 +12,7 @@ import { getFlightsToData } from '@/services/flights/FlightServices';
 import { getAirportsData } from '@/services/airports/AirportServices';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
-import {
-  getAirlinePage,
-  getAirlineToCityPage,
-  getAirlineCityToCityPage,
-} from '@/services/pages/PageServices';
+import { getAirlinePage, getTerminalPage } from '@/services/pages/PageServices';
 import { Metadata } from 'next';
 import FlightList from '@/src/components/Flight/FlightList';
 import TruncatedText from '@/src/common/TrucateText';
@@ -59,7 +51,7 @@ export async function generateMetadata({ params }: AirlineRouteParams): Promise<
     }
   }
 
-  const airlineData = await searchAirlines(slug[0]);
+  const airlineData = await searchAirlines(finalSlug[0]);
   if (airlineData && airlineData._id) {
     const pageData = await getAirlinePageDetails(airlineData._id, 'en', host);
     if (pageData) {
@@ -818,114 +810,6 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
   );
 }
 
-async function AirlineCityToCity({
-  airline_iata,
-  dep_iata,
-  arr_iata,
-  language_id,
-  host,
-}: {
-  airline_iata: string;
-  dep_iata: string;
-  arr_iata: string | undefined;
-  language_id: string;
-  host: string;
-}) {
-  const airlineData = await searchAirlinesCityToCity(airline_iata, dep_iata, arr_iata);
-  const pageData = await getAirlineCityToCityPageDetails(airlineData._id, language_id, host);
-  return (
-    <div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">Flights From {airlineData.airline.name}</h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.flightsFromCity}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">
-            Oneway {airlineData.airline.name} Flights to {airlineData.iata}
-          </h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.oneWayFlightDetails}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">Round Trip Details</h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.roundTripDetails}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">
-            1.Cheap Airline Flight To {airlineData.arrival.iata}
-          </h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.cheapAirlineFlightToCity_1}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">
-            2.Cheap Airline Flight To {airlineData.arrival.iata}
-          </h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.cheapAirlineFlightToCity_2}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">
-            3.Cheap Airline Flight To {airlineData.arrival.iata}
-          </h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.cheapAirlineFlightToCity_3}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-      <div id="baggage" className="columns is-multiline single-content-space">
-        <div className="column is-12">
-          <h3 className="title is-5 mt-3 mb-3">
-            Best Airlines Flying From {airlineData.arrival.iata} Details
-          </h3>
-          <TruncatedText
-            maxLength={600}
-            content={pageData.bestAirlinesFlyingFromDetails}
-            fallbackMessage="no content found for this airline. Please check back later for more information."
-          />
-          <br />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 async function FlightDetails({
   iata_code,
   airline_iata,
@@ -1147,13 +1031,7 @@ async function FlightDetails({
             ''
           )}
           {isMultiCity ? (
-            <AirlineCityToCity
-              airline_iata={airline_iata}
-              dep_iata={iata_code}
-              arr_iata={arr_iata}
-              language_id="en"
-              host={host}
-            />
+            ''
           ) : (
             <div>
               <div id="baggage" className="columns is-multiline single-content-space">
@@ -1164,76 +1042,6 @@ async function FlightDetails({
                   <TruncatedText
                     maxLength={600}
                     content={pageData.flightsFromCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Cheap {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.cheapAirlineFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    {airlineCityData.airline.carrier_name} Business Class Flights to{' '}
-                    {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.airlineBussinessClassFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Direct {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.directAirlineFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Oneway {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.onewayAirlineFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Round Trip {airlineCityData.airline.carrier_name} Flights to{' '}
-                    {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.roundTripAirlineFlightsToCity}
                     fallbackMessage="no content found for this airline. Please check back later for more information."
                   />
                   <br />
@@ -1331,54 +1139,6 @@ async function FlightDetails({
             airlineData={airlineData}
             airline_iata={airline_iata}
           />
-          {/* <div id="bestairlines" className="columns is-multiline single-content-space">
-            <div className="column is-12">
-              <div className="b-table">
-                <div className="table-wrapper has-mobile-cards">
-                  <table className="table is-fullwidth bestairlines-table is-striped is-hoverable is-fullwidth mt-0 font-14">
-                    <thead>
-                      <tr className="is-selected">
-                        <th>DATE</th>
-                        <th>FLIGHT</th>
-                        <th>Departure</th>
-                        <th>Terminal</th>
-                        <th>Arrival</th>
-                        <th>Terminal</th>
-                        <th>STA</th>
-                        <th>AIRCRAFT</th>
-                        <th>STATUS</th>
-                        <th>DURATION</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {routeData.map((item: FlightRoute, index: number) => {
-                        return (
-                          <tr key={index}>
-                            <td data-label="DATE">{item.updatedAt}</td>
-                            <td data-label="FLIGHT">
-                              {item.airline.iata}
-                              {item.flight.number}
-                            </td>
-                            <td data-label="ORIGIN">{item.departure.airport}</td>
-                            <td data-label="ORIGIN">{item.departure.terminal}</td>
-                            <td data-label="DESTINATION">{item.arrival.airport}</td>
-                            <td data-label="DESTINATION">{item.arrival.terminal}</td>
-                            <td data-label="STA">{item.updatedAt}</td>
-                            <td data-label="AIRCRAFT">
-                              {item.airline.icao}
-                              {item.flight.number}
-                            </td>
-                            <td data-label="STATUS">Active</td>
-                            <td data-label="DURATION">{calculateFlightDuration(item)}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div> */}
 
           <div id="baggage" className="columns is-multiline single-content-space">
             <div className="column is-12">
@@ -1642,18 +1402,6 @@ async function searchAirlinesToCity(airline_iata: string, iata_code: string) {
   }
   return null;
 }
-async function searchAirlinesCityToCity(
-  airline_iata: string,
-  iata_code: string,
-  arr_iata: string | undefined,
-) {
-  // Simulate an API call or database lookup
-  const response = await getAirlineCityToCityData(airline_iata, iata_code, arr_iata);
-  if (response?.data.status) {
-    return response.data.data[0];
-  }
-  return null;
-}
 
 // Simulated airline search function
 async function getFlightsFromAirline(iata_code: string | null, airline_iata: string) {
@@ -1694,19 +1442,7 @@ async function getAirlineCityPageDetails(
   host: string,
 ) {
   // Simulate an API call or database lookup
-  const response = await getAirlineToCityPage(airline_id, language_id, host);
-  if (response?.data.status) {
-    return response.data.data;
-  }
-  return null;
-}
-async function getAirlineCityToCityPageDetails(
-  airline_id: string | null,
-  language_id: string | null,
-  host: string,
-) {
-  // Simulate an API call or database lookup
-  const response = await getAirlineCityToCityPage(airline_id, language_id, host);
+  const response = await getTerminalPage(airline_id, language_id, host);
   if (response?.data.status) {
     return response.data.data;
   }

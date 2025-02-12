@@ -37,6 +37,30 @@ const getFlightPage = async (
   }
 };
 
+// getFlightDistancePage
+const getFlightDistancePage = async (
+  flight_id: string | number | null,
+  language_id: string | number | null,
+  host: string,
+) => {
+  try {
+    const domainID = domainMap[host];
+    const URL = `${url}/page/flight/distance?flight_id=${flight_id}&language_id=${language_id}&domain_id=${domainID}`;
+    return await axios.get(URL, {});
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Invalid token or session expired');
+        // Handle 401 errorlogout
+      } else {
+        console.error('An error occurred:', error.response?.data);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+};
+
 // getFlightPage
 const getAirportPage = async (
   airport_id: string | number | null,
@@ -107,6 +131,29 @@ const getAirlineToCityPage = async (
     }
   }
 };
+// getTerminalPage
+const getTerminalPage = async (
+  airline_id: string | number | null,
+  language_id: string | number | null,
+  host: string,
+) => {
+  try {
+    const domainID = domainMap[host];
+    const URL = `${url}/page/terminal?airline_id=${airline_id}&language_id=${language_id}&domain_id=${domainID}`;
+    return await axios.get(URL, {});
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Invalid token or session expired');
+        // Handle 401 errorlogout
+      } else {
+        console.error('An error occurred:', error.response?.data);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+};
 // getAirlineCityToCityPage
 const getAirlineCityToCityPage = async (
   airline_id: string | number | null,
@@ -137,4 +184,6 @@ export {
   getAirportPage,
   getAirlineToCityPage,
   getAirlineCityToCityPage,
+  getTerminalPage,
+  getFlightDistancePage,
 };
