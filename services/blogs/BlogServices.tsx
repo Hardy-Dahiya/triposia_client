@@ -18,9 +18,9 @@ const getBlogs = async () => {
   }
 };
 // get Blogs details
-const getBlogsDetail = async (slug: string | null) => {
+const getBlogsDetail = async (slug: string | null, domainID: string) => {
   try {
-    const URL = `https://blog.triposia.com/blogdetails/1/1/${slug}`;
+    const URL = `https://blog.triposia.com/blogdetails/${domainID}/1/${slug}`;
     return await axios.get(URL, {});
   } catch (error) {
     if (axios.isAxiosError(error)) {

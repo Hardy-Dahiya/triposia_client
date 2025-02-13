@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 import { Suspense } from 'react';
@@ -14,8 +15,10 @@ type BlogRouteParams = {
 export async function generateMetadata({ params }: BlogRouteParams): Promise<Metadata> {
   // Await `params` since it's treated as a Promise in the build environment
   const resolvedParams = await params;
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
   const { slug } = resolvedParams;
-  const pageData = await getBlog(slug);
+  const pageData = await getBlog(slug, host);
   if (pageData) {
     return {
       title: pageData.meta_title,
@@ -71,7 +74,9 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
 }
 
 async function Page({ slug }: { slug: string }) {
-  const getBlogData = await getBlog(slug);
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
+  const getBlogData = await getBlog(slug, host);
   if (!getBlogData?.name) {
     return (
       <Error
@@ -88,8 +93,8 @@ async function Page({ slug }: { slug: string }) {
   );
 }
 
-async function getBlog(slug: string) {
-  const resposne = await getBlogsDetail(slug);
+async function getBlog(slug: string, domainID: string) {
+  const resposne = await getBlogsDetail(slug, domainID);
   if (resposne?.data) {
     return resposne.data;
   }

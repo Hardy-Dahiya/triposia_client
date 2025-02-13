@@ -11,6 +11,7 @@ const domainMap: Record<string, number> = {
   'airport-terminals.com': 4,
   'airlinesmap.com': 5,
   'clearbeds.com': 6,
+  'faresinfo.com': 7,
 };
 
 // getFlightPage
