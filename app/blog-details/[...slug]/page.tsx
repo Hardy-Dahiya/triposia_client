@@ -63,7 +63,7 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
           __html: JSON.stringify({
             '@context': 'http://schema.org',
             '@type': 'Article',
-            '@id': `https://blog.triposia.com/blog/${slug}#article`,
+            '@id': `https://${host}/blog-details/${slug}#article`,
             headline: getBlogData.name,
             description: getBlogData.meta_description,
             image: [
@@ -90,9 +90,9 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
             datePublished: getBlogData.created_at,
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': `https://blog.triposia.com/blog/${slug}`,
+              '@id': `https://${host}/blog-details/${slug}#article`,
             },
-            publisher: { '@id': 'airport-terminals.com/#organization' },
+            publisher: { '@id': `${host}/#organization` },
             isAccessibleForFree: true,
             about: [
               { '@type': 'Thing', name: getBlogData.category_name },
@@ -103,13 +103,13 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
               '@type': 'Person',
               name: getBlogData.authors_name,
               image: getBlogData.authors_featured_image,
-              url: `/travel/author/${getBlogData.authors_slug}`,
+              url: `https://${host}/author/${getBlogData.authors_slug}`,
               description: getBlogData.authors_description,
               sameAs: [
                 getBlogData.authors_linkedin,
                 getBlogData.authors_twitter,
                 getBlogData.authors_instagram,
-                `/travel/author/${getBlogData.authors_slug}`,
+                `https://${host}/author/${getBlogData.authors_slug}`,
               ].filter(Boolean), // Remove any undefined social links
             },
           }),
