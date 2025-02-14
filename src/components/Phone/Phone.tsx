@@ -1,6 +1,9 @@
+import { headers } from 'next/headers';
 import { getPhone } from '@/services/phone/PhoneServices';
 export default async function Phone() {
-  const phone = await fetchPhone();
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
+  const phone = await fetchPhone(host);
   return (
     <div id="popup" className="popup content">
       <p className="title is-4">
@@ -17,9 +20,9 @@ export default async function Phone() {
   );
 }
 
-async function fetchPhone() {
+async function fetchPhone(host: string) {
   try {
-    const response = await getPhone();
+    const response = await getPhone(host);
     if (response?.data.status) {
       return response.data.data;
     }

@@ -1,9 +1,23 @@
 import axios from 'axios';
 import url from '../../src/api/api';
 // get Phone
-const getPhone = async () => {
+const domainMap: Record<string, number> = {
+  'triposia.com': 1,
+  'tripsearchs.com': 2,
+  'localhost:3000': 2, // For development
+  'localhost:3002': 2, // For development
+  'triposia-client.vercel.app': 1, // For development
+  'flightsdetail.com': 3,
+  'airport-terminals.com': 4,
+  'airlinesmap.com': 5,
+  'clearbeds.com': 6,
+  'faresinfo.com': 7,
+};
+
+const getPhone = async (host: string) => {
   try {
-    const URL = `${url}/phone?domainId=2`;
+    const domainID = domainMap[host];
+    const URL = `${url}/phone?domainId=${domainID ? domainID : 2}`;
     return await axios.get(URL, {});
   } catch (error) {
     if (axios.isAxiosError(error)) {

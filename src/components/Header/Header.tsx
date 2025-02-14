@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import Phone from '../Phone/Phone';
 import { getPhone } from '@/services/phone/PhoneServices';
@@ -7,9 +8,9 @@ interface FooterMenu {
   slug: string;
 }
 
-async function fetchPhone() {
+async function fetchPhone(host: string) {
   try {
-    const response = await getPhone();
+    const response = await getPhone(host);
     if (response?.data.status) {
       return response.data.data;
     }
@@ -21,7 +22,10 @@ async function fetchPhone() {
 }
 
 async function Header() {
-  const phoneData = await fetchPhone();
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
+  const phoneData = await fetchPhone(host);
+  console.log(host);
   return (
     <header>
       <nav className="navbar" role="navigation" aria-label="main navigation">
