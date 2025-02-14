@@ -103,7 +103,7 @@ async function Header() {
         <div className="container">
           <div className="columns">
             <div className="column is-12">
-              <h1 className="title is-3">Find your next stay</h1>
+              <span className="title is-3">Find your next stay</span>
               <p className="subtitle is-6 min-mt-10 mb-2">
                 <strong>Search deals on hotels, homes, and much more...</strong>
               </p>
