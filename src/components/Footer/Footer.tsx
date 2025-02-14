@@ -35,12 +35,7 @@ async function Footer() {
                   height="50"
                 />
               </Link>
-              <p className="my-5">
-                Please note that all data, content, and images are collected from various sources,
-                and tripsearchs.com does not guarantee their originality. All media are sourced from
-                third-party providers. If you have any complaints or concerns, please contact us at
-                <a href="mailto:support@tripsearchs.com"> support@tripsearchs.com</a>.
-              </p>
+              <p className="my-5" dangerouslySetInnerHTML={{ __html: phoneData.footer }} />
               <ul className="social-list" aria-label="Social Media Links">
                 <li>
                   <a href="#" aria-label="Facebook" rel="noopener noreferrer">
