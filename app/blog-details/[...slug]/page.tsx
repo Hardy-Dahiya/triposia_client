@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import { headers } from 'next/headers';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
@@ -37,7 +38,9 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
   // Await `params` since it's treated as a Promise in the build environment
   const resolvedParams = await params;
   const { slug } = resolvedParams;
-
+  const headersList = await headers();
+  const host = headersList.get('host') || 'default';
+  const getBlogData = await getBlog(slug, host);
   if (!slug) {
     return (
       <Error
@@ -50,6 +53,66 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
 
   return (
     <div>
+      <Script
+        id="blog-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'http://schema.org',
+            '@type': 'Article',
+            '@id': `https://blog.triposia.com/blog/${slug}#article`,
+            headline: getBlogData.name,
+            description: getBlogData.meta_description,
+            image: [
+              {
+                '@type': 'ImageObject',
+                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                width: 350,
+                height: 350,
+              },
+              {
+                '@type': 'ImageObject',
+                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                width: 1920,
+                height: 1080,
+              },
+              {
+                '@type': 'ImageObject',
+                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                width: 1440,
+                height: 864,
+              },
+            ],
+            dateModified: getBlogData.updated_at,
+            datePublished: getBlogData.created_at,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `https://blog.triposia.com/blog/${slug}`,
+            },
+            publisher: { '@id': 'airport-terminals.com/#organization' },
+            isAccessibleForFree: true,
+            about: [
+              { '@type': 'Thing', name: getBlogData.category_name },
+              { '@type': 'Thing', name: 'Travel' },
+              { '@type': 'Thing', name: getBlogData.name },
+            ],
+            author: {
+              '@type': 'Person',
+              name: getBlogData.authors_name,
+              image: getBlogData.authors_featured_image,
+              url: `/travel/author/${getBlogData.authors_slug}`,
+              description: getBlogData.authors_description,
+              sameAs: [
+                getBlogData.authors_linkedin,
+                getBlogData.authors_twitter,
+                getBlogData.authors_instagram,
+                `/travel/author/${getBlogData.authors_slug}`,
+              ].filter(Boolean), // Remove any undefined social links
+            },
+          }),
+        }}
+      />
+
       <Header />
       <Suspense
         fallback={
