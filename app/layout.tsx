@@ -38,12 +38,12 @@ export default async function RootLayout({
 
         <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          href="https://aerocloud.s3.us-east-1.amazonaws.com/css/all.min.css"
         />
         <noscript>
           <link
             rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            href="https://aerocloud.s3.us-east-1.amazonaws.com/css/all.min.css"
           />
         </noscript>
         <link rel="icon" href="/favicon.ico" sizes="any" />
