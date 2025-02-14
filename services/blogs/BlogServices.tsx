@@ -3,7 +3,7 @@ import axios from 'axios';
 const domainMap: Record<string, number> = {
   'triposia.com': 1,
   'tripsearchs.com': 2,
-  'localhost:3000': 2, // For development
+  'localhost:3000': 1, // For development
   'localhost:3002': 2, // For development
   'triposia-client.vercel.app': 1, // For development
   'flightsdetail.com': 3,
@@ -49,4 +49,23 @@ const getBlogsDetail = async (slug: string | null, host: string) => {
   }
 };
 
-export { getBlogs, getBlogsDetail };
+// get auther list
+const getAuthors = async () => {
+  try {
+    const URL = `https://blog.triposia.com/authorlist`;
+    return await axios.get(URL, {});
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        console.error('Unauthorized: Invalid token or session expired');
+        // Handle 401 errorlogout
+      } else {
+        console.error('An error occurred:', error.response?.data);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+};
+
+export { getBlogs, getBlogsDetail, getAuthors };

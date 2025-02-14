@@ -1,11 +1,14 @@
-import Script from 'next/script';
+import Head from 'next/head';
 import { headers } from 'next/headers';
 import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 import { Suspense } from 'react';
 import Error from '@/src/components/Message/Error';
-import { getBlogsDetail } from '@/services/blogs/BlogServices';
+import { getAuthors, getBlogsDetail, getBlogs } from '@/services/blogs/BlogServices';
 import { Metadata } from 'next';
+import { Auther, SimilarBlogs } from '@/src/types/types';
+import Link from 'next/link';
+
 // Define the params interface
 type BlogRouteParams = {
   params: Promise<{
@@ -53,66 +56,67 @@ export default async function BlogDetailPage({ params }: BlogRouteParams) {
 
   return (
     <div>
-      <Script
-        id="blog-structured-data"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'http://schema.org',
-            '@type': 'Article',
-            '@id': `https://blog.triposia.com/blog/${slug}#article`,
-            headline: getBlogData.name,
-            description: getBlogData.meta_description,
-            image: [
-              {
-                '@type': 'ImageObject',
-                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
-                width: 350,
-                height: 350,
+      <Head>
+        <script
+          id="blog-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'http://schema.org',
+              '@type': 'Article',
+              '@id': `https://blog.triposia.com/blog/${slug}#article`,
+              headline: getBlogData.name,
+              description: getBlogData.meta_description,
+              image: [
+                {
+                  '@type': 'ImageObject',
+                  url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                  width: 350,
+                  height: 350,
+                },
+                {
+                  '@type': 'ImageObject',
+                  url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                  width: 1920,
+                  height: 1080,
+                },
+                {
+                  '@type': 'ImageObject',
+                  url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
+                  width: 1440,
+                  height: 864,
+                },
+              ],
+              dateModified: getBlogData.updated_at,
+              datePublished: getBlogData.created_at,
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `https://blog.triposia.com/blog/${slug}`,
               },
-              {
-                '@type': 'ImageObject',
-                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
-                width: 1920,
-                height: 1080,
+              publisher: { '@id': 'airport-terminals.com/#organization' },
+              isAccessibleForFree: true,
+              about: [
+                { '@type': 'Thing', name: getBlogData.category_name },
+                { '@type': 'Thing', name: 'Travel' },
+                { '@type': 'Thing', name: getBlogData.name },
+              ],
+              author: {
+                '@type': 'Person',
+                name: getBlogData.authors_name,
+                image: getBlogData.authors_featured_image,
+                url: `/travel/author/${getBlogData.authors_slug}`,
+                description: getBlogData.authors_description,
+                sameAs: [
+                  getBlogData.authors_linkedin,
+                  getBlogData.authors_twitter,
+                  getBlogData.authors_instagram,
+                  `/travel/author/${getBlogData.authors_slug}`,
+                ].filter(Boolean), // Remove any undefined social links
               },
-              {
-                '@type': 'ImageObject',
-                url: `https://blog.triposia.com/${getBlogData.meta_og_image}`,
-                width: 1440,
-                height: 864,
-              },
-            ],
-            dateModified: getBlogData.updated_at,
-            datePublished: getBlogData.created_at,
-            mainEntityOfPage: {
-              '@type': 'WebPage',
-              '@id': `https://blog.triposia.com/blog/${slug}`,
-            },
-            publisher: { '@id': 'airport-terminals.com/#organization' },
-            isAccessibleForFree: true,
-            about: [
-              { '@type': 'Thing', name: getBlogData.category_name },
-              { '@type': 'Thing', name: 'Travel' },
-              { '@type': 'Thing', name: getBlogData.name },
-            ],
-            author: {
-              '@type': 'Person',
-              name: getBlogData.authors_name,
-              image: getBlogData.authors_featured_image,
-              url: `/travel/author/${getBlogData.authors_slug}`,
-              description: getBlogData.authors_description,
-              sameAs: [
-                getBlogData.authors_linkedin,
-                getBlogData.authors_twitter,
-                getBlogData.authors_instagram,
-                `/travel/author/${getBlogData.authors_slug}`,
-              ].filter(Boolean), // Remove any undefined social links
-            },
-          }),
-        }}
-      />
-
+            }),
+          }}
+        />
+      </Head>
       <Header />
       <Suspense
         fallback={
@@ -140,6 +144,8 @@ async function Page({ slug }: { slug: string }) {
   const headersList = await headers();
   const host = headersList.get('host') || 'default';
   const getBlogData = await getBlog(slug, host);
+  const autherList = await getAutherList();
+  const similarPost = await getBlogList();
   if (!getBlogData?.name) {
     return (
       <Error
@@ -174,15 +180,15 @@ async function Page({ slug }: { slug: string }) {
                       <div className="au is-2 author">
                         <img
                           className="radius-5"
-                          src="https://blog.triposia.com/storage/photos/1/66431f78b21f2.jpg"
-                          alt="Stella Shon"
+                          src={`https://blog.triposia.com/${getBlogData.authors_featured_image}`}
+                          alt={getBlogData.authors_name}
                         />
                       </div>
                       <div className="aus is-10">
                         <p>
                           By{' '}
                           <strong>
-                            <a href="/travel/author/stella_shon">Stella Shon</a>
+                            <a href="/travel/author/stella_shon">{getBlogData.authors_name}</a>
                           </strong>
                         </p>
                         <ul className="socials">
@@ -238,71 +244,39 @@ async function Page({ slug }: { slug: string }) {
             <div className="blog-details-side">
               <div className="blog-details-side-item radius-10">
                 <div className="blog-details-side-title">
-                  <h5 className="title"> Recent Post </h5>
+                  <h5 className="title"> Recent Blogs </h5>
                   <div className="blog-details-side-inner">
-                    <ul className="recent-list list-style-none"></ul>
+                    <ul className="tag-list list-style-none active-list">
+                      {similarPost.map((item: SimilarBlogs, index: number) => {
+                        return (
+                          <li className="tag-list-item" key={index}>
+                            <Link
+                              className="tag-list-link"
+                              href={`/blog-details/${item.blog_slug}`}
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 </div>
               </div>
               <div className="blog-details-side-item radius-10">
                 <div className="blog-details-side-title open">
-                  <h5 className="title"> Tags </h5>
+                  <h5 className="title"> Auther </h5>
                   <div className="blog-details-side-inner">
                     <ul className="tag-list list-style-none active-list">
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Low Price{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item active">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          High Price{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Big Room{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Small Room{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          New{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Discount{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Luxurious{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Normal{' '}
-                        </a>
-                      </li>
-                      <li className="tag-list-item">
-                        <a className="tag-list-link" href="#0">
-                          {' '}
-                          Sale{' '}
-                        </a>
-                      </li>
+                      {autherList.map((item: Auther, index: number) => {
+                        return (
+                          <li className="tag-list-item" key={index}>
+                            <a className="tag-list-link" href="#0">
+                              {item.name}
+                            </a>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 </div>
@@ -320,4 +294,20 @@ async function getBlog(slug: string, domainID: string) {
   if (resposne?.data) {
     return resposne.data;
   }
+}
+
+async function getAutherList() {
+  const response = await getAuthors();
+  if (response?.data) {
+    return response.data;
+  }
+  return [];
+}
+
+async function getBlogList() {
+  const response = await getBlogs();
+  if (response?.data) {
+    return response.data;
+  }
+  return [];
 }

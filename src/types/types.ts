@@ -388,3 +388,28 @@ export interface BlogDetails {
     created_at: string;
   };
 }
+
+export interface Auther {
+  id: number;
+  name: string;
+  featured_image: string;
+  slug: string;
+  linkedin: string;
+  twitter: string;
+  instagram: string;
+}
+
+export interface SimilarBlogs {
+  id: number;
+  name: string;
+  blog_slug: string;
+  featured_image: string;
+  category_name: string;
+  website_name: string;
+  language_name: string;
+  category_id: number;
+  website_id: number;
+  language_id: number;
+  category_slug: string;
+  created_at: string;
+}
