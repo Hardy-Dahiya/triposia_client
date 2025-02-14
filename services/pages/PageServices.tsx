@@ -6,7 +6,7 @@ const domainMap: Record<string, number> = {
   'tripsearchs.com': 2,
   'localhost:3000': 2, // For development
   'localhost:3002': 2, // For development
-  'triposia-client.vercel.app': 2, // For development
+  'triposia-client.vercel.app': 1, // For development
   'flightsdetail.com': 3,
   'airport-terminals.com': 4,
   'airlinesmap.com': 5,
