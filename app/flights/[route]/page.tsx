@@ -259,15 +259,6 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
     "name": flight.airline,
     "iataCode": flight.airline_iata
   },
-  "flightDays": {
-    "Monday": flight.day1 === "yes",
-    "Tuesday": flight.day2 === "yes",
-    "Wednesday": flight.day3 === "yes",
-    "Thursday": flight.day4 === "yes",
-    "Friday": flight.day5 === "yes",
-    "Saturday": flight.day6 === "yes",
-    "Sunday": flight.day7 === "yes"
-  }
 })) || [];
 
 
