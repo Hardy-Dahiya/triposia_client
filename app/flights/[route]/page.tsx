@@ -6,7 +6,7 @@ import Header from '../../../src/components/Header/Header';
 import { Metadata } from 'next';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { Airline, HotelAirport, Place } from '@/src/types/types';
+import { Airline, HotelAirport, Place ,Flight } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import BarChart from '@/src/components/Charts/Bar';
 import LineChart from '@/src/components/Charts/Line';
@@ -17,6 +17,7 @@ import { getFlightPage } from '@/services/pages/PageServices';
 import Link from 'next/link';
 import FlightFromList from '@/src/components/Flight/FlightFromList';
 import TruncatedText from '@/src/common/TrucateText';
+import Script from 'next/script';
 
 // Define the params interface
 type FlightRouteParams = {
@@ -125,7 +126,6 @@ async function FlightDetails({
   }
 
   const pageData = await getFlightPageDetails(flightData._id, 'en', host);
-  console.log(pageData);
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: 'bar', // Correct type for the chart
@@ -235,8 +235,50 @@ async function FlightDetails({
   const weeklySeries: ApexAxisChartSeries = [
     { name: 'Flight Price', data: [124, 144, 126, 134, 126, 135, 146] },
   ];
+// Ensure flights exist before mapping
+const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
+  "@type": "Flight",
+  "@context": "http://schema.org",
+  "estimatedFlightDuration": flight.duration, 
+  "departureTime": flight.departure_time,
+  "departureAirport": {
+    "@type": "Airport",
+    "iataCode": flight.iata_from
+  },
+  "arrivalAirport": {
+    "@type": "Airport",
+    "iataCode": flight.iata_to
+  },
+  "offers": [{
+    "@type": "Offer",
+    "price": flight.price, // Assuming you have a price field
+    "priceCurrency": "USD" // Change to actual currency if available
+  }],
+  "provider": {
+    "@type": "Airline",
+    "name": flight.airline,
+    "iataCode": flight.airline_iata
+  },
+  "flightDays": {
+    "Monday": flight.day1 === "yes",
+    "Tuesday": flight.day2 === "yes",
+    "Wednesday": flight.day3 === "yes",
+    "Thursday": flight.day4 === "yes",
+    "Friday": flight.day5 === "yes",
+    "Saturday": flight.day6 === "yes",
+    "Sunday": flight.day7 === "yes"
+  }
+})) || [];
+
+
+
   return (
     <div>
+      <Script
+        id="flight-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+        />
       <div className="single-content-nav sticky">
         <div className="container">
           <div className="columns">
