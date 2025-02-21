@@ -9,7 +9,7 @@ import Header from '../../../src/components/Header/Header';
 
 // app/airlines/[route]/page.tsx
 import { Suspense } from 'react';
-import { AirlineDestination, FlightData, HotelAirport, Place } from '@/src/types/types';
+import { AirlineDestination, Flight, FlightData, HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import { getFlightsToData } from '@/services/flights/FlightServices';
 // @Components
@@ -26,6 +26,7 @@ import FlightList from '@/src/components/Flight/FlightList';
 import TruncatedText from '@/src/common/TrucateText';
 import FlightFromList from '@/src/components/Flight/FlightFromList';
 import Link from 'next/link';
+import Script from 'next/script';
 // Define the params interface
 type AirlineRouteParams = {
   params: Promise<{
@@ -181,9 +182,52 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
     arrival_iata: '',
   };
   data.flights = flightData;
-
+  const flightDataScripts = flightData?.map((flight: Flight) => ({
+    "@type": "Flight",
+    "@context": "http://schema.org",
+    "estimatedFlightDuration": flight.duration, 
+    "departureTime": flight.departure_time,
+    "departureAirport": {
+      "@type": "Airport",
+      "iataCode": flight.iata_from
+    },
+    "arrivalAirport": {
+      "@type": "Airport",
+      "iataCode": flight.iata_to
+    },
+    "offers": [{
+      "@type": "Offer",
+      "price": flight.price, // Assuming you have a price field
+      "priceCurrency": "USD" // Change to actual currency if available
+    }],
+    "provider": {
+      "@type": "Airline",
+      "name": flight.airlineroutes[0].carrier_name,
+      "iataCode": flight.airline_iata
+    },
+  })) || [];
+  const flightProductScripts = flightData?.map((flight:Flight)=>({
+     "@context": "http://schema.org", 
+     "@type": "product", 
+     "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
+     "offers": { 
+      "@type": "AggregateOffer", 
+      "lowPrice": flight.price, 
+      "priceCurrency": "USD" 
+    }
+  }))
   return (
     <div>
+      <Script
+          id="flight-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+          />
+      <Script
+          id="flight-product-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
+          />
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -983,8 +1027,54 @@ async function FlightDetails({
       />
     );
   }
+
+  const flightDataScripts = flightData?.map((flight: Flight) => ({
+    "@type": "Flight",
+    "@context": "http://schema.org",
+    "estimatedFlightDuration": flight.duration, 
+    "departureTime": flight.departure_time,
+    "departureAirport": {
+      "@type": "Airport",
+      "iataCode": flight.iata_from
+    },
+    "arrivalAirport": {
+      "@type": "Airport",
+      "iataCode": flight.iata_to
+    },
+    "offers": [{
+      "@type": "Offer",
+      "price": flight.price, // Assuming you have a price field
+      "priceCurrency": "USD" // Change to actual currency if available
+    }],
+    "provider": {
+      "@type": "Airline",
+      "name": flight.airlineroutes[0].carrier_name,
+      "iataCode": flight.airline_iata
+    },
+  })) || [];
+  const flightProductScripts = flightData?.map((flight:Flight)=>({
+     "@context": "http://schema.org", 
+     "@type": "product", 
+     "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
+     "offers": { 
+      "@type": "AggregateOffer", 
+      "lowPrice": flight.price, 
+      "priceCurrency": "USD" 
+    }
+  }))
+
   return (
     <div>
+      <Script
+        id="flight-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+        />
+      <Script
+        id="flight-product-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
+        />
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">

@@ -256,12 +256,21 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
   }],
   "provider": {
     "@type": "Airline",
-    "name": flight.airline,
+    "name": flight.airlineroutes[0].carrier_name,
     "iataCode": flight.airline_iata
   },
 })) || [];
 
-
+const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
+  "@context": "http://schema.org", 
+  "@type": "product", 
+  "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
+  "offers": { 
+   "@type": "AggregateOffer", 
+   "lowPrice": flight.price, 
+   "priceCurrency": "USD" 
+ }
+}))
 
   return (
     <div>
@@ -269,6 +278,11 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
         id="flight-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+        />
+      <Script
+        id="flight-product-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
         />
       <div className="single-content-nav sticky">
         <div className="container">

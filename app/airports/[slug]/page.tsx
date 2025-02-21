@@ -5,7 +5,7 @@ import Footer from '../../../src/components/Footer/Footer';
 import Header from '../../../src/components/Header/Header';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { FlightData, HotelAirport, Place } from '@/src/types/types';
+import { Flight, FlightData, HotelAirport, Place } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import PlacesList from '@/src/components/Google/PlacesList';
 import HotelsList from '@/src/components/Google/HotelsList';
@@ -17,6 +17,7 @@ import AirlineParser from '@/src/common/AirlineParser';
 import { getFlightsToData } from '@/services/flights/FlightServices';
 import CityParser from '@/src/common/CityParser';
 import Link from 'next/link';
+import Script from 'next/script';
 // Define the params interface
 type AirportRouteParams = {
   params: Promise<{
@@ -105,8 +106,55 @@ async function AirportDetails({ iata_code }: { iata_code: string }) {
   const host = headersList.get('host') || 'default';
   const pageData = await getAirportPageDetails(airportData._id, 'en', host);
   const flightData = await getFlightData(airportData.iata_code);
+
+  const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
+    "@type": "Flight",
+    "@context": "http://schema.org",
+    "estimatedFlightDuration": flight.duration, 
+    "departureTime": flight.departure_time,
+    "departureAirport": {
+      "@type": "Airport",
+      "name" : airportData.name,
+      "iataCode": flight.iata_from
+    },
+    "arrivalAirport": {
+      "@type": "Airport",
+      "iataCode": flight.iata_to
+    },
+    "offers": [{
+      "@type": "Offer",
+      "price": flight.price, // Assuming you have a price field
+      "priceCurrency": "USD" // Change to actual currency if available
+    }],
+    "provider": {
+      "@type": "Airline",
+      "name": flight.airlineroutes[0].carrier_name,
+      "iataCode": flight.airline_iata
+    },
+  })) || [];
+  const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
+     "@context": "http://schema.org", 
+     "@type": "product", 
+     "name": `Flights from ${airportData.city} to ${flight.city_name_en}`, 
+     "offers": { 
+      "@type": "AggregateOffer", 
+      "lowPrice": flight.price, 
+      "priceCurrency": "USD" 
+    }
+  }))
+
   return (
     <div>
+      <Script
+        id="flight-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+        />
+      <Script
+        id="flight-product-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
+        />
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
