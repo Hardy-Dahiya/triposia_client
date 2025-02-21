@@ -265,15 +265,7 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
 const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
   "@context": "http://schema.org", 
   "@type": "product", 
-  "name": `Flights from ${flightData.departure_city} to ${flightData.arrival_city}`, 
-  "departureAirport": {
-    "@type": "Airport",
-    "iataCode": flight.iata_from
-  },
-  "arrivalAirport": {
-    "@type": "Airport",
-    "iataCode": flight.iata_to
-  },
+  "name": `Flights from ${flightData.departure_city} (${flight.iata_from}) to ${flightData.arrival_city} (${flight.iata_to})`, 
   "offers": { 
    "@type": "AggregateOffer", 
    "lowPrice": 81, 
