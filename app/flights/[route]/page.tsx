@@ -243,10 +243,12 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
   "departureTime": flight.departure_time,
   "departureAirport": {
     "@type": "Airport",
+    "name" : flightData.departure_airport,
     "iataCode": flight.iata_from
   },
   "arrivalAirport": {
     "@type": "Airport",
+    "name" : flightData.arrival_airport,
     "iataCode": flight.iata_to
   },
   "offers": [{
@@ -256,7 +258,6 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
   }],
   "provider": {
     "@type": "Airline",
-    "name": flight.airlineroutes[0].carrier_name,
     "iataCode": flight.airline_iata
   },
 })) || [];
@@ -264,10 +265,10 @@ const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
 const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
   "@context": "http://schema.org", 
   "@type": "product", 
-  "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
+  "name": `Flights from ${flightData.departure_city} to ${flightData.arrival_city}`, 
   "offers": { 
    "@type": "AggregateOffer", 
-   "lowPrice": flight.price, 
+   "lowPrice": 81, 
    "priceCurrency": "USD" 
  }
 }))
