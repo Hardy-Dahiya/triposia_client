@@ -6,6 +6,7 @@ import Link from "next/link";
 import Phone from "../Phone/Phone";
 import { getPhone } from "@/services/phone/PhoneServices";
 import Script from "next/script";
+import SearchForm from "../SearchForm/SearchForm";
 
 interface PhoneAPIResponse {
   phone?: string;
@@ -162,8 +163,8 @@ const Header = () => {
           </div>
         </div>
       </nav>
-
-      <section className="search-wrap section">
+      <SearchForm />
+      {/* <section className="search-wrap section">
         <div className="container">
           <div className="columns">
             <div className="column is-12">
@@ -173,7 +174,7 @@ const Header = () => {
               </p>
             </div>
           </div>
-
+          
           <div className="columns is-multiline searchfromwrap">
             <div className="column is-5">
               <div className="field">
@@ -218,7 +219,7 @@ const Header = () => {
           </div>
           <div style={{ clear: "both" }} />
         </div>
-      </section>
+      </section> */}
 
       <Phone />
     </header>

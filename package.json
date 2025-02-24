@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@easepick/bundle": "^1.2.1",
     "@react-google-maps/api": "^2.20.5",
     "apexcharts": "^4.2.0",
     "axios": "^1.7.8",
