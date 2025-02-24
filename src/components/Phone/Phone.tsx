@@ -1,34 +1,40 @@
-import { headers } from 'next/headers';
-import { getPhone } from '@/services/phone/PhoneServices';
-export default async function Phone() {
-  const headersList = await headers();
-  const host = headersList.get('host') || 'default';
-  const phone = await fetchPhone(host);
+"use client"; // ✅ Convert Phone.tsx into a Client Component
+
+import { useEffect, useState } from "react";
+import { getPhone } from "@/services/phone/PhoneServices";
+
+export default function Phone() {
+  const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    async function fetchPhone() {
+      try {
+        const host = window.location.hostname; // ✅ Get hostname dynamically
+        console.log("Host:", host);
+        const response = await getPhone(host);
+        if (response?.data.status) {
+          setPhone(response.data.data.phone);
+        }
+      } catch (error) {
+        console.error("Error fetching phone data:", error);
+      }
+    }
+
+    fetchPhone();
+  }, []);
+
   return (
     <div id="popup" className="popup content">
       <p className="title is-4">
         <a
-          href={`tel:+${phone.phone}`}
+          href={`tel:+${phone}`}
           className="button is-danger has-text-weight-bold is-large call-popup"
         >
-          <img height={62} width={62} src="../../images/phone.gif" alt="call" /> &nbsp;{' '}
-          <span className="hello">Speak with Expert*</span>{' '}
-          <span className="hellos">+{phone.phone}</span>
+          <img height={62} width={62} src="/images/phone.gif" alt="call" /> &nbsp;
+          <span className="hello">Speak with Expert*</span>
+          <span className="hellos">+{phone}</span>
         </a>
       </p>
     </div>
   );
-}
-
-async function fetchPhone(host: string) {
-  try {
-    const response = await getPhone(host);
-    if (response?.data.status) {
-      return response.data.data;
-    }
-    return { phone: '' }; // Default value if data is missing
-  } catch (error) {
-    console.log(error);
-    return { phone: '' }; // Default value if data is missing
-  }
 }

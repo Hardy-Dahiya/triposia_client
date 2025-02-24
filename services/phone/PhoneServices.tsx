@@ -5,6 +5,7 @@ const domainMap: Record<string, number> = {
   'triposia.com': 1,
   'tripsearchs.com': 2,
   'localhost:3000': 2, // For development
+  'localhost': 2, // For development
   'localhost:3002': 2, // For development
   'triposia-client.vercel.app': 1, // For development
   'flightsdetail.com': 3,
@@ -17,7 +18,7 @@ const domainMap: Record<string, number> = {
 const getPhone = async (host: string) => {
   try {
     const domainID = domainMap[host];
-    const URL = `${url}/phone?domainId=${domainID ? domainID : 2}`;
+    const URL = `https://api.triposia.com/v1/phone?domainId=${domainID ? domainID : 2}`;
     return await axios.get(URL, {});
   } catch (error) {
     if (axios.isAxiosError(error)) {
