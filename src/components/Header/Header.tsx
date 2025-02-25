@@ -1,12 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import Phone from "../Phone/Phone";
-import { getPhone } from "@/services/phone/PhoneServices";
-import Script from "next/script";
-import SearchForm from "../SearchForm/SearchForm";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Phone from '../Phone/Phone';
+import { getPhone } from '@/services/phone/PhoneServices';
+import SearchForm from '../SearchForm/SearchForm';
 
 interface PhoneAPIResponse {
   phone?: string;
@@ -32,81 +30,45 @@ interface FooterMenu {
 }
 
 const Header = () => {
-  const pathname = usePathname();
   const [phoneData, setPhoneData] = useState<PhoneAPIResponse>({
-    desc: "",
-    _id: "",
-    phone: "",
+    desc: '',
+    _id: '',
+    phone: '',
     domainId: 2,
-    meta: "",
-    footer: "",
-    languageID: "",
-    status: "",
-    title: "",
-    keywords: "",
+    meta: '',
+    footer: '',
+    languageID: '',
+    status: '',
+    title: '',
+    keywords: '',
     footerMenu: [],
     upperMenu: [],
-    logo: "",
-    name: "",
-    socialHandle: []
+    logo: '',
+    name: '',
+    socialHandle: [],
   });
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const host = typeof window !== "undefined" ? window.location.hostname : "";
-  const currentUrl = typeof window !== "undefined" ? `https://${host}${pathname}` : "";
+  const host = typeof window !== 'undefined' ? window.location.hostname : '';
 
   useEffect(() => {
     const fetchPhone = async () => {
       if (!host) return; // Don't fetch if host is empty
-      
-      setIsLoading(true);
-      setError(null);
-      
+
       try {
         const response = await getPhone(host);
         if (response?.data?.status) {
           setPhoneData(response.data.data);
-        } else {
-          setError("Failed to fetch data");
         }
       } catch (error) {
-        console.error("Error fetching phone data:", error);
-        setError("Error fetching data");
-      } finally {
-        setIsLoading(false);
+        console.error('Error fetching phone data:', error);
       }
     };
 
     fetchPhone();
   }, [host]);
 
-  const socialScripts = {
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "name": phoneData?.name || "TripOsia",
-    "url": currentUrl,
-    "logo": phoneData?.logo || "https://tripsearchs.com/images/logo.png",
-    "sameAs": phoneData.socialHandle || []
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Add proper loading state UI
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>; // Add proper error state UI
-  }
-
   return (
     <header>
-      {/* JSON-LD Script for SEO */}
-      <Script
-        id="social-profiles"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(socialScripts) }}
-      />
-
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="container">
           <div className="navbar-brand">
@@ -130,7 +92,12 @@ const Header = () => {
             <div className="navbar-start">
               <div>
                 {phoneData.upperMenu?.map((menu, index) => (
-                  <Link key={index} href={`/page/${menu.slug}`} aria-label={menu.name} className="navbar-item active">
+                  <Link
+                    key={index}
+                    href={`/page/${menu.slug}`}
+                    aria-label={menu.name}
+                    className="navbar-item active"
+                  >
                     {menu.name}
                   </Link>
                 ))}
@@ -139,17 +106,29 @@ const Header = () => {
             <div className="navbar-end">
               <ul className="right-nav">
                 <li>
-                  <a href="JavaScript:void(0);" className="js-modal-trigger" data-target="modal-js-example">
+                  <a
+                    href="JavaScript:void(0);"
+                    className="js-modal-trigger"
+                    data-target="modal-js-example"
+                  >
                     <i className="fa-solid fa-indian-rupee-sign" />
                   </a>
                 </li>
                 <li>
-                  <a href="JavaScript:void(0);" className="js-modal-trigger" data-target="modal-js-example2">
+                  <a
+                    href="JavaScript:void(0);"
+                    className="js-modal-trigger"
+                    data-target="modal-js-example2"
+                  >
                     <img src="../../images/indian-flag.png" alt="" />
                   </a>
                 </li>
                 <li>
-                  <a href="JavaScript:void(0);" className="js-modal-trigger" data-target="modal-js-example3">
+                  <a
+                    href="JavaScript:void(0);"
+                    className="js-modal-trigger"
+                    data-target="modal-js-example3"
+                  >
                     <i className="fa-regular fa-user" />
                   </a>
                 </li>
