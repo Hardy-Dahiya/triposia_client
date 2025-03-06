@@ -24,13 +24,13 @@ async function Footer() {
   const host = headersList.get('host') || 'default';
   const phoneData = await fetchPhone(host);
   const getSocialIcon = (url: string) => {
-    if (url.includes("twitter")) return "fa-twitter";
-    if (url.includes("facebook")) return "fa-facebook";
-    if (url.includes("instagram")) return "fa-instagram";
-    if (url.includes("linkedin")) return "fa-linkedin";
-    if (url.includes("youtube")) return "fa-youtube";
-    if (url.includes("tiktok")) return "fa-tiktok";
-    return "fa-globe"; // Default icon if no match
+    if (url.includes('twitter')) return 'fa-twitter';
+    if (url.includes('facebook')) return 'fa-facebook';
+    if (url.includes('instagram')) return 'fa-instagram';
+    if (url.includes('linkedin')) return 'fa-linkedin';
+    if (url.includes('youtube')) return 'fa-youtube';
+    if (url.includes('tiktok')) return 'fa-tiktok';
+    return 'fa-globe'; // Default icon if no match
   };
   return (
     <footer>
@@ -38,23 +38,25 @@ async function Footer() {
         <div className="container">
           <div className="columns is-multiline">
             <div className="column is-offset-3">
-              <Link href="/" aria-label="Home">
-                <img
-                  src="../../images/logo.png"
-                  alt="Triposia Brand Logo"
-                  loading="lazy"
-                  width="150"
-                  height="50"
-                />
-              </Link>
+              {phoneData.logo && (
+                <Link href="/" aria-label="Home">
+                  <img
+                    src={phoneData.logo}
+                    alt="Triposia Brand Logo"
+                    loading="lazy"
+                    width="150"
+                    height="50"
+                  />
+                </Link>
+              )}
               <p className="my-5" dangerouslySetInnerHTML={{ __html: phoneData.footer }} />
               <ul className="social-list" aria-label="Social Media Links">
-              {phoneData.socialHandle.map((social: string, index: number) => (
-                <li key={index}>
-                  <a href={social} aria-label={social} target="_blank" rel="noopener noreferrer">
-                    <i className={`fa-brands ${getSocialIcon(social)}`} />
-                  </a>
-                </li>
+                {phoneData.socialHandle.map((social: string, index: number) => (
+                  <li key={index}>
+                    <a href={social} aria-label={social} target="_blank" rel="noopener noreferrer">
+                      <i className={`fa-brands ${getSocialIcon(social)}`} />
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>

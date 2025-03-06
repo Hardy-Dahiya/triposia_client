@@ -71,22 +71,24 @@ const Header = () => {
     <header>
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="container">
-          <div className="navbar-brand">
-            <Link className="navbar-item" href="/">
-              <img src="../../images/logo.png" alt="brand-logo" />
-            </Link>
-            <a
-              role="button"
-              className="navbar-burger"
-              aria-label="menu"
-              aria-expanded="true"
-              data-target="navbarBasicExample"
-            >
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-            </a>
-          </div>
+          {phoneData.logo && (
+            <div className="navbar-brand">
+              <Link className="navbar-item" href="/">
+                <img src={phoneData.logo} alt="brand-logo" />
+              </Link>
+              <a
+                role="button"
+                className="navbar-burger"
+                aria-label="menu"
+                aria-expanded="true"
+                data-target="navbarBasicExample"
+              >
+                <span aria-hidden="true" />
+                <span aria-hidden="true" />
+                <span aria-hidden="true" />
+              </a>
+            </div>
+          )}
 
           <div id="navbarBasicExample" className="navbar-menu">
             <div className="navbar-start">
@@ -104,7 +106,7 @@ const Header = () => {
               </div>
             </div>
             <div className="navbar-end">
-              <ul className="right-nav">
+              {/* <ul className="right-nav">
                 <li>
                   <a
                     href="JavaScript:void(0);"
@@ -137,7 +139,7 @@ const Header = () => {
                     <i className="fas fa-headset" />
                   </a>
                 </li>
-              </ul>
+              </ul> */}
             </div>
           </div>
         </div>
