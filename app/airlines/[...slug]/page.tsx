@@ -182,52 +182,55 @@ async function AirlineDetails({ iata_code }: { iata_code: string }) {
     arrival_iata: '',
   };
   data.flights = flightData;
-  const flightDataScripts = flightData?.map((flight: Flight) => ({
-    "@type": "Flight",
-    "@context": "http://schema.org",
-    "estimatedFlightDuration": flight.duration, 
-    "departureTime": flight.departure_time,
-    "departureAirport": {
-      "@type": "Airport",
-      "iataCode": flight.iata_from
+  const flightDataScripts =
+    flightData?.map((flight: Flight) => ({
+      '@type': 'Flight',
+      '@context': 'http://schema.org',
+      estimatedFlightDuration: flight.duration,
+      departureTime: flight.departure_time,
+      departureAirport: {
+        '@type': 'Airport',
+        iataCode: flight.iata_from,
+      },
+      arrivalAirport: {
+        '@type': 'Airport',
+        iataCode: flight.iata_to,
+      },
+      offers: [
+        {
+          '@type': 'Offer',
+          price: flight.price, // Assuming you have a price field
+          priceCurrency: 'USD', // Change to actual currency if available
+        },
+      ],
+      provider: {
+        '@type': 'Airline',
+        name: flight.airlineroutes[0].carrier_name,
+        iataCode: flight.airline_iata,
+      },
+    })) || [];
+  const flightProductScripts = flightData?.map((flight: Flight) => ({
+    '@context': 'http://schema.org',
+    '@type': 'product',
+    name: `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`,
+    offers: {
+      '@type': 'AggregateOffer',
+      lowPrice: flight.price,
+      priceCurrency: 'USD',
     },
-    "arrivalAirport": {
-      "@type": "Airport",
-      "iataCode": flight.iata_to
-    },
-    "offers": [{
-      "@type": "Offer",
-      "price": flight.price, // Assuming you have a price field
-      "priceCurrency": "USD" // Change to actual currency if available
-    }],
-    "provider": {
-      "@type": "Airline",
-      "name": flight.airlineroutes[0].carrier_name,
-      "iataCode": flight.airline_iata
-    },
-  })) || [];
-  const flightProductScripts = flightData?.map((flight:Flight)=>({
-     "@context": "http://schema.org", 
-     "@type": "product", 
-     "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
-     "offers": { 
-      "@type": "AggregateOffer", 
-      "lowPrice": flight.price, 
-      "priceCurrency": "USD" 
-    }
-  }))
+  }));
   return (
     <div>
       <Script
-          id="flight-structured-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
-          />
+        id="flight-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
+      />
       <Script
-          id="flight-product-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
-          />
+        id="flight-product-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
+      />
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -1028,40 +1031,43 @@ async function FlightDetails({
     );
   }
 
-  const flightDataScripts = flightData?.map((flight: Flight) => ({
-    "@type": "Flight",
-    "@context": "http://schema.org",
-    "estimatedFlightDuration": flight.duration, 
-    "departureTime": flight.departure_time,
-    "departureAirport": {
-      "@type": "Airport",
-      "iataCode": flight.iata_from
+  const flightDataScripts =
+    flightData?.map((flight: Flight) => ({
+      '@type': 'Flight',
+      '@context': 'http://schema.org',
+      estimatedFlightDuration: flight.duration,
+      departureTime: flight.departure_time,
+      departureAirport: {
+        '@type': 'Airport',
+        iataCode: flight.iata_from,
+      },
+      arrivalAirport: {
+        '@type': 'Airport',
+        iataCode: flight.iata_to,
+      },
+      offers: [
+        {
+          '@type': 'Offer',
+          price: flight.price, // Assuming you have a price field
+          priceCurrency: 'USD', // Change to actual currency if available
+        },
+      ],
+      provider: {
+        '@type': 'Airline',
+        name: flight.airlineroutes[0].carrier_name,
+        iataCode: flight.airline_iata,
+      },
+    })) || [];
+  const flightProductScripts = flightData?.map((flight: Flight) => ({
+    '@context': 'http://schema.org',
+    '@type': 'product',
+    name: `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`,
+    offers: {
+      '@type': 'AggregateOffer',
+      lowPrice: flight.price,
+      priceCurrency: 'USD',
     },
-    "arrivalAirport": {
-      "@type": "Airport",
-      "iataCode": flight.iata_to
-    },
-    "offers": [{
-      "@type": "Offer",
-      "price": flight.price, // Assuming you have a price field
-      "priceCurrency": "USD" // Change to actual currency if available
-    }],
-    "provider": {
-      "@type": "Airline",
-      "name": flight.airlineroutes[0].carrier_name,
-      "iataCode": flight.airline_iata
-    },
-  })) || [];
-  const flightProductScripts = flightData?.map((flight:Flight)=>({
-     "@context": "http://schema.org", 
-     "@type": "product", 
-     "name": `Flights from ${flight.airlineroutes[0].carrier_name} to ${flight.city_name_en}`, 
-     "offers": { 
-      "@type": "AggregateOffer", 
-      "lowPrice": flight.price, 
-      "priceCurrency": "USD" 
-    }
-  }))
+  }));
 
   return (
     <div>
@@ -1069,12 +1075,12 @@ async function FlightDetails({
         id="flight-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
-        />
+      />
       <Script
         id="flight-product-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
-        />
+      />
       <div className="single-content-nav sticky ">
         <div className="container">
           <div className="columns">
@@ -1338,32 +1344,6 @@ async function FlightDetails({
               <div id="baggage" className="columns is-multiline single-content-space">
                 <div className="column is-12">
                   <h3 className="title is-5 mt-3 mb-3">
-                    {airlineData.name} Business Class Flights to {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.airlineBussinessClassFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
-                    Direct {airlineData.name} Flights to {airlineCityData.city_name_en}
-                  </h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.directAirlineFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">
                     Oneway {airlineData.name} Flights to {airlineCityData.city_name_en}
                   </h3>
                   <TruncatedText
@@ -1382,17 +1362,6 @@ async function FlightDetails({
                   <TruncatedText
                     maxLength={600}
                     content={pageData.roundTripAirlineFlightsToCity}
-                    fallbackMessage="no content found for this airline. Please check back later for more information."
-                  />
-                  <br />
-                </div>
-              </div>
-              <div id="baggage" className="columns is-multiline single-content-space">
-                <div className="column is-12">
-                  <h3 className="title is-5 mt-3 mb-3">Best Airlines</h3>
-                  <TruncatedText
-                    maxLength={600}
-                    content={pageData.bestAirlines}
                     fallbackMessage="no content found for this airline. Please check back later for more information."
                   />
                   <br />

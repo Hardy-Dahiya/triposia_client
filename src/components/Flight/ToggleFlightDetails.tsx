@@ -23,7 +23,7 @@ export default function ToggleFlightDetails({
   };
 
   return (
-    <div id="seatselection" className="columns is-multiline" key={index}>
+    <div id="seatselection" className="columns is-multiline single-content-space" key={index}>
       <div className="column is-12 pt-0">
         <div className="departing-flights">
           <div className="flights-booking-item">
