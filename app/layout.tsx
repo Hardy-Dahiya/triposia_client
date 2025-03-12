@@ -27,7 +27,17 @@ export default async function RootLayout({
     <html lang="en">
       <head>
         {/* Link normal CSS files after preloading */}
-
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z78FTPY3KJ"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){ window.dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', 'G-Z78FTPY3KJ');
+        `,
+          }}
+        />
         <link rel="stylesheet" href="https://aerocloud.s3.amazonaws.com/style/triposia_style.css" />
         <noscript>
           <link
