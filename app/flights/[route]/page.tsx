@@ -6,7 +6,7 @@ import Header from '../../../src/components/Header/Header';
 import { Metadata } from 'next';
 // app/flights/[route]/page.tsx
 import { Suspense } from 'react';
-import { Airline, HotelAirport, Place ,Flight } from '@/src/types/types';
+import { Airline, HotelAirport, Place, Flight } from '@/src/types/types';
 import Error from '@/src/components/Message/Error';
 import BarChart from '@/src/components/Charts/Bar';
 import LineChart from '@/src/components/Charts/Line';
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: FlightRouteParams): Promise<M
   const { route } = resolvedParams;
 
   // Parse the route parameter
-  const [departure, arrival] = route.split('-to-');
+  const [departure, arrival] = route.split('-');
   // Simulated async flight search (replace with actual API call)
   const flightData = await searchFlights(departure, arrival);
   if (flightData && flightData._id) {
@@ -60,14 +60,14 @@ export default async function FlightRoutePage({ params }: FlightRouteParams) {
   const { route } = resolvedParams;
 
   // Parse the route parameter
-  const [departure, arrival] = route.split('-to-');
+  const [departure, arrival] = route.split('-');
 
   if (!departure || !arrival) {
     return (
       <Error
         title="Invalid route format"
         subTitle="No Flights Found"
-        msg="Unfortunately, we could not find any flights for the specified route. Please use format like del-to-bom and try again."
+        msg="Unfortunately, we could not find any flights for the specified route. Please use format like del-bom and try again."
       />
     );
   }
@@ -235,43 +235,46 @@ async function FlightDetails({
   const weeklySeries: ApexAxisChartSeries = [
     { name: 'Flight Price', data: [124, 144, 126, 134, 126, 135, 146] },
   ];
-// Ensure flights exist before mapping
-const flightDataScripts = flightData?.flights?.map((flight: Flight) => ({
-  "@type": "Flight",
-  "@context": "http://schema.org",
-  "estimatedFlightDuration": flight.duration, 
-  "departureTime": flight.departure_time,
-  "departureAirport": {
-    "@type": "Airport",
-    "name" : flightData.departure_airport,
-    "iataCode": flight.iata_from
-  },
-  "arrivalAirport": {
-    "@type": "Airport",
-    "name" : flightData.arrival_airport,
-    "iataCode": flight.iata_to
-  },
-  "offers": [{
-    "@type": "Offer",
-    "price": flight.price, // Assuming you have a price field
-    "priceCurrency": "USD" // Change to actual currency if available
-  }],
-  "provider": {
-    "@type": "Airline",
-    "iataCode": flight.airline_iata
-  },
-})) || [];
+  // Ensure flights exist before mapping
+  const flightDataScripts =
+    flightData?.flights?.map((flight: Flight) => ({
+      '@type': 'Flight',
+      '@context': 'http://schema.org',
+      estimatedFlightDuration: flight.duration,
+      departureTime: flight.departure_time,
+      departureAirport: {
+        '@type': 'Airport',
+        name: flightData.departure_airport,
+        iataCode: flight.iata_from,
+      },
+      arrivalAirport: {
+        '@type': 'Airport',
+        name: flightData.arrival_airport,
+        iataCode: flight.iata_to,
+      },
+      offers: [
+        {
+          '@type': 'Offer',
+          price: flight.price, // Assuming you have a price field
+          priceCurrency: 'USD', // Change to actual currency if available
+        },
+      ],
+      provider: {
+        '@type': 'Airline',
+        iataCode: flight.airline_iata,
+      },
+    })) || [];
 
-const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
-  "@context": "http://schema.org", 
-  "@type": "product", 
-  "name": `Flights from ${flightData.departure_city} (${flight.iata_from}) to ${flightData.arrival_city} (${flight.iata_to})`, 
-  "offers": { 
-   "@type": "AggregateOffer", 
-   "lowPrice": 81, 
-   "priceCurrency": "USD" 
- }
-}))
+  const flightProductScripts = flightData?.flights?.map((flight: Flight) => ({
+    '@context': 'http://schema.org',
+    '@type': 'product',
+    name: `Flights from ${flightData.departure_city} (${flight.iata_from}) to ${flightData.arrival_city} (${flight.iata_to})`,
+    offers: {
+      '@type': 'AggregateOffer',
+      lowPrice: 81,
+      priceCurrency: 'USD',
+    },
+  }));
 
   return (
     <div>
@@ -279,12 +282,12 @@ const flightProductScripts = flightData?.flights?.map((flight:Flight)=>({
         id="flight-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(flightDataScripts) }}
-        />
+      />
       <Script
         id="flight-product-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(flightProductScripts) }}
-        />
+      />
       <div className="single-content-nav sticky">
         <div className="container">
           <div className="columns">
